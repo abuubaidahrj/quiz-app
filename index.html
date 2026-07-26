@@ -49,7 +49,7 @@
   <section id="setup">
     <h1>Math Master</h1>
     <p class="subtitle">Practice multiplication, division, addition, subtraction, or a random mixture.</p>
-    <p class="note"><strong>Version:</strong> v4 — Student Analytics</p>
+    <p class="note"><strong>Version:</strong> v5 — Targeted Practice</p>
 
     <div class="grid">
       <div>
@@ -140,8 +140,14 @@
         <tbody id="details"></tbody>
       </table>
     </div>
-<button id="retryEmailBtn" class="success hidden" type="button">Retry Failed Email</button>
-    <button id="againBtn" class="secondary" type="button">Play Again</button>
+    <h3 style="margin-top:22px;">Learning diagnosis</h3>
+    <div id="screenDiagnosis" class="note"></div>
+
+    <button id="targetedPracticeBtn" class="success hidden" type="button">
+      Practice My Weak Questions — 5 Questions
+    </button>
+    <button id="retryEmailBtn" class="success hidden" type="button">Retry Failed Email</button>
+    <button id="againBtn" class="secondary" type="button">Start a New Quiz</button>
     <div id="emailStatus" class="note"></div>
     <div id="analyticsStatus" class="note"></div>
   </section>
@@ -180,7 +186,11 @@
     totalTime: 0,
     emailSending: false,
     emailSent: false,
-    analyticsSaved: false
+    analyticsSaved: false,
+    practiceMode: false,
+    practiceRound: 0,
+    sourceDiagnosis: [],
+    parentSessionLabel: ""
   };
 
   function shuffle(items) {
@@ -284,6 +294,10 @@
       `STUDENT-${Date.now().toString().slice(-6)}`;
     state.user = $("username").value.trim() || state.studentId;
     state.selectedMode = $("mode").value;
+    state.practiceMode = false;
+    state.practiceRound = 0;
+    state.sourceDiagnosis = [];
+    state.parentSessionLabel = "";
     state.questions = chooseQuestions(state.selectedMode, $("questionCount").value);
     state.index = 0;
     state.records = [];
@@ -298,6 +312,7 @@
     $("report").classList.add("hidden");
     $("quiz").classList.remove("hidden");
     $("player").textContent = state.user;
+    $("practiceModeLabel").textContent = "";
 
     clearInterval(state.timerId);
     state.timerId = setInterval(() => {
@@ -341,6 +356,9 @@
     if (value === q.answer) {
       state.records.push({
         operation:q.operation,
+        a:q.a,
+        b:q.b,
+        symbol:q.symbol,
         question:`${q.a} ${q.symbol} ${q.b}`,
         answer:q.answer,
         time:elapsed,
@@ -400,6 +418,9 @@
         question: record.question,
         answer: record.answer,
         operation: record.operation,
+        a: record.a,
+        b: record.b,
+        symbol: record.symbol,
         wrongCount,
         wrongAnswers: record.wrongs.map(item => item.answer),
         time: record.time,
@@ -500,12 +521,139 @@
       </div>`;
   }
 
+
+  function issueToQuestion(issue) {
+    return {
+      operation: issue.operation,
+      a: Number(issue.a),
+      b: Number(issue.b),
+      answer: Number(issue.answer),
+      symbol: issue.symbol
+    };
+  }
+
+  function buildTargetedPracticeSet(issues, count = 5) {
+    if (!issues.length) return [];
+
+    // Weight more serious questions more heavily, but always shuffle the order.
+    const weighted = [];
+    issues.forEach(issue => {
+      const repeats = Math.max(
+        1,
+        Math.min(5, 1 + issue.wrongCount * 2 + (issue.slowRatio >= 1.5 ? 1 : 0))
+      );
+
+      for (let index = 0; index < repeats; index++) {
+        weighted.push(issueToQuestion(issue));
+      }
+    });
+
+    const result = [];
+    let shuffled = shuffle(weighted);
+
+    while (result.length < count) {
+      if (!shuffled.length) shuffled = shuffle(weighted);
+      result.push({ ...shuffled.pop() });
+    }
+
+    return shuffle(result);
+  }
+
+  function startTargetedPractice() {
+    const diagnosis = getSessionDiagnosis();
+    const issues = state.sourceDiagnosis.length
+      ? state.sourceDiagnosis
+      : diagnosis.issues;
+
+    if (!issues.length) {
+      $("screenDiagnosis").innerHTML =
+        "No weak questions were detected. Start a new mixed quiz for continued practice.";
+      $("targetedPracticeBtn").classList.add("hidden");
+      return;
+    }
+
+    state.sourceDiagnosis = issues.map(issue => ({ ...issue }));
+    state.practiceMode = true;
+    state.practiceRound += 1;
+    state.parentSessionLabel = state.parentSessionLabel ||
+      `${state.studentId}-${new Date().toISOString()}`;
+    state.selectedMode = "targeted";
+    state.questions = buildTargetedPracticeSet(state.sourceDiagnosis, 5);
+    state.index = 0;
+    state.records = [];
+    state.emailSending = false;
+    state.emailSent = false;
+    state.analyticsSaved = false;
+    state.quizStart = performance.now();
+
+    $("report").classList.add("hidden");
+    $("setup").classList.add("hidden");
+    $("quiz").classList.remove("hidden");
+    $("player").textContent = state.user;
+    $("practiceModeLabel").textContent =
+      `🎯 Targeted Practice Set ${state.practiceRound}: 5 weak questions`;
+
+    clearInterval(state.timerId);
+    state.timerId = setInterval(() => {
+      $("timer").textContent = formatTime(
+        (performance.now() - state.quizStart) / 1000
+      );
+    }, 250);
+
+    showQuestion();
+  }
+
+  function screenDiagnosisHtml() {
+    const diagnosis = getSessionDiagnosis();
+
+    if (!diagnosis.issues.length) {
+      return `
+        <div class="note ok">
+          ✅ No major weak question was detected in this set.
+          The student can continue with a new quiz.
+        </div>`;
+    }
+
+    const rows = diagnosis.issues.slice(0, 8).map(issue => {
+      const reason = issue.wrongCount
+        ? `${issue.wrongCount} wrong attempt${issue.wrongCount === 1 ? "" : "s"}`
+        : `${issue.slowRatio.toFixed(1)}× slower than the session median`;
+
+      return `
+        <tr>
+          <td>${escapeHtml(issue.question)} = ${escapeHtml(issue.answer)}</td>
+          <td>${reason}</td>
+          <td>${issue.time.toFixed(1)}s</td>
+        </tr>`;
+    }).join("");
+
+    return `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Problem question</th>
+              <th>Why selected</th>
+              <th>Response time</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <p>
+        The targeted practice button creates a randomized 5-question set
+        using these questions. More serious mistakes are repeated more often.
+      </p>`;
+  }
+
   function buildAnalyticsPayload() {
     const diagnosis = getSessionDiagnosis();
     const sessionId = `${state.studentId}-${Date.now()}`;
-    const modeLabel = state.selectedMode === "mixed"
-      ? "Mixed random"
-      : labels[state.selectedMode];
+    const modeLabel = state.practiceMode
+      ? `Targeted Practice Set ${state.practiceRound}`
+      : state.selectedMode === "mixed"
+        ? "Mixed random"
+        : labels[state.selectedMode];
 
     return {
       schemaVersion: 1,
@@ -515,6 +663,9 @@
       completedAt: new Date().toISOString(),
       quizType: modeLabel,
       selectedMode: state.selectedMode,
+      practiceMode: state.practiceMode,
+      practiceRound: state.practiceRound,
+      parentSessionLabel: state.parentSessionLabel,
       questionCount: state.records.length,
       totalTimeSeconds: Number(state.totalTime.toFixed(3)),
       medianTimeSeconds: Number(diagnosis.overallMedian.toFixed(3)),
@@ -526,8 +677,8 @@
       responses: state.records.map((record, index) => ({
         questionNumber: index + 1,
         operation: record.operation,
-        operandA: Number(record.question.split(" ")[0]),
-        operandB: Number(record.question.split(" ")[2]),
+        operandA: Number(record.a),
+        operandB: Number(record.b),
         question: record.question,
         correctAnswer: record.answer,
         responseTimeSeconds: Number(record.time.toFixed(3)),
@@ -585,7 +736,11 @@
 
     const wrongAttempts = state.records.reduce((sum,r) => sum + r.wrongs.length, 0);
     const avg = state.records.length ? state.totalTime / state.records.length : 0;
-    const modeLabel = state.selectedMode === "mixed" ? "Mixed random" : labels[state.selectedMode];
+    const modeLabel = state.practiceMode
+      ? `Targeted Practice Set ${state.practiceRound}`
+      : state.selectedMode === "mixed"
+        ? "Mixed random"
+        : labels[state.selectedMode];
 
     $("summary").innerHTML = `
       <div class="summary-grid">
@@ -617,6 +772,20 @@
       <td>${r.time.toFixed(1)}s</td>
     </tr>`).join("");
 
+    $("screenDiagnosis").innerHTML = screenDiagnosisHtml();
+
+    const diagnosis = getSessionDiagnosis();
+    if (diagnosis.issues.length) {
+      state.sourceDiagnosis = diagnosis.issues.map(issue => ({ ...issue }));
+      $("targetedPracticeBtn").classList.remove("hidden");
+      $("targetedPracticeBtn").textContent = state.practiceMode
+        ? "Repeat Another Weak-Question Set — 5 Questions"
+        : "Practice My Weak Questions — 5 Questions";
+    } else {
+      state.sourceDiagnosis = [];
+      $("targetedPracticeBtn").classList.add("hidden");
+    }
+
     $("emailStatus").textContent = "📧 Preparing styled email report...";
     $("emailStatus").className = "note";
 
@@ -626,9 +795,11 @@
   }
 
   function buildEmailReport() {
-    const modeLabel = state.selectedMode === "mixed"
-      ? "Mixed random"
-      : labels[state.selectedMode];
+    const modeLabel = state.practiceMode
+      ? `Targeted Practice Set ${state.practiceRound}`
+      : state.selectedMode === "mixed"
+        ? "Mixed random"
+        : labels[state.selectedMode];
 
     const wrongAttempts = state.records.reduce(
       (sum, record) => sum + record.wrongs.length,
@@ -895,6 +1066,8 @@
     $("quiz").classList.add("hidden");
     $("setup").classList.remove("hidden");
     $("answer").value = "";
+    $("targetedPracticeBtn").classList.add("hidden");
+    $("practiceModeLabel").textContent = "";
     updateCoverageNote();
   }
 
@@ -907,7 +1080,8 @@
   $("mode").addEventListener("change", updateCoverageNote);
   $("startBtn").addEventListener("click", startQuiz);
   $("submitBtn").addEventListener("click", submitAnswer);
-$("againBtn").addEventListener("click", resetQuiz);
+  $("targetedPracticeBtn").addEventListener("click", startTargetedPractice);
+  $("againBtn").addEventListener("click", resetQuiz);
   $("answer").addEventListener("keydown", event => {
     if (event.key === "Enter") submitAnswer();
   });
