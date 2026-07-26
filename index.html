@@ -49,6 +49,7 @@
   <section id="setup">
     <h1>Math Master</h1>
     <p class="subtitle">Practice multiplication, division, addition, subtraction, or a random mixture.</p>
+    <p class="note"><strong>Version:</strong> Auto Email v3 — Styled Report</p>
 
     <label for="username">Student name</label>
     <input id="username" type="text" placeholder="Enter student name" autocomplete="name" />
@@ -131,7 +132,7 @@
         <tbody id="details"></tbody>
       </table>
     </div>
-
+<button id="retryEmailBtn" class="success hidden" type="button">Retry Failed Email</button>
     <button id="againBtn" class="secondary" type="button">Play Again</button>
     <div id="emailStatus" class="note"></div>
   </section>
@@ -163,7 +164,9 @@
     questionStart: 0,
     wrongs: [],
     timerId: null,
-    totalTime: 0
+    totalTime: 0,
+    emailSending: false,
+    emailSent: false
   };
 
   function shuffle(items) {
@@ -268,6 +271,9 @@
     state.questions = chooseQuestions(state.selectedMode, $("questionCount").value);
     state.index = 0;
     state.records = [];
+    state.emailSending = false;
+    state.emailSent = false;
+    $("retryEmailBtn").classList.add("hidden");
     state.quizStart = performance.now();
 
     $("setup").classList.add("hidden");
@@ -380,59 +386,267 @@
       <td>${r.time.toFixed(1)}s</td>
     </tr>`).join("");
 
-    $("emailStatus").textContent = "Sending report automatically...";
+    $("emailStatus").textContent = "📧 Preparing styled email report...";
     $("emailStatus").className = "note";
 
-    // Send only after the report data has been prepared.
+    // Automatically send after all result data has been prepared.
     sendEmail();
   }
 
   function buildEmailReport() {
-    const modeLabel = state.selectedMode === "mixed" ? "Mixed random" : labels[state.selectedMode];
-    const wrongAttempts = state.records.reduce((sum,r) => sum + r.wrongs.length, 0);
-    const avg = state.records.length ? state.totalTime / state.records.length : 0;
+    const modeLabel = state.selectedMode === "mixed"
+      ? "Mixed random"
+      : labels[state.selectedMode];
+
+    const wrongAttempts = state.records.reduce(
+      (sum, record) => sum + record.wrongs.length,
+      0
+    );
+
+    const avg = state.records.length
+      ? state.totalTime / state.records.length
+      : 0;
+
+    const completedDate = new Date().toLocaleString("en-MY", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    });
+
+    const operationRows = getOperationStats()
+      .filter(stat => stat.count > 0)
+      .map(stat => `
+        <tr>
+          <td style="padding:10px;border-bottom:1px solid #e5e7eb;font-weight:600;">
+            ${escapeHtml(labels[stat.operation])}
+          </td>
+          <td style="padding:10px;border-bottom:1px solid #e5e7eb;text-align:center;">
+            ${stat.count}
+          </td>
+          <td style="padding:10px;border-bottom:1px solid #e5e7eb;text-align:center;">
+            ${stat.wrongAttempts}
+          </td>
+          <td style="padding:10px;border-bottom:1px solid #e5e7eb;text-align:center;">
+            ${stat.avgTime.toFixed(2)}s
+          </td>
+        </tr>
+      `).join("");
+
+    const slowestRows = [...state.records]
+      .sort((a, b) => b.time - a.time)
+      .slice(0, 30)
+      .map((record, index) => {
+        const wrongAnswers = record.wrongs.length
+          ? record.wrongs.map(item => escapeHtml(item.answer)).join(", ")
+          : "None";
+
+        return `
+          <tr>
+            <td style="padding:9px;border-bottom:1px solid #e5e7eb;text-align:center;color:#64748b;">
+              ${index + 1}
+            </td>
+            <td style="padding:9px;border-bottom:1px solid #e5e7eb;font-weight:600;">
+              ${escapeHtml(record.question)} = ${escapeHtml(record.answer)}
+            </td>
+            <td style="padding:9px;border-bottom:1px solid #e5e7eb;text-align:center;">
+              ${record.wrongs.length + 1}
+            </td>
+            <td style="padding:9px;border-bottom:1px solid #e5e7eb;">
+              ${wrongAnswers}
+            </td>
+            <td style="padding:9px;border-bottom:1px solid #e5e7eb;text-align:center;">
+              ${record.time.toFixed(1)}s
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+    const performanceMessage =
+      wrongAttempts === 0
+        ? "Excellent work — all questions were completed without a wrong attempt."
+        : wrongAttempts <= Math.max(2, state.records.length * 0.1)
+          ? "Great work — only a small number of corrections were needed."
+          : "Good effort. Review the questions with wrong attempts and practise them again.";
+
+    const emailHtml = `
+      <div style="margin:0;padding:24px 10px;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;color:#1f2937;">
+        <div style="max-width:720px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;">
+
+          <div style="padding:28px 24px;background:#1d4ed8;color:#ffffff;">
+            <div style="font-size:13px;letter-spacing:1px;text-transform:uppercase;opacity:.85;">
+              Math Master
+            </div>
+            <h1 style="margin:7px 0 5px;font-size:28px;line-height:1.2;">
+              Quiz Result
+            </h1>
+            <p style="margin:0;font-size:15px;opacity:.9;">
+              Completed by ${escapeHtml(state.user)}
+            </p>
+          </div>
+
+          <div style="padding:24px;">
+            <p style="margin:0 0 18px;font-size:15px;line-height:1.6;color:#475569;">
+              ${performanceMessage}
+            </p>
+
+            <table role="presentation" style="width:100%;border-collapse:separate;border-spacing:8px;">
+              <tr>
+                <td style="width:50%;padding:14px;background:#eff6ff;border-radius:10px;">
+                  <div style="font-size:12px;color:#64748b;text-transform:uppercase;">Student</div>
+                  <div style="margin-top:5px;font-size:17px;font-weight:700;">${escapeHtml(state.user)}</div>
+                </td>
+                <td style="width:50%;padding:14px;background:#eff6ff;border-radius:10px;">
+                  <div style="font-size:12px;color:#64748b;text-transform:uppercase;">Quiz type</div>
+                  <div style="margin-top:5px;font-size:17px;font-weight:700;">${escapeHtml(modeLabel)}</div>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:14px;background:#f8fafc;border-radius:10px;">
+                  <div style="font-size:12px;color:#64748b;text-transform:uppercase;">Questions</div>
+                  <div style="margin-top:5px;font-size:20px;font-weight:700;">${state.records.length}</div>
+                </td>
+                <td style="padding:14px;background:#f8fafc;border-radius:10px;">
+                  <div style="font-size:12px;color:#64748b;text-transform:uppercase;">Wrong attempts</div>
+                  <div style="margin-top:5px;font-size:20px;font-weight:700;">${wrongAttempts}</div>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:14px;background:#f8fafc;border-radius:10px;">
+                  <div style="font-size:12px;color:#64748b;text-transform:uppercase;">Total time</div>
+                  <div style="margin-top:5px;font-size:20px;font-weight:700;">${formatTime(state.totalTime)}</div>
+                </td>
+                <td style="padding:14px;background:#f8fafc;border-radius:10px;">
+                  <div style="font-size:12px;color:#64748b;text-transform:uppercase;">Average per question</div>
+                  <div style="margin-top:5px;font-size:20px;font-weight:700;">${avg.toFixed(2)}s</div>
+                </td>
+              </tr>
+            </table>
+
+            <div style="margin:24px 0 0;padding:13px 15px;background:#f8fafc;border-left:4px solid #2563eb;border-radius:6px;">
+              <strong>Date completed:</strong> ${escapeHtml(completedDate)}
+            </div>
+
+            <h2 style="margin:28px 0 12px;font-size:19px;">Performance by operation</h2>
+            <div style="overflow-x:auto;border:1px solid #e5e7eb;border-radius:10px;">
+              <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                <thead>
+                  <tr style="background:#f8fafc;color:#475569;">
+                    <th style="padding:10px;text-align:left;">Operation</th>
+                    <th style="padding:10px;text-align:center;">Questions</th>
+                    <th style="padding:10px;text-align:center;">Wrong</th>
+                    <th style="padding:10px;text-align:center;">Average</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${operationRows}
+                </tbody>
+              </table>
+            </div>
+
+            <h2 style="margin:28px 0 6px;font-size:19px;">30 slowest questions</h2>
+            <p style="margin:0 0 12px;color:#64748b;font-size:13px;">
+              Use this section to identify questions that may need more practice.
+            </p>
+
+            <div style="overflow-x:auto;border:1px solid #e5e7eb;border-radius:10px;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead>
+                  <tr style="background:#f8fafc;color:#475569;">
+                    <th style="padding:9px;text-align:center;">#</th>
+                    <th style="padding:9px;text-align:left;">Question</th>
+                    <th style="padding:9px;text-align:center;">Attempts</th>
+                    <th style="padding:9px;text-align:left;">Wrong answers</th>
+                    <th style="padding:9px;text-align:center;">Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${slowestRows}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style="padding:17px 24px;background:#f8fafc;color:#64748b;font-size:12px;text-align:center;">
+            Generated automatically by Math Master Quiz.
+          </div>
+        </div>
+      </div>
+    `;
 
     const statsText = getOperationStats()
-      .filter(s => s.count > 0)
-      .map(s => `${labels[s.operation]}: ${s.count} questions | ${s.wrongAttempts} wrong attempts | ${s.avgTime.toFixed(2)}s average`)
+      .filter(stat => stat.count > 0)
+      .map(stat =>
+        `${labels[stat.operation]}: ${stat.count} questions | ` +
+        `${stat.wrongAttempts} wrong attempts | ${stat.avgTime.toFixed(2)}s average`
+      )
       .join("\n");
 
     const slowestText = [...state.records]
-      .sort((a,b) => b.time-a.time)
-      .slice(0,30)
-      .map(r => `${r.question} = ${r.answer} | ${r.time.toFixed(1)}s | wrong answers: ${r.wrongs.length ? r.wrongs.map(w => w.answer).join(", ") : "none"}`)
+      .sort((a, b) => b.time - a.time)
+      .slice(0, 30)
+      .map(record =>
+        `${record.question} = ${record.answer} | ${record.time.toFixed(1)}s | ` +
+        `wrong answers: ${
+          record.wrongs.length
+            ? record.wrongs.map(item => item.answer).join(", ")
+            : "none"
+        }`
+      )
       .join("\n");
 
     return {
-      user:state.user,
-      date:new Date().toLocaleString(),
-      quiz_type:modeLabel,
-      question_count:state.records.length,
-      total_time:formatTime(state.totalTime),
-      avg_time:avg.toFixed(2),
-      wrong_attempts:wrongAttempts,
-      operation_stats:statsText,
-      report:slowestText
+      to_email: "abuubaidahrj@gmail.com",
+      recipient_email: "abuubaidahrj@gmail.com",
+      email: "abuubaidahrj@gmail.com",
+      user: state.user,
+      date: completedDate,
+      quiz_type: modeLabel,
+      question_count: state.records.length,
+      total_time: formatTime(state.totalTime),
+      avg_time: avg.toFixed(2),
+      wrong_attempts: wrongAttempts,
+      operation_stats: statsText,
+      report: slowestText,
+      email_html: emailHtml
     };
   }
 
-  async function sendEmail() {
+  async function sendEmail(forceRetry = false) {
     const status = $("emailStatus");
-    status.textContent = "Sending report automatically...";
+    const retryButton = $("retryEmailBtn");
+
+    // Prevent duplicate automatic emails.
+    if (!forceRetry && (state.emailSending || state.emailSent)) return;
+
+    state.emailSending = true;
+    retryButton.classList.add("hidden");
+    status.textContent = "📧 Sending report automatically...";
     status.className = "note";
 
     try {
-      await emailjs.send(
+      const response = await emailjs.send(
         EMAILJS_SERVICE_ID,
         EMAILJS_TEMPLATE_ID,
-        buildEmailReport()
+        buildEmailReport(),
+        { publicKey: EMAILJS_PUBLIC_KEY }
       );
-      status.textContent = "✅ Report sent automatically.";
+
+      state.emailSent = true;
+      status.textContent = `✅ Report sent automatically. EmailJS status: ${response.status} ${response.text || ""}`;
       status.className = "note ok";
     } catch(error) {
-      console.error(error);
-      status.textContent = `❌ Automatic email failed: ${error?.text || error?.message || "Unknown error"}`;
+      state.emailSent = false;
+      const details =
+        error?.text ||
+        error?.message ||
+        JSON.stringify(error) ||
+        "Unknown EmailJS error";
+
+      console.error("EmailJS automatic-send error:", error);
+      status.textContent = `❌ Automatic email failed: ${details}`;
       status.className = "note error";
+      retryButton.classList.remove("hidden");
+    } finally {
+      state.emailSending = false;
     }
   }
 
@@ -454,7 +668,7 @@
   $("mode").addEventListener("change", updateCoverageNote);
   $("startBtn").addEventListener("click", startQuiz);
   $("submitBtn").addEventListener("click", submitAnswer);
-  $("againBtn").addEventListener("click", resetQuiz);
+$("againBtn").addEventListener("click", resetQuiz);
   $("answer").addEventListener("keydown", event => {
     if (event.key === "Enter") submitAnswer();
   });
