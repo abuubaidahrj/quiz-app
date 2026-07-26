@@ -132,7 +132,6 @@
       </table>
     </div>
 
-    <button id="emailBtn" class="success" type="button">Send Report by Email</button>
     <button id="againBtn" class="secondary" type="button">Play Again</button>
     <div id="emailStatus" class="note"></div>
   </section>
@@ -381,7 +380,11 @@
       <td>${r.time.toFixed(1)}s</td>
     </tr>`).join("");
 
-    $("emailStatus").textContent = "";
+    $("emailStatus").textContent = "Sending report automatically...";
+    $("emailStatus").className = "note";
+
+    // Send only after the report data has been prepared.
+    sendEmail();
   }
 
   function buildEmailReport() {
@@ -414,23 +417,22 @@
   }
 
   async function sendEmail() {
-    const button = $("emailBtn");
     const status = $("emailStatus");
-    button.disabled = true;
-    button.textContent = "Sending report...";
-    status.textContent = "";
+    status.textContent = "Sending report automatically...";
+    status.className = "note";
 
     try {
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, buildEmailReport());
-      status.textContent = "✅ Report sent successfully.";
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        buildEmailReport()
+      );
+      status.textContent = "✅ Report sent automatically.";
       status.className = "note ok";
     } catch(error) {
       console.error(error);
-      status.textContent = `❌ Email failed: ${error?.text || error?.message || "Unknown error"}`;
+      status.textContent = `❌ Automatic email failed: ${error?.text || error?.message || "Unknown error"}`;
       status.className = "note error";
-    } finally {
-      button.disabled = false;
-      button.textContent = "Send Report by Email";
     }
   }
 
@@ -452,7 +454,6 @@
   $("mode").addEventListener("change", updateCoverageNote);
   $("startBtn").addEventListener("click", startQuiz);
   $("submitBtn").addEventListener("click", submitAnswer);
-  $("emailBtn").addEventListener("click", sendEmail);
   $("againBtn").addEventListener("click", resetQuiz);
   $("answer").addEventListener("keydown", event => {
     if (event.key === "Enter") submitAnswer();
