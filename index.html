@@ -49,10 +49,18 @@
   <section id="setup">
     <h1>Math Master</h1>
     <p class="subtitle">Practice multiplication, division, addition, subtraction, or a random mixture.</p>
-    <p class="note"><strong>Version:</strong> Auto Email v3 — Styled Report</p>
+    <p class="note"><strong>Version:</strong> v4 — Student Analytics</p>
 
-    <label for="username">Student name</label>
-    <input id="username" type="text" placeholder="Enter student name" autocomplete="name" />
+    <div class="grid">
+      <div>
+        <label for="studentId">Student ID</label>
+        <input id="studentId" type="text" placeholder="Example: ADAM01" autocomplete="off" />
+      </div>
+      <div>
+        <label for="username">Student name</label>
+        <input id="username" type="text" placeholder="Enter student name" autocomplete="name" />
+      </div>
+    </div>
 
     <div class="grid">
       <div>
@@ -135,6 +143,7 @@
 <button id="retryEmailBtn" class="success hidden" type="button">Retry Failed Email</button>
     <button id="againBtn" class="secondary" type="button">Play Again</button>
     <div id="emailStatus" class="note"></div>
+    <div id="analyticsStatus" class="note"></div>
   </section>
 </main>
 
@@ -143,6 +152,9 @@
   const EMAILJS_PUBLIC_KEY = "QsPisMt2TziUDjvSh";
   const EMAILJS_SERVICE_ID = "service_6hzvm17";
   const EMAILJS_TEMPLATE_ID = "template_808wesj";
+
+  // Paste your deployed Google Apps Script Web App URL here.
+  const ANALYTICS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwgsLdSvTidRNDXpZ3PgoMBwwrEofRnwHYRawyMKq9D4edbbrIBaSYIcHES8TZTMWXd/exec";
 
   emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
@@ -155,6 +167,7 @@
   };
 
   let state = {
+    studentId: "",
     user: "",
     selectedMode: "multiply",
     questions: [],
@@ -166,7 +179,8 @@
     timerId: null,
     totalTime: 0,
     emailSending: false,
-    emailSent: false
+    emailSent: false,
+    analyticsSaved: false
   };
 
   function shuffle(items) {
@@ -266,14 +280,18 @@
   }
 
   function startQuiz() {
-    state.user = $("username").value.trim() || "Anonymous";
+    state.studentId = $("studentId").value.trim().toUpperCase() ||
+      `STUDENT-${Date.now().toString().slice(-6)}`;
+    state.user = $("username").value.trim() || state.studentId;
     state.selectedMode = $("mode").value;
     state.questions = chooseQuestions(state.selectedMode, $("questionCount").value);
     state.index = 0;
     state.records = [];
     state.emailSending = false;
     state.emailSent = false;
+    state.analyticsSaved = false;
     $("retryEmailBtn").classList.add("hidden");
+    $("analyticsStatus").textContent = "";
     state.quizStart = performance.now();
 
     $("setup").classList.add("hidden");
@@ -347,6 +365,218 @@
     });
   }
 
+
+  function median(values) {
+    if (!values.length) return 0;
+    const sorted = [...values].sort((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+    return sorted.length % 2
+      ? sorted[middle]
+      : (sorted[middle - 1] + sorted[middle]) / 2;
+  }
+
+  function getSessionDiagnosis() {
+    const records = state.records;
+    const overallMedian = median(records.map(record => record.time));
+    const questionGroups = new Map();
+
+    records.forEach(record => {
+      const key = record.operation === "multiply" || record.operation === "add"
+        ? `${record.operation}:${Math.min(record.question.split(" ")[0], record.answer)}:${record.question}`
+        : `${record.operation}:${record.question}`;
+
+      if (!questionGroups.has(key)) questionGroups.set(key, []);
+      questionGroups.get(key).push(record);
+    });
+
+    const issues = records.map(record => {
+      const wrongCount = record.wrongs.length;
+      const slowRatio = overallMedian > 0 ? record.time / overallMedian : 0;
+      let score = wrongCount * 3;
+      if (slowRatio >= 2) score += 2;
+      else if (slowRatio >= 1.5) score += 1;
+
+      return {
+        question: record.question,
+        answer: record.answer,
+        operation: record.operation,
+        wrongCount,
+        wrongAnswers: record.wrongs.map(item => item.answer),
+        time: record.time,
+        slowRatio,
+        score
+      };
+    }).filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score || b.time - a.time);
+
+    const operationIssues = getOperationStats()
+      .filter(stat => stat.count > 0)
+      .map(stat => ({
+        ...stat,
+        errorRate: stat.count ? stat.wrongAttempts / stat.count : 0
+      }))
+      .sort((a, b) =>
+        b.errorRate - a.errorRate || b.avgTime - a.avgTime
+      );
+
+    const topIssues = issues.slice(0, 8);
+    const weakestOperation = operationIssues[0];
+
+    const recommendations = [];
+    if (topIssues.length) {
+      const repeated = topIssues.slice(0, 5).map(item => item.question).join(", ");
+      recommendations.push(`Practise these questions again: ${repeated}.`);
+    }
+    if (weakestOperation && (weakestOperation.wrongAttempts > 0 || weakestOperation.avgTime > overallMedian * 1.35)) {
+      recommendations.push(
+        `Give extra practice to ${labels[weakestOperation.operation]} ` +
+        `(${weakestOperation.wrongAttempts} wrong attempts, ` +
+        `${weakestOperation.avgTime.toFixed(1)}s average).`
+      );
+    }
+    if (!recommendations.length) {
+      recommendations.push("No clear weakness was detected in this session. Continue mixed practice.");
+    }
+
+    return {
+      overallMedian,
+      issues: topIssues,
+      weakestOperation,
+      recommendations
+    };
+  }
+
+  function diagnosisHtml() {
+    const diagnosis = getSessionDiagnosis();
+
+    if (!diagnosis.issues.length) {
+      return `
+        <div style="padding:14px;background:#ecfdf5;border-left:4px solid #16a34a;border-radius:8px;">
+          <strong>No major weakness detected.</strong>
+          The student answered this session consistently without notable slow or incorrect responses.
+        </div>`;
+    }
+
+    const rows = diagnosis.issues.map(issue => `
+      <tr>
+        <td style="padding:9px;border-bottom:1px solid #e5e7eb;font-weight:600;">
+          ${escapeHtml(issue.question)} = ${escapeHtml(issue.answer)}
+        </td>
+        <td style="padding:9px;border-bottom:1px solid #e5e7eb;text-align:center;">
+          ${issue.wrongCount}
+        </td>
+        <td style="padding:9px;border-bottom:1px solid #e5e7eb;text-align:center;">
+          ${issue.time.toFixed(1)}s
+        </td>
+        <td style="padding:9px;border-bottom:1px solid #e5e7eb;">
+          ${
+            issue.wrongAnswers.length
+              ? escapeHtml(issue.wrongAnswers.join(", "))
+              : issue.slowRatio >= 2
+                ? `${issue.slowRatio.toFixed(1)}× slower than session median`
+                : "Slow response"
+          }
+        </td>
+      </tr>
+    `).join("");
+
+    return `
+      <div style="overflow-x:auto;border:1px solid #e5e7eb;border-radius:10px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead>
+            <tr style="background:#fff7ed;color:#9a3412;">
+              <th style="padding:9px;text-align:left;">Problem question</th>
+              <th style="padding:9px;text-align:center;">Wrong</th>
+              <th style="padding:9px;text-align:center;">Time</th>
+              <th style="padding:9px;text-align:left;">Observed issue</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+      <div style="margin-top:12px;padding:14px;background:#fff7ed;border-left:4px solid #f97316;border-radius:8px;">
+        <strong>Recommended practice:</strong>
+        ${escapeHtml(diagnosis.recommendations.join(" "))}
+      </div>`;
+  }
+
+  function buildAnalyticsPayload() {
+    const diagnosis = getSessionDiagnosis();
+    const sessionId = `${state.studentId}-${Date.now()}`;
+    const modeLabel = state.selectedMode === "mixed"
+      ? "Mixed random"
+      : labels[state.selectedMode];
+
+    return {
+      schemaVersion: 1,
+      sessionId,
+      studentId: state.studentId,
+      studentName: state.user,
+      completedAt: new Date().toISOString(),
+      quizType: modeLabel,
+      selectedMode: state.selectedMode,
+      questionCount: state.records.length,
+      totalTimeSeconds: Number(state.totalTime.toFixed(3)),
+      medianTimeSeconds: Number(diagnosis.overallMedian.toFixed(3)),
+      wrongAttempts: state.records.reduce(
+        (sum, record) => sum + record.wrongs.length,
+        0
+      ),
+      recommendations: diagnosis.recommendations,
+      responses: state.records.map((record, index) => ({
+        questionNumber: index + 1,
+        operation: record.operation,
+        operandA: Number(record.question.split(" ")[0]),
+        operandB: Number(record.question.split(" ")[2]),
+        question: record.question,
+        correctAnswer: record.answer,
+        responseTimeSeconds: Number(record.time.toFixed(3)),
+        firstTryCorrect: record.wrongs.length === 0,
+        attempts: record.wrongs.length + 1,
+        wrongCount: record.wrongs.length,
+        wrongAnswers: record.wrongs.map(item => item.answer)
+      }))
+    };
+  }
+
+  async function saveAnalytics() {
+    const status = $("analyticsStatus");
+
+    if (
+      !ANALYTICS_WEB_APP_URL ||
+      ANALYTICS_WEB_APP_URL.includes("PASTE_YOUR")
+    ) {
+      status.textContent =
+        "⚠️ Google Sheets analytics is not configured yet. Add the Apps Script Web App URL in index.html.";
+      status.className = "note error";
+      return;
+    }
+
+    status.textContent = "📊 Saving detailed results to Google Sheets...";
+    status.className = "note";
+
+    try {
+      await fetch(ANALYTICS_WEB_APP_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(buildAnalyticsPayload())
+      });
+
+      state.analyticsSaved = true;
+      status.textContent =
+        "✅ Results submitted to Google Sheets analytics.";
+      status.className = "note ok";
+    } catch (error) {
+      console.error("Analytics save error:", error);
+      status.textContent =
+        `❌ Could not submit analytics: ${error?.message || "Unknown error"}`;
+      status.className = "note error";
+    }
+  }
+
   function finishQuiz() {
     clearInterval(state.timerId);
     state.totalTime = (performance.now() - state.quizStart) / 1000;
@@ -359,6 +589,7 @@
 
     $("summary").innerHTML = `
       <div class="summary-grid">
+        <div><strong>Student ID:</strong> ${escapeHtml(state.studentId)}</div>
         <div><strong>Student:</strong> ${escapeHtml(state.user)}</div>
         <div><strong>Quiz type:</strong> ${modeLabel}</div>
         <div><strong>Date:</strong> ${new Date().toLocaleString()}</div>
@@ -389,8 +620,9 @@
     $("emailStatus").textContent = "📧 Preparing styled email report...";
     $("emailStatus").className = "note";
 
-    // Automatically send after all result data has been prepared.
+    // Send the session email and store detailed analytics.
     sendEmail();
+    saveAnalytics();
   }
 
   function buildEmailReport() {
@@ -488,11 +720,15 @@
               ${performanceMessage}
             </p>
 
+            <h2 style="margin:24px 0 10px;font-size:19px;">Learning diagnosis</h2>
+            ${diagnosisHtml()}
+
             <table role="presentation" style="width:100%;border-collapse:separate;border-spacing:8px;">
               <tr>
                 <td style="width:50%;padding:14px;background:#eff6ff;border-radius:10px;">
                   <div style="font-size:12px;color:#64748b;text-transform:uppercase;">Student</div>
                   <div style="margin-top:5px;font-size:17px;font-weight:700;">${escapeHtml(state.user)}</div>
+                  <div style="margin-top:3px;font-size:12px;color:#64748b;">ID: ${escapeHtml(state.studentId)}</div>
                 </td>
                 <td style="width:50%;padding:14px;background:#eff6ff;border-radius:10px;">
                   <div style="font-size:12px;color:#64748b;text-transform:uppercase;">Quiz type</div>
@@ -597,6 +833,7 @@
       to_email: "abuubaidahrj@gmail.com",
       recipient_email: "abuubaidahrj@gmail.com",
       email: "abuubaidahrj@gmail.com",
+      student_id: state.studentId,
       user: state.user,
       date: completedDate,
       quiz_type: modeLabel,
@@ -606,6 +843,7 @@
       wrong_attempts: wrongAttempts,
       operation_stats: statsText,
       report: slowestText,
+      diagnosis: getSessionDiagnosis().recommendations.join(" "),
       email_html: emailHtml
     };
   }
@@ -635,6 +873,7 @@
       status.className = "note ok";
     } catch(error) {
       state.emailSent = false;
+    state.analyticsSaved = false;
       const details =
         error?.text ||
         error?.message ||
