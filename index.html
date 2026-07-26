@@ -1,174 +1,464 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multiplication Quiz</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Math Master Quiz</title>
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      padding: 20px; 
-      max-width: 600px;
-      margin: auto;
+    :root { font-family: Arial, Helvetica, sans-serif; color:#1f2937; background:#f3f4f6; }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:18px; }
+    .app { width:min(780px,100%); margin:0 auto; background:#fff; border-radius:18px; padding:22px; box-shadow:0 10px 35px rgba(0,0,0,.08); }
+    h1,h2,h3 { margin-top:0; }
+    .subtitle { color:#6b7280; margin-top:-8px; }
+    .hidden { display:none !important; }
+    label { display:block; font-weight:700; margin:15px 0 6px; }
+    input,select,button { width:100%; font-size:18px; border-radius:10px; }
+    input,select { padding:12px; border:1px solid #cbd5e1; background:#fff; }
+    button { padding:13px 16px; border:0; margin-top:12px; cursor:pointer; font-weight:700; background:#2563eb; color:#fff; }
+    button:disabled { opacity:.65; cursor:not-allowed; }
+    button.secondary { background:#4b5563; }
+    button.success { background:#15803d; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .status { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color:#475569; margin-bottom:12px; }
+    .progress { height:12px; background:#e5e7eb; border-radius:999px; overflow:hidden; margin-bottom:20px; }
+    .progress>div { height:100%; width:0%; background:#2563eb; transition:width .25s; }
+    .question { text-align:center; font-size:clamp(40px,11vw,72px); font-weight:800; margin:32px 0 20px; }
+    #answer { text-align:center; font-size:32px; }
+    #feedback { min-height:26px; text-align:center; font-weight:700; margin-top:10px; }
+    .error { color:#b91c1c; }
+    .ok { color:#15803d; }
+    .summary-card { background:#f8fafc; border:1px solid #e2e8f0; padding:16px; border-radius:12px; margin-bottom:16px; }
+    .summary-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 16px; }
+    .table-wrap { overflow-x:auto; margin-top:10px; }
+    table { border-collapse:collapse; width:100%; min-width:640px; }
+    th,td { border:1px solid #d1d5db; padding:9px; text-align:left; font-size:14px; vertical-align:top; }
+    th { background:#f1f5f9; }
+    .note { font-size:14px; color:#64748b; margin-top:10px; line-height:1.45; }
+    .badge { display:inline-block; padding:4px 9px; border-radius:999px; background:#e0e7ff; color:#3730a3; font-size:13px; font-weight:700; }
+    @media (max-width:560px){
+      body{padding:0;background:#fff}
+      .app{border-radius:0;box-shadow:none;padding:18px}
+      .grid,.summary-grid{grid-template-columns:1fr}
     }
-    .hidden { display: none; }
-    .question { font-size: 24px; margin: 20px 0; }
-    input[type=text], input[type=number], select, button {
-      font-size: 18px; 
-      padding: 10px; 
-      margin: 8px 0; 
-      width: 100%;
-      box-sizing: border-box;
-    }
-    label { display: block; margin-top: 10px; }
-    table { border-collapse: collapse; margin-top: 20px; width: 100%; }
-    th, td { border: 1px solid #aaa; padding: 6px; text-align: left; font-size: 14px; }
-    button { background: #007BFF; color: white; border: none; border-radius: 8px; cursor: pointer; }
-    button:hover { background: #0056b3; }
   </style>
 </head>
 <body>
-  <div id="setup">
-    <h2>Multiplication Quiz</h2>
-    <label>Name: <input id="username" type="text" placeholder="Enter your name"></label>
-    <label>Select range:</label>
-    <select id="sifirRange" onchange="toggleCustomRange(this.value)">
-      <option value="2-2">Sifir 2</option>
-      <option value="2-3">Sifir 2–3</option>
-      <option value="2-4">Sifir 2–4</option>
-      <option value="2-5">Sifir 2–5</option>
-      <option value="2-6">Sifir 2–6</option>
-      <option value="2-7">Sifir 2–7</option>
-      <option value="2-8">Sifir 2–8</option>
-      <option value="2-9">Sifir 2–9</option>
-      <option value="2-10">Sifir 2–10</option>
-      <option value="2-11">Sifir 2–11</option>
-      <option value="1-12">All 1–12</option>
-      <option value="custom">Custom range…</option>
-    </select>
-    <div id="customRange" class="hidden">
-      <label>Start: <input type="number" id="customStart" min="1" max="12" value="2"></label>
-      <label>End: <input type="number" id="customEnd" min="1" max="12" value="5"></label>
+<main class="app">
+  <section id="setup">
+    <h1>Math Master</h1>
+    <p class="subtitle">Practice multiplication, division, addition, subtraction, or a random mixture.</p>
+
+    <label for="username">Student name</label>
+    <input id="username" type="text" placeholder="Enter student name" autocomplete="name" />
+
+    <div class="grid">
+      <div>
+        <label for="mode">Quiz type</label>
+        <select id="mode">
+          <option value="multiply">Multiplication — 1 to 12</option>
+          <option value="divide">Division — exact answers only</option>
+          <option value="add">Addition — 1 to 12</option>
+          <option value="subtract">Subtraction — no negative answers</option>
+          <option value="mixed">Mixed random</option>
+        </select>
+      </div>
+      <div>
+        <label for="questionCount">Number of questions</label>
+        <select id="questionCount">
+          <option value="10">10 unique questions</option>
+          <option value="20">20 unique questions</option>
+          <option value="50">50 unique questions</option>
+          <option value="all" selected>All questions</option>
+        </select>
+      </div>
     </div>
-    <button onclick="startQuiz()">Start Quiz</button>
-  </div>
 
-  <div id="quiz" class="hidden">
-    <h3 id="who"></h3>
-    <div class="question" id="question"></div>
-    <input id="answer" type="number" placeholder="Your answer">
-    <button onclick="submitAnswer()">Submit</button>
+    <p id="coverageNote" class="note"></p>
+    <p class="note">
+      Division is generated only when <strong>dividend % divisor = 0</strong>.
+      Therefore, every answer is a whole number with no remainder and no decimal.
+      For example, <strong>92 ÷ 23 = 4</strong> is valid.
+    </p>
+
+    <button id="startBtn" type="button">Start Quiz</button>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <div class="status">
+      <strong id="player"></strong>
+      <span id="counter"></span>
+      <span id="timer">00:00</span>
+    </div>
+    <div class="progress"><div id="progressBar"></div></div>
+    <div id="question" class="question"></div>
+    <input id="answer" type="number" inputmode="numeric" placeholder="Your answer" />
+    <button id="submitBtn" type="button">Submit Answer</button>
     <div id="feedback"></div>
-  </div>
+  </section>
 
-  <div id="report" class="hidden">
+  <section id="report" class="hidden">
     <h2>Quiz Report</h2>
-    <div id="summary"></div>
-    <h3>Details</h3>
-    <table id="details"><thead>
-      <tr><th>Question</th><th>Attempts</th><th>Wrong Answers (with time)</th><th>Final Time (s)</th></tr>
-    </thead><tbody></tbody></table>
-    <button id="mailto">📧 Send Report by Email</button>
-  </div>
+    <div id="summary" class="summary-card"></div>
 
-  <!-- EmailJS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-  <script>
-    // Initialize EmailJS with your public key
-    (function(){
-      emailjs.init("QsPisMt2TziUDjvSh"); // ✅ your public key
-    })();
+    <h3>Performance by operation</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Operation</th>
+            <th>Questions</th>
+            <th>Wrong attempts</th>
+            <th>Average time</th>
+          </tr>
+        </thead>
+        <tbody id="operationStats"></tbody>
+      </table>
+    </div>
 
-    let state = { user:"", questions:[], i:0, startAll:0, records:[], wrongLog:[] };
+    <h3 style="margin-top:22px;">Slowest questions</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Attempts</th>
+            <th>Wrong answers</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody id="details"></tbody>
+      </table>
+    </div>
 
-    function $(id){ return document.getElementById(id); }
-    function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-    function toggleCustomRange(val){ $('customRange').classList.toggle('hidden', val!=='custom'); }
+    <button id="emailBtn" class="success" type="button">Send Report by Email</button>
+    <button id="againBtn" class="secondary" type="button">Play Again</button>
+    <div id="emailStatus" class="note"></div>
+  </section>
+</main>
 
-    function startQuiz(){
-      state.user = $('username').value || "Anonymous";
-      let start,end;
-      if($('sifirRange').value==="custom"){
-        start = parseInt($('customStart').value);
-        end = parseInt($('customEnd').value);
-      } else {
-        [start,end] = $('sifirRange').value.split('-').map(Number);
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  const EMAILJS_PUBLIC_KEY = "QsPisMt2TziUDjvSh";
+  const EMAILJS_SERVICE_ID = "service_6hzvm17";
+  const EMAILJS_TEMPLATE_ID = "template_808wesj";
+
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  const $ = id => document.getElementById(id);
+  const labels = {
+    multiply: "Multiplication",
+    divide: "Division",
+    add: "Addition",
+    subtract: "Subtraction"
+  };
+
+  let state = {
+    user: "",
+    selectedMode: "multiply",
+    questions: [],
+    index: 0,
+    records: [],
+    quizStart: 0,
+    questionStart: 0,
+    wrongs: [],
+    timerId: null,
+    totalTime: 0
+  };
+
+  function shuffle(items) {
+    const array = [...items];
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function formatTime(seconds) {
+    const min = Math.floor(seconds / 60);
+    const sec = Math.floor(seconds % 60);
+    return `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+  }
+
+  function buildMultiplicationPool() {
+    const pool = [];
+    for (let a = 1; a <= 12; a++) {
+      for (let b = 1; b <= 12; b++) {
+        pool.push({ operation:"multiply", a, b, answer:a*b, symbol:"×" });
       }
-      if(isNaN(start)||isNaN(end)||start<1||end>12||start>end){ alert("Invalid range"); return; }
-      state.questions = [];
-      for(let n=start;n<=end;n++){
-        for(let m=1;m<=12;m++){
-          state.questions.push({a:n,b:m,answer:n*m});
+    }
+    return pool; // Exactly 144 combinations: 1×1 through 12×12.
+  }
+
+  function buildAdditionPool() {
+    const pool = [];
+    for (let a = 1; a <= 12; a++) {
+      for (let b = 1; b <= 12; b++) {
+        pool.push({ operation:"add", a, b, answer:a+b, symbol:"+" });
+      }
+    }
+    return pool; // 144 ordered combinations.
+  }
+
+  function buildSubtractionPool() {
+    const pool = [];
+    for (let a = 1; a <= 12; a++) {
+      for (let b = 1; b <= a; b++) {
+        pool.push({ operation:"subtract", a, b, answer:a-b, symbol:"−" });
+      }
+    }
+    return pool; // 78 combinations, never negative.
+  }
+
+  function buildDivisionPool() {
+    const pool = [];
+    for (let dividend = 1; dividend <= 100; dividend++) {
+      for (let divisor = 1; divisor <= dividend; divisor++) {
+        if (dividend % divisor === 0) {
+          pool.push({
+            operation:"divide",
+            a:dividend,
+            b:divisor,
+            answer:dividend/divisor,
+            symbol:"÷"
+          });
         }
       }
-      state.questions = shuffle(state.questions);
-      state.i=0; state.records=[]; state.wrongLog=[]; state.startAll=performance.now();
-      $('setup').classList.add('hidden'); $('quiz').classList.remove('hidden');
-      $('who').innerText="Player: "+state.user;
-      nextQ();
+    }
+    return pool; // Every question has zero remainder and an integer answer.
+  }
+
+  const pools = {
+    multiply: buildMultiplicationPool(),
+    divide: buildDivisionPool(),
+    add: buildAdditionPool(),
+    subtract: buildSubtractionPool()
+  };
+  pools.mixed = [
+    ...pools.multiply,
+    ...pools.divide,
+    ...pools.add,
+    ...pools.subtract
+  ];
+
+  function updateCoverageNote() {
+    const mode = $("mode").value;
+    const total = pools[mode].length;
+    const descriptions = {
+      multiply: `All mode covers all <strong>144</strong> combinations from 1×1 through 12×12.`,
+      divide: `All mode covers <strong>${total}</strong> valid exact-division combinations between 1 and 100.`,
+      add: `All mode covers all <strong>144</strong> ordered addition combinations from 1 to 12.`,
+      subtract: `All mode covers all <strong>78</strong> subtraction combinations with no negative answers.`,
+      mixed: `All mode combines <strong>${total}</strong> unique questions from all four operations.`
+    };
+    $("coverageNote").innerHTML = `<span class="badge">${total} available questions</span><br>${descriptions[mode]}`;
+  }
+
+  function chooseQuestions(mode, requested) {
+    const shuffled = shuffle(pools[mode]);
+    if (requested === "all") return shuffled;
+    const count = Math.min(Number(requested), shuffled.length);
+    return shuffled.slice(0, count);
+  }
+
+  function startQuiz() {
+    state.user = $("username").value.trim() || "Anonymous";
+    state.selectedMode = $("mode").value;
+    state.questions = chooseQuestions(state.selectedMode, $("questionCount").value);
+    state.index = 0;
+    state.records = [];
+    state.quizStart = performance.now();
+
+    $("setup").classList.add("hidden");
+    $("report").classList.add("hidden");
+    $("quiz").classList.remove("hidden");
+    $("player").textContent = state.user;
+
+    clearInterval(state.timerId);
+    state.timerId = setInterval(() => {
+      $("timer").textContent = formatTime((performance.now() - state.quizStart) / 1000);
+    }, 250);
+
+    showQuestion();
+  }
+
+  function showQuestion() {
+    if (state.index >= state.questions.length) {
+      finishQuiz();
+      return;
     }
 
-    function nextQ(){
-      if(state.i>=state.questions.length){ finish(); return; }
-      state.cur=state.questions[state.i];
-      state.curStart=performance.now();
-      state.curWrongs=[];
-      $('question').innerText=`${state.cur.a} x ${state.cur.b} = ?`;
-      $('answer').value=""; $('feedback').innerText="";
+    const q = state.questions[state.index];
+    state.questionStart = performance.now();
+    state.wrongs = [];
+
+    $("counter").textContent = `Question ${state.index + 1} of ${state.questions.length}`;
+    $("progressBar").style.width = `${(state.index / state.questions.length) * 100}%`;
+    $("question").textContent = `${q.a} ${q.symbol} ${q.b} = ?`;
+    $("answer").value = "";
+    $("feedback").textContent = "";
+    $("feedback").className = "";
+    $("answer").focus();
+  }
+
+  function submitAnswer() {
+    const raw = $("answer").value.trim();
+    if (raw === "") {
+      $("feedback").textContent = "Please enter an answer.";
+      $("feedback").className = "error";
+      return;
     }
 
-    function submitAnswer(){
-      let val = parseInt($('answer').value);
-      if(val===state.cur.answer){
-        let time=(performance.now()-state.curStart)/1000;
-        state.records.push({q:`${state.cur.a}x${state.cur.b}`, time, wrongs:state.curWrongs.slice()});
-        state.i++; nextQ();
-      } else {
-        let elapsed=(performance.now()-state.curStart)/1000;
-        state.curWrongs.push({attempt:val, time:elapsed});
-        $('feedback').innerText = "Incorrect, try again!";
-        $('answer').focus();
-      }
+    const value = Number(raw);
+    const q = state.questions[state.index];
+    const elapsed = (performance.now() - state.questionStart) / 1000;
+
+    if (value === q.answer) {
+      state.records.push({
+        operation:q.operation,
+        question:`${q.a} ${q.symbol} ${q.b}`,
+        answer:q.answer,
+        time:elapsed,
+        wrongs:[...state.wrongs]
+      });
+      state.index++;
+      showQuestion();
+    } else {
+      state.wrongs.push({ answer:value, time:elapsed });
+      $("feedback").textContent = "Incorrect — try again.";
+      $("feedback").className = "error";
+      $("answer").select();
     }
+  }
 
-    function finish(){
-      $('quiz').classList.add('hidden');
-      $('report').classList.remove('hidden');
-      let totalTime=(performance.now()-state.startAll)/1000;
-      let avg= totalTime/state.records.length;
-      $('summary').innerHTML=`<p><b>User:</b> ${state.user}</p>
-        <p><b>Date:</b> ${new Date().toLocaleString()}</p>
-        <p><b>Total time:</b> ${totalTime.toFixed(1)}s</p>
-        <p><b>Average per question:</b> ${avg.toFixed(2)}s</p>`;
+  function getOperationStats() {
+    return ["multiply","divide","add","subtract"].map(operation => {
+      const rows = state.records.filter(r => r.operation === operation);
+      const wrongAttempts = rows.reduce((sum,r) => sum + r.wrongs.length, 0);
+      const avgTime = rows.length ? rows.reduce((sum,r) => sum + r.time, 0) / rows.length : 0;
+      return { operation, count:rows.length, wrongAttempts, avgTime };
+    });
+  }
 
-      let tbody=$('details').querySelector('tbody');
-      tbody.innerHTML="";
-      let sorted=[...state.records].sort((a,b)=>b.time-a.time).slice(0,30);
-      for(let rec of sorted){
-        let tr=document.createElement('tr');
-        let wrongs=rec.wrongs.map(w=>`${w.attempt} @${w.time.toFixed(1)}s`).join(", ");
-        tr.innerHTML=`<td>${rec.q}</td><td>${rec.wrongs.length+1}</td><td>${wrongs||"-"}</td><td>${rec.time.toFixed(1)}</td>`;
-        tbody.appendChild(tr);
-      }
+  function finishQuiz() {
+    clearInterval(state.timerId);
+    state.totalTime = (performance.now() - state.quizStart) / 1000;
+    $("quiz").classList.add("hidden");
+    $("report").classList.remove("hidden");
 
-      // ✅ EmailJS integration with your Service + Template
-      document.getElementById("mailto").onclick = function(){
-        emailjs.send("service_6hzvm17", "template_808wesj", {
-          user: state.user,
-          date: new Date().toLocaleString(),
-          total_time: totalTime.toFixed(1),
-          avg_time: avg.toFixed(2),
-          report: sorted.map(rec =>
-            `${rec.q} | time: ${rec.time.toFixed(1)}s | wrongs: ${(rec.wrongs.map(w=>w.attempt)).join(",") || "0"}`
-          ).join("\n")
-        })
-        .then(function(){
-          alert("✅ Report sent successfully!");
-        }, function(error){
-          alert("❌ Failed to send: " + JSON.stringify(error));
-        });
-      }
+    const wrongAttempts = state.records.reduce((sum,r) => sum + r.wrongs.length, 0);
+    const avg = state.records.length ? state.totalTime / state.records.length : 0;
+    const modeLabel = state.selectedMode === "mixed" ? "Mixed random" : labels[state.selectedMode];
+
+    $("summary").innerHTML = `
+      <div class="summary-grid">
+        <div><strong>Student:</strong> ${escapeHtml(state.user)}</div>
+        <div><strong>Quiz type:</strong> ${modeLabel}</div>
+        <div><strong>Date:</strong> ${new Date().toLocaleString()}</div>
+        <div><strong>Questions:</strong> ${state.records.length}</div>
+        <div><strong>Total time:</strong> ${formatTime(state.totalTime)}</div>
+        <div><strong>Average:</strong> ${avg.toFixed(2)} seconds</div>
+        <div><strong>Wrong attempts:</strong> ${wrongAttempts}</div>
+        <div><strong>Completed:</strong> ${state.records.length}/${state.questions.length}</div>
+      </div>`;
+
+    $("operationStats").innerHTML = getOperationStats()
+      .filter(s => s.count > 0)
+      .map(s => `<tr>
+        <td>${labels[s.operation]}</td>
+        <td>${s.count}</td>
+        <td>${s.wrongAttempts}</td>
+        <td>${s.avgTime.toFixed(2)}s</td>
+      </tr>`).join("");
+
+    const slowest = [...state.records].sort((a,b) => b.time-a.time).slice(0,30);
+    $("details").innerHTML = slowest.map(r => `<tr>
+      <td>${r.question}</td>
+      <td>${r.wrongs.length+1}</td>
+      <td>${r.wrongs.length ? r.wrongs.map(w => `${w.answer} @ ${w.time.toFixed(1)}s`).join(", ") : "-"}</td>
+      <td>${r.time.toFixed(1)}s</td>
+    </tr>`).join("");
+
+    $("emailStatus").textContent = "";
+  }
+
+  function buildEmailReport() {
+    const modeLabel = state.selectedMode === "mixed" ? "Mixed random" : labels[state.selectedMode];
+    const wrongAttempts = state.records.reduce((sum,r) => sum + r.wrongs.length, 0);
+    const avg = state.records.length ? state.totalTime / state.records.length : 0;
+
+    const statsText = getOperationStats()
+      .filter(s => s.count > 0)
+      .map(s => `${labels[s.operation]}: ${s.count} questions | ${s.wrongAttempts} wrong attempts | ${s.avgTime.toFixed(2)}s average`)
+      .join("\n");
+
+    const slowestText = [...state.records]
+      .sort((a,b) => b.time-a.time)
+      .slice(0,30)
+      .map(r => `${r.question} = ${r.answer} | ${r.time.toFixed(1)}s | wrong answers: ${r.wrongs.length ? r.wrongs.map(w => w.answer).join(", ") : "none"}`)
+      .join("\n");
+
+    return {
+      user:state.user,
+      date:new Date().toLocaleString(),
+      quiz_type:modeLabel,
+      question_count:state.records.length,
+      total_time:formatTime(state.totalTime),
+      avg_time:avg.toFixed(2),
+      wrong_attempts:wrongAttempts,
+      operation_stats:statsText,
+      report:slowestText
+    };
+  }
+
+  async function sendEmail() {
+    const button = $("emailBtn");
+    const status = $("emailStatus");
+    button.disabled = true;
+    button.textContent = "Sending report...";
+    status.textContent = "";
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, buildEmailReport());
+      status.textContent = "✅ Report sent successfully.";
+      status.className = "note ok";
+    } catch(error) {
+      console.error(error);
+      status.textContent = `❌ Email failed: ${error?.text || error?.message || "Unknown error"}`;
+      status.className = "note error";
+    } finally {
+      button.disabled = false;
+      button.textContent = "Send Report by Email";
     }
-  </script>
+  }
+
+  function resetQuiz() {
+    clearInterval(state.timerId);
+    $("report").classList.add("hidden");
+    $("quiz").classList.add("hidden");
+    $("setup").classList.remove("hidden");
+    $("answer").value = "";
+    updateCoverageNote();
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
+    })[char]);
+  }
+
+  $("mode").addEventListener("change", updateCoverageNote);
+  $("startBtn").addEventListener("click", startQuiz);
+  $("submitBtn").addEventListener("click", submitAnswer);
+  $("emailBtn").addEventListener("click", sendEmail);
+  $("againBtn").addEventListener("click", resetQuiz);
+  $("answer").addEventListener("keydown", event => {
+    if (event.key === "Enter") submitAnswer();
+  });
+
+  updateCoverageNote();
+</script>
 </body>
 </html>
