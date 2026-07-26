@@ -49,7 +49,7 @@
   <section id="setup">
     <h1>Math Master</h1>
     <p class="subtitle">Practice multiplication, division, addition, subtraction, or a random mixture.</p>
-    <p class="note"><strong>Version:</strong> v5 — Targeted Practice</p>
+    <p class="note"><strong>Version:</strong> v5.2 — Analytics URL Embedded</p>
 
     <div class="grid">
       <div>
@@ -100,9 +100,11 @@
       <span id="counter"></span>
       <span id="timer">00:00</span>
     </div>
+    <div id="practiceModeLabel" class="note"></div>
     <div class="progress"><div id="progressBar"></div></div>
     <div id="question" class="question"></div>
-    <input id="answer" type="number" inputmode="numeric" placeholder="Your answer" />
+    <input id="answer" type="number" inputmode="numeric"
+      placeholder="Your answer" autocomplete="off" />
     <button id="submitBtn" type="button">Submit Answer</button>
     <div id="feedback"></div>
   </section>
@@ -329,11 +331,24 @@
     }
 
     const q = state.questions[state.index];
+
+    if (!q) {
+      console.error("Question data is missing.", {
+        index: state.index,
+        questions: state.questions
+      });
+      $("question").textContent = "Unable to load the question. Please start again.";
+      $("feedback").textContent = "Question data error.";
+      $("feedback").className = "error";
+      return;
+    }
+
     state.questionStart = performance.now();
     state.wrongs = [];
 
     $("counter").textContent = `Question ${state.index + 1} of ${state.questions.length}`;
-    $("progressBar").style.width = `${(state.index / state.questions.length) * 100}%`;
+    $("progressBar").style.width =
+      `${((state.index + 1) / state.questions.length) * 100}%`;
     $("question").textContent = `${q.a} ${q.symbol} ${q.b} = ?`;
     $("answer").value = "";
     $("feedback").textContent = "";
