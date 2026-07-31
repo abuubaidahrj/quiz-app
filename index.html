@@ -49,7 +49,7 @@
   <section id="setup">
     <h1>Math Master</h1>
     <p class="subtitle">Practice multiplication, division, addition, subtraction, or a random mixture.</p>
-    <p class="note"><strong>Version:</strong> v5.2 — Analytics URL Embedded</p>
+    <p class="note"><strong>Version:</strong> v5.3 — Smarter Practice Notifications</p>
 
     <div class="grid">
       <div>
@@ -677,6 +677,7 @@
       studentName: state.user,
       completedAt: new Date().toISOString(),
       quizType: modeLabel,
+      sessionType: state.practiceMode ? "Targeted Practice" : "Assessment",
       selectedMode: state.selectedMode,
       practiceMode: state.practiceMode,
       practiceRound: state.practiceRound,
@@ -762,13 +763,20 @@
         <div><strong>Student ID:</strong> ${escapeHtml(state.studentId)}</div>
         <div><strong>Student:</strong> ${escapeHtml(state.user)}</div>
         <div><strong>Quiz type:</strong> ${modeLabel}</div>
+        <div><strong>Session type:</strong> ${state.practiceMode ? "Targeted Practice" : "Assessment"}</div>
         <div><strong>Date:</strong> ${new Date().toLocaleString()}</div>
         <div><strong>Questions:</strong> ${state.records.length}</div>
         <div><strong>Total time:</strong> ${formatTime(state.totalTime)}</div>
         <div><strong>Average:</strong> ${avg.toFixed(2)} seconds</div>
         <div><strong>Wrong attempts:</strong> ${wrongAttempts}</div>
         <div><strong>Completed:</strong> ${state.records.length}/${state.questions.length}</div>
-      </div>`;
+      </div>
+      ${state.practiceMode ? `
+        <div class="note ok" style="margin-top:14px;">
+          🎉 <strong>Targeted Practice completed!</strong><br>
+          Your progress has been saved to the learning history. No email was sent for this practice session.
+          Keep practising until these questions feel easy. 💪
+        </div>` : ""}`;
 
     $("operationStats").innerHTML = getOperationStats()
       .filter(s => s.count > 0)
@@ -801,12 +809,20 @@
       $("targetedPracticeBtn").classList.add("hidden");
     }
 
-    $("emailStatus").textContent = "📧 Preparing styled email report...";
-    $("emailStatus").className = "note";
-
-    // Send the session email and store detailed analytics.
-    sendEmail();
+    // Every session is saved to Google Sheets.
     saveAnalytics();
+
+    // Targeted Practice is learning activity, not an assessment email.
+    if (state.practiceMode) {
+      $("emailStatus").textContent =
+        "🎯 Targeted Practice saved. No email was sent for this practice session.";
+      $("emailStatus").className = "note ok";
+      $("retryEmailBtn").classList.add("hidden");
+    } else {
+      $("emailStatus").textContent = "📧 Preparing styled email report...";
+      $("emailStatus").className = "note";
+      sendEmail();
+    }
   }
 
   function buildEmailReport() {
@@ -1037,6 +1053,15 @@
   async function sendEmail(forceRetry = false) {
     const status = $("emailStatus");
     const retryButton = $("retryEmailBtn");
+
+    // Targeted Practice must never generate an email.
+    if (state.practiceMode) {
+      retryButton.classList.add("hidden");
+      status.textContent =
+        "🎯 Targeted Practice saved. No email was sent for this practice session.";
+      status.className = "note ok";
+      return;
+    }
 
     // Prevent duplicate automatic emails.
     if (!forceRetry && (state.emailSending || state.emailSent)) return;
