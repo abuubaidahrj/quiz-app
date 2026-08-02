@@ -58,7 +58,7 @@
   <section id="setup">
     <h1>Math Master</h1>
     <p class="subtitle">Practice multiplication, division, addition, subtraction, or a random mixture.</p>
-    <p class="note"><strong>Version:</strong> v6.0 — XP, Streaks & Achievements</p>
+    <p class="note"><strong>Version:</strong> v6.1 — Cloud Progress Sync</p>
 
     <div class="grid">
       <div>
@@ -111,6 +111,7 @@
       <div class="xp-track"><div id="profileXpBar"></div></div>
       <div id="profileNextLevel" class="note"></div>
       <div id="profileAchievements" class="achievement-list"></div>
+      <div id="profileSyncStatus" class="note">Progress is cached on this device.</div>
     </div>
 
     <button id="startBtn" type="button">Start Quiz</button>
@@ -428,10 +429,10 @@
 
   function achievementById(id) { return ACHIEVEMENTS.find(item=>item.id===id); }
 
-  function renderStudentProfile(studentId, studentName="") {
+  function renderStudentProfile(studentId, studentName="", profileOverride=null) {
     const panel = $("studentProfilePanel");
     if (!studentId) { panel.classList.add("hidden"); return; }
-    const profile = loadStudentProfile(studentId, studentName);
+    const profile = profileOverride || loadStudentProfile(studentId, studentName);
     if (!profile) { panel.classList.add("hidden"); return; }
     const progress = xpProgress(profile);
     $("profileLevel").textContent = progress.level;
@@ -452,6 +453,143 @@
     const achievements = award.newlyUnlocked.length ? `<div style="margin-top:12px;"><strong>New achievement${award.newlyUnlocked.length>1?"s":""}:</strong><div class="achievement-list">${award.newlyUnlocked.map(item=>`<span class="achievement">${item.icon} ${escapeHtml(item.name)}</span>`).join("")}</div></div>` : "";
     const levelUp = award.levelUp ? `<p><strong>🚀 Level up!</strong> You reached Level ${award.newLevel}.</p>` : "";
     return `<div class="reward-banner"><strong>🏆 Progress earned</strong><p style="margin:7px 0;"><strong>+${award.xp.totalXp} XP</strong> from this session.</p>${levelUp}<p style="margin:7px 0;">Current level: <strong>${award.newLevel}</strong> · Total XP: <strong>${award.profile.totalXp}</strong> · Streak: <strong>${award.profile.streakDays} day${award.profile.streakDays===1?"":"s"} 🔥</strong></p><div class="note">${award.xp.reasons.map(reason=>`• ${escapeHtml(reason)}`).join("<br>")}</div>${achievements}</div>`;
+  }
+
+
+  let profileSyncTimer = null;
+  let jsonpCounter = 0;
+
+  function cloudApiConfigured() {
+    return Boolean(
+      ANALYTICS_WEB_APP_URL &&
+      !ANALYTICS_WEB_APP_URL.includes("PASTE_YOUR")
+    );
+  }
+
+  function jsonpRequest(parameters, timeoutMs = 12000) {
+    return new Promise((resolve, reject) => {
+      if (!cloudApiConfigured()) {
+        reject(new Error("Cloud analytics URL is not configured."));
+        return;
+      }
+
+      const callbackName =
+        `mathMasterCloudCallback_${Date.now()}_${jsonpCounter++}`;
+      const script = document.createElement("script");
+      let timeoutId;
+
+      const cleanup = () => {
+        clearTimeout(timeoutId);
+        if (script.parentNode) script.parentNode.removeChild(script);
+        try { delete window[callbackName]; } catch (_) {
+          window[callbackName] = undefined;
+        }
+      };
+
+      window[callbackName] = data => {
+        cleanup();
+        resolve(data);
+      };
+
+      script.onerror = () => {
+        cleanup();
+        reject(new Error("Unable to contact Google Apps Script."));
+      };
+
+      const query = new URLSearchParams({
+        ...parameters,
+        callback: callbackName,
+        cacheBust: String(Date.now())
+      });
+
+      script.src = `${ANALYTICS_WEB_APP_URL}?${query.toString()}`;
+      document.body.appendChild(script);
+
+      timeoutId = setTimeout(() => {
+        cleanup();
+        reject(new Error("Cloud profile request timed out."));
+      }, timeoutMs);
+    });
+  }
+
+  function normalizeCloudProfile(profile, fallbackName="") {
+    return {
+      ...defaultStudentProfile(
+        String(profile.studentId || "").toUpperCase(),
+        profile.studentName || fallbackName
+      ),
+      ...profile,
+      studentId: String(profile.studentId || "").toUpperCase(),
+      studentName: profile.studentName || fallbackName,
+      totalXp: Number(profile.totalXp || 0),
+      totalQuestions: Number(profile.totalQuestions || 0),
+      totalCorrectFirstTry: Number(profile.totalCorrectFirstTry || 0),
+      totalWrongAttempts: Number(profile.totalWrongAttempts || 0),
+      completedAssessments: Number(profile.completedAssessments || 0),
+      completedPracticeSets: Number(profile.completedPracticeSets || 0),
+      perfectAssessments: Number(profile.perfectAssessments || 0),
+      streakDays: Number(profile.streakDays || 0),
+      longestStreak: Number(profile.longestStreak || 0),
+      achievements: Array.isArray(profile.achievements)
+        ? profile.achievements
+        : []
+    };
+  }
+
+  async function loadCloudProfile(studentId, studentName="", quiet=false) {
+    const id = String(studentId || "").trim().toUpperCase();
+    const status = $("profileSyncStatus");
+
+    if (!id || !cloudApiConfigured()) return null;
+
+    if (!quiet) {
+      status.textContent = "☁️ Syncing progress from Google Sheets...";
+      status.className = "note";
+    }
+
+    try {
+      const response = await jsonpRequest({
+        action: "getProfile",
+        studentId: id
+      });
+
+      if (!response || response.ok !== true) {
+        throw new Error(response?.error || "Cloud profile request failed.");
+      }
+
+      if (!response.found || !response.profile) {
+        status.textContent =
+          "☁️ No cloud profile yet. It will be created after the first saved session.";
+        status.className = "note";
+        return null;
+      }
+
+      const profile = normalizeCloudProfile(response.profile, studentName);
+      saveStudentProfile(profile);
+      renderStudentProfile(id, studentName, profile);
+
+      status.textContent =
+        `☁️ Cloud synced · Last updated ${new Date().toLocaleTimeString()}`;
+      status.className = "note ok";
+      return profile;
+    } catch (error) {
+      console.error("Cloud profile sync error:", error);
+      status.textContent =
+        "⚠️ Using progress saved on this device. Cloud sync could not be verified.";
+      status.className = "note error";
+      return null;
+    }
+  }
+
+  function scheduleCloudProfileLoad() {
+    clearTimeout(profileSyncTimer);
+    profileSyncTimer = setTimeout(() => {
+      const studentId = $("studentId").value.trim().toUpperCase();
+      const studentName = $("username").value.trim();
+      if (studentId.length >= 3) {
+        loadCloudProfile(studentId, studentName);
+      }
+    }, 700);
   }
 
   function refreshProfileFromInputs() {
@@ -859,7 +997,7 @@
         : labels[state.selectedMode];
 
     return {
-      schemaVersion: 1,
+      schemaVersion: 2,
       sessionId,
       studentId: state.studentId,
       studentName: state.user,
@@ -929,8 +1067,24 @@
 
       state.analyticsSaved = true;
       status.textContent =
-        "✅ Results submitted to Google Sheets analytics.";
+        "✅ Results submitted. Verifying cloud progress...";
       status.className = "note ok";
+
+      setTimeout(async () => {
+        const profile = await loadCloudProfile(
+          state.studentId,
+          state.user,
+          true
+        );
+
+        if (profile) {
+          status.textContent =
+            "✅ Results saved and student progress synced from Google Sheets.";
+        } else {
+          status.textContent =
+            "✅ Results submitted. Cloud profile will refresh on the next screen.";
+        }
+      }, 1500);
     } catch (error) {
       console.error("Analytics save error:", error);
       status.textContent =
@@ -1316,7 +1470,11 @@
     })[char]);
   }
 
-  $("studentId").addEventListener("input", refreshProfileFromInputs);
+  $("studentId").addEventListener("input", () => {
+    refreshProfileFromInputs();
+    scheduleCloudProfileLoad();
+  });
+  $("studentId").addEventListener("change", scheduleCloudProfileLoad);
   $("username").addEventListener("input", refreshProfileFromInputs);
   $("mode").addEventListener("change", updateCoverageNote);
   $("startBtn").addEventListener("click", startQuiz);
