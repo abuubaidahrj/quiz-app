@@ -37,10 +37,19 @@
     th { background:#f1f5f9; }
     .note { font-size:14px; color:#64748b; margin-top:10px; line-height:1.45; }
     .badge { display:inline-block; padding:4px 9px; border-radius:999px; background:#e0e7ff; color:#3730a3; font-size:13px; font-weight:700; }
+    .profile-panel { margin:16px 0; padding:16px; border:1px solid #dbeafe; border-radius:14px; background:#eff6ff; }
+    .profile-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:10px; }
+    .profile-stat { background:#fff; border-radius:10px; padding:11px; text-align:center; }
+    .profile-stat strong { display:block; font-size:20px; margin-top:3px; }
+    .xp-track { height:12px; margin-top:10px; overflow:hidden; border-radius:999px; background:#dbeafe; }
+    .xp-track > div { height:100%; width:0; background:#2563eb; transition:width .3s; }
+    .achievement-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .achievement { padding:8px 10px; border-radius:10px; background:#fef3c7; border:1px solid #f59e0b; font-size:13px; font-weight:700; }
+    .reward-banner { margin:15px 0; padding:16px; border-radius:12px; background:#ecfdf5; border-left:5px solid #16a34a; line-height:1.5; }
     @media (max-width:560px){
       body{padding:0;background:#fff}
       .app{border-radius:0;box-shadow:none;padding:18px}
-      .grid,.summary-grid{grid-template-columns:1fr}
+      .grid,.summary-grid,.profile-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -49,7 +58,7 @@
   <section id="setup">
     <h1>Math Master</h1>
     <p class="subtitle">Practice multiplication, division, addition, subtraction, or a random mixture.</p>
-    <p class="note"><strong>Version:</strong> v5.3 — Smarter Practice Notifications</p>
+    <p class="note"><strong>Version:</strong> v6.0 — XP, Streaks & Achievements</p>
 
     <div class="grid">
       <div>
@@ -90,6 +99,19 @@
       Therefore, every answer is a whole number with no remainder and no decimal.
       For example, <strong>92 ÷ 23 = 4</strong> is valid.
     </p>
+
+    <div id="studentProfilePanel" class="profile-panel hidden">
+      <strong>🏆 Student Progress</strong>
+      <div class="profile-grid">
+        <div class="profile-stat">Level<strong id="profileLevel">1</strong></div>
+        <div class="profile-stat">Total XP<strong id="profileXp">0</strong></div>
+        <div class="profile-stat">Daily streak<strong id="profileStreak">0 🔥</strong></div>
+        <div class="profile-stat">Questions<strong id="profileQuestions">0</strong></div>
+      </div>
+      <div class="xp-track"><div id="profileXpBar"></div></div>
+      <div id="profileNextLevel" class="note"></div>
+      <div id="profileAchievements" class="achievement-list"></div>
+    </div>
 
     <button id="startBtn" type="button">Start Quiz</button>
   </section>
@@ -142,6 +164,8 @@
         <tbody id="details"></tbody>
       </table>
     </div>
+    <div id="motivationResult"></div>
+
     <h3 style="margin-top:22px;">Learning diagnosis</h3>
     <div id="screenDiagnosis" class="note"></div>
 
@@ -192,7 +216,8 @@
     practiceMode: false,
     practiceRound: 0,
     sourceDiagnosis: [],
-    parentSessionLabel: ""
+    parentSessionLabel: "",
+    motivationAward: null
   };
 
   function shuffle(items) {
@@ -271,6 +296,168 @@
     ...pools.subtract
   ];
 
+
+  const MOTIVATION_STORAGE_PREFIX = "mathMasterProfile:";
+
+  function defaultStudentProfile(studentId, studentName) {
+    return {
+      studentId, studentName, totalXp: 0, totalQuestions: 0,
+      totalCorrectFirstTry: 0, totalWrongAttempts: 0,
+      completedAssessments: 0, completedPracticeSets: 0,
+      perfectAssessments: 0, streakDays: 0, longestStreak: 0,
+      lastActiveDate: "", achievements: [], recentAwards: []
+    };
+  }
+
+  function profileStorageKey(studentId) {
+    return MOTIVATION_STORAGE_PREFIX + String(studentId || "").toUpperCase();
+  }
+
+  function loadStudentProfile(studentId, studentName = "") {
+    if (!studentId) return null;
+    try {
+      const raw = localStorage.getItem(profileStorageKey(studentId));
+      const profile = raw
+        ? { ...defaultStudentProfile(studentId, studentName), ...JSON.parse(raw) }
+        : defaultStudentProfile(studentId, studentName);
+      if (studentName) profile.studentName = studentName;
+      return profile;
+    } catch (error) {
+      console.error("Unable to load student profile:", error);
+      return defaultStudentProfile(studentId, studentName);
+    }
+  }
+
+  function saveStudentProfile(profile) {
+    try { localStorage.setItem(profileStorageKey(profile.studentId), JSON.stringify(profile)); }
+    catch (error) { console.error("Unable to save student profile:", error); }
+  }
+
+  function localDateKey(date = new Date()) {
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`;
+  }
+
+  function dayDifference(fromDateKey, toDateKey) {
+    if (!fromDateKey || !toDateKey) return null;
+    return Math.round((new Date(`${toDateKey}T00:00:00`) - new Date(`${fromDateKey}T00:00:00`)) / 86400000);
+  }
+
+  function levelFromXp(totalXp) { return Math.floor(Math.sqrt(Math.max(0, totalXp) / 100)) + 1; }
+  function xpRequiredForLevel(level) { return Math.pow(Math.max(0, level - 1), 2) * 100; }
+
+  function xpProgress(profile) {
+    const level = levelFromXp(profile.totalXp);
+    const currentFloor = xpRequiredForLevel(level);
+    const nextFloor = xpRequiredForLevel(level + 1);
+    const earnedInLevel = profile.totalXp - currentFloor;
+    const requiredInLevel = Math.max(1, nextFloor - currentFloor);
+    return { level, currentFloor, nextFloor, earnedInLevel, requiredInLevel,
+      percent: Math.min(100, (earnedInLevel / requiredInLevel) * 100) };
+  }
+
+  const ACHIEVEMENTS = [
+    { id:"first_quiz", icon:"⭐", name:"First Quiz", test:p=>p.completedAssessments>=1 },
+    { id:"hundred_questions", icon:"💯", name:"100 Questions", test:p=>p.totalQuestions>=100 },
+    { id:"five_hundred_questions", icon:"📚", name:"500 Questions", test:p=>p.totalQuestions>=500 },
+    { id:"perfect_assessment", icon:"🏆", name:"Perfect Assessment", test:p=>p.perfectAssessments>=1 },
+    { id:"practice_champion", icon:"🎯", name:"Practice Champion", test:p=>p.completedPracticeSets>=5 },
+    { id:"three_day_streak", icon:"🔥", name:"3-Day Streak", test:p=>p.streakDays>=3 },
+    { id:"seven_day_streak", icon:"🔥", name:"7-Day Streak", test:p=>p.streakDays>=7 },
+    { id:"level_five", icon:"🚀", name:"Level 5", test:p=>levelFromXp(p.totalXp)>=5 }
+  ];
+
+  function calculateSessionXp() {
+    const questionXp = state.records.length * 10;
+    const fastCorrect = state.records.filter(r => r.wrongs.length===0 && r.time<5).length;
+    const speedXp = fastCorrect * 5;
+    const wrongAttempts = state.records.reduce((sum,r)=>sum+r.wrongs.length,0);
+    const firstTryCorrect = state.records.filter(r=>r.wrongs.length===0).length;
+    const firstTryAccuracy = state.records.length ? firstTryCorrect/state.records.length : 0;
+    let bonusXp = 0;
+    const reasons = [`${state.records.length} completed questions: +${questionXp} XP`];
+    if (speedXp>0) reasons.push(`${fastCorrect} fast first-try answers: +${speedXp} XP`);
+    if (!state.practiceMode && wrongAttempts===0 && state.records.length>0) {
+      bonusXp += 50; reasons.push("Perfect assessment: +50 XP");
+    } else if (!state.practiceMode && firstTryAccuracy>=0.9) {
+      bonusXp += 25; reasons.push("At least 90% first-try accuracy: +25 XP");
+    }
+    if (state.practiceMode) { bonusXp += 30; reasons.push("Targeted Practice completed: +30 XP"); }
+    return { questionXp, speedXp, bonusXp, totalXp:questionXp+speedXp+bonusXp,
+      firstTryCorrect, firstTryAccuracy, wrongAttempts, reasons };
+  }
+
+  function updateStreak(profile) {
+    const today = localDateKey();
+    const difference = dayDifference(profile.lastActiveDate, today);
+    if (!profile.lastActiveDate) profile.streakDays = 1;
+    else if (difference === 1) profile.streakDays += 1;
+    else if (difference > 1) profile.streakDays = 1;
+    profile.longestStreak = Math.max(profile.longestStreak || 0, profile.streakDays || 0);
+    profile.lastActiveDate = today;
+  }
+
+  function unlockAchievements(profile) {
+    const existing = new Set(profile.achievements || []), newlyUnlocked = [];
+    ACHIEVEMENTS.forEach(a => { if (!existing.has(a.id) && a.test(profile)) { existing.add(a.id); newlyUnlocked.push(a); } });
+    profile.achievements = [...existing];
+    return newlyUnlocked;
+  }
+
+  function awardSessionMotivation() {
+    const profile = loadStudentProfile(state.studentId, state.user);
+    if (!profile) return null;
+    const oldLevel = levelFromXp(profile.totalXp);
+    const xp = calculateSessionXp();
+    updateStreak(profile);
+    profile.totalXp += xp.totalXp;
+    profile.totalQuestions += state.records.length;
+    profile.totalCorrectFirstTry += xp.firstTryCorrect;
+    profile.totalWrongAttempts += xp.wrongAttempts;
+    if (state.practiceMode) profile.completedPracticeSets += 1;
+    else {
+      profile.completedAssessments += 1;
+      if (xp.wrongAttempts===0 && state.records.length>0) profile.perfectAssessments += 1;
+    }
+    const newLevel = levelFromXp(profile.totalXp);
+    const newlyUnlocked = unlockAchievements(profile);
+    profile.recentAwards = [{ completedAt:new Date().toISOString(), xp:xp.totalXp,
+      practiceMode:state.practiceMode, questionCount:state.records.length }, ...(profile.recentAwards||[])].slice(0,20);
+    saveStudentProfile(profile);
+    return { profile, xp, oldLevel, newLevel, levelUp:newLevel>oldLevel, newlyUnlocked };
+  }
+
+  function achievementById(id) { return ACHIEVEMENTS.find(item=>item.id===id); }
+
+  function renderStudentProfile(studentId, studentName="") {
+    const panel = $("studentProfilePanel");
+    if (!studentId) { panel.classList.add("hidden"); return; }
+    const profile = loadStudentProfile(studentId, studentName);
+    if (!profile) { panel.classList.add("hidden"); return; }
+    const progress = xpProgress(profile);
+    $("profileLevel").textContent = progress.level;
+    $("profileXp").textContent = profile.totalXp;
+    $("profileStreak").textContent = `${profile.streakDays||0} 🔥`;
+    $("profileQuestions").textContent = profile.totalQuestions||0;
+    $("profileXpBar").style.width = `${progress.percent}%`;
+    $("profileNextLevel").textContent = `${progress.requiredInLevel-progress.earnedInLevel} XP to Level ${progress.level+1}`;
+    const achievements = (profile.achievements||[]).map(achievementById).filter(Boolean);
+    $("profileAchievements").innerHTML = achievements.length
+      ? achievements.map(item=>`<span class="achievement">${item.icon} ${escapeHtml(item.name)}</span>`).join("")
+      : '<span class="note">No achievement yet—complete the first quiz to unlock one.</span>';
+    panel.classList.remove("hidden");
+  }
+
+  function motivationResultHtml(award) {
+    if (!award) return "";
+    const achievements = award.newlyUnlocked.length ? `<div style="margin-top:12px;"><strong>New achievement${award.newlyUnlocked.length>1?"s":""}:</strong><div class="achievement-list">${award.newlyUnlocked.map(item=>`<span class="achievement">${item.icon} ${escapeHtml(item.name)}</span>`).join("")}</div></div>` : "";
+    const levelUp = award.levelUp ? `<p><strong>🚀 Level up!</strong> You reached Level ${award.newLevel}.</p>` : "";
+    return `<div class="reward-banner"><strong>🏆 Progress earned</strong><p style="margin:7px 0;"><strong>+${award.xp.totalXp} XP</strong> from this session.</p>${levelUp}<p style="margin:7px 0;">Current level: <strong>${award.newLevel}</strong> · Total XP: <strong>${award.profile.totalXp}</strong> · Streak: <strong>${award.profile.streakDays} day${award.profile.streakDays===1?"":"s"} 🔥</strong></p><div class="note">${award.xp.reasons.map(reason=>`• ${escapeHtml(reason)}`).join("<br>")}</div>${achievements}</div>`;
+  }
+
+  function refreshProfileFromInputs() {
+    renderStudentProfile($("studentId").value.trim().toUpperCase(), $("username").value.trim());
+  }
+
   function updateCoverageNote() {
     const mode = $("mode").value;
     const total = pools[mode].length;
@@ -306,6 +493,7 @@
     state.emailSending = false;
     state.emailSent = false;
     state.analyticsSaved = false;
+    state.motivationAward = null;
     $("retryEmailBtn").classList.add("hidden");
     $("analyticsStatus").textContent = "";
     state.quizStart = performance.now();
@@ -690,6 +878,13 @@
         0
       ),
       recommendations: diagnosis.recommendations,
+      motivation: state.motivationAward ? {
+        sessionXp: state.motivationAward.xp.totalXp,
+        totalXp: state.motivationAward.profile.totalXp,
+        level: state.motivationAward.newLevel,
+        streakDays: state.motivationAward.profile.streakDays,
+        newlyUnlockedAchievements: state.motivationAward.newlyUnlocked.map(item => item.id)
+      } : null,
       responses: state.records.map((record, index) => ({
         questionNumber: index + 1,
         operation: record.operation,
@@ -752,6 +947,9 @@
 
     const wrongAttempts = state.records.reduce((sum,r) => sum + r.wrongs.length, 0);
     const avg = state.records.length ? state.totalTime / state.records.length : 0;
+
+    state.motivationAward = awardSessionMotivation();
+    $("motivationResult").innerHTML = motivationResultHtml(state.motivationAward);
     const modeLabel = state.practiceMode
       ? `Targeted Practice Set ${state.practiceRound}`
       : state.selectedMode === "mixed"
@@ -1108,6 +1306,7 @@
     $("answer").value = "";
     $("targetedPracticeBtn").classList.add("hidden");
     $("practiceModeLabel").textContent = "";
+    refreshProfileFromInputs();
     updateCoverageNote();
   }
 
@@ -1117,6 +1316,8 @@
     })[char]);
   }
 
+  $("studentId").addEventListener("input", refreshProfileFromInputs);
+  $("username").addEventListener("input", refreshProfileFromInputs);
   $("mode").addEventListener("change", updateCoverageNote);
   $("startBtn").addEventListener("click", startQuiz);
   $("submitBtn").addEventListener("click", submitAnswer);
@@ -1127,6 +1328,7 @@
   });
 
   updateCoverageNote();
+  refreshProfileFromInputs();
 </script>
 </body>
 </html>
