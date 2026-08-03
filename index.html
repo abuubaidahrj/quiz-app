@@ -3,28 +3,213 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#ffffff" />
-  <title>Math Master Quiz</title>
+  <meta name="theme-color" content="#2563eb" />
+  <title>Math Master Quest</title>
   <style>
-    :root { font-family: Arial, Helvetica, sans-serif; color:#1f2937; background:#f3f4f6; }
+    :root {
+      font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+      color:#172554;
+      background:#dbeafe;
+      --blue:#2563eb;
+      --deep-blue:#1d4ed8;
+      --yellow:#facc15;
+      --orange:#f97316;
+      --green:#22c55e;
+      --purple:#7c3aed;
+      --ink:#172554;
+    }
     * { box-sizing:border-box; }
-    body { margin:0; padding:18px; }
-    .app { width:min(780px,100%); margin:0 auto; background:#fff; border-radius:18px; padding:22px; box-shadow:0 10px 35px rgba(0,0,0,.08); }
-    h1,h2,h3 { margin-top:0; }
-    .subtitle { color:#6b7280; margin-top:-8px; }
+    body {
+      margin:0;
+      padding:22px;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 14% 12%,rgba(255,255,255,.95) 0 45px,transparent 46px),
+        radial-gradient(circle at 82% 18%,rgba(255,255,255,.78) 0 58px,transparent 59px),
+        linear-gradient(180deg,#60a5fa 0%,#bfdbfe 44%,#dcfce7 44%,#86efac 100%);
+      background-attachment:fixed;
+    }
+    .app {
+      width:min(940px,100%);
+      margin:0 auto;
+      background:rgba(255,255,255,.97);
+      border:4px solid #1d4ed8;
+      border-radius:26px;
+      padding:24px;
+      box-shadow:0 12px 0 #1e40af,0 24px 48px rgba(30,64,175,.24);
+      overflow:hidden;
+      position:relative;
+    }
+    .app::after {
+      content:"";
+      position:absolute;
+      inset:auto 0 0;
+      height:8px;
+      background:repeating-linear-gradient(90deg,#16a34a 0 30px,#22c55e 30px 60px);
+    }
+    h1,h2,h3 { margin-top:0; color:var(--ink); }
+    .subtitle { color:#334155; margin:4px 0 0; line-height:1.5; }
+    .game-hero {
+      position:relative;
+      display:grid;
+      grid-template-columns:1.35fr .65fr;
+      gap:18px;
+      align-items:center;
+      padding:22px;
+      margin:-6px -6px 20px;
+      border-radius:20px;
+      overflow:hidden;
+      color:#fff;
+      background:linear-gradient(135deg,rgba(37,99,235,.98),rgba(124,58,237,.94));
+      box-shadow:0 8px 0 #3730a3;
+    }
+    .game-hero::before {
+      content:"×   +   ÷   −   π";
+      position:absolute;
+      right:-10px;
+      top:6px;
+      font-size:58px;
+      font-weight:900;
+      letter-spacing:14px;
+      color:rgba(255,255,255,.09);
+      transform:rotate(-8deg);
+      white-space:nowrap;
+    }
+    .quest-title {
+      margin:0;
+      font-size:clamp(34px,7vw,62px);
+      line-height:.95;
+      color:#fff;
+      letter-spacing:-2px;
+      text-shadow:0 4px 0 #1e3a8a,3px 0 0 #1e3a8a,-3px 0 0 #1e3a8a;
+    }
+    .quest-kicker {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:6px 11px;
+      margin-bottom:10px;
+      border-radius:999px;
+      background:#facc15;
+      color:#713f12;
+      font-weight:900;
+      box-shadow:0 4px 0 #ca8a04;
+    }
+    .hero-version {
+      display:inline-block;
+      margin-top:12px;
+      padding:5px 9px;
+      border-radius:8px;
+      background:rgba(15,23,42,.28);
+      font-size:12px;
+      color:#e0f2fe;
+    }
+    .hero-art {
+      width:100%;
+      max-width:260px;
+      justify-self:end;
+      filter:drop-shadow(0 9px 0 rgba(30,58,138,.55));
+    }
+    .operation-ribbon {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+      margin:14px 0 18px;
+    }
+    .op-token {
+      padding:10px;
+      border-radius:14px;
+      text-align:center;
+      color:#fff;
+      font-weight:900;
+      box-shadow:0 5px 0 rgba(15,23,42,.22);
+    }
+    .op-token span { display:block; font-size:28px; line-height:1; margin-bottom:4px; }
+    .op-token:nth-child(1){background:#2563eb}
+    .op-token:nth-child(2){background:#7c3aed}
+    .op-token:nth-child(3){background:#16a34a}
+    .op-token:nth-child(4){background:#f97316}
+    .fair-play-card {
+      margin:14px 0;
+      padding:14px 15px;
+      border-radius:14px;
+      background:#fefce8;
+      border:2px solid #facc15;
+      box-shadow:0 5px 0 #eab308;
+      color:#713f12;
+      line-height:1.5;
+    }
+    .fair-play-card strong { color:#854d0e; }
     .hidden { display:none !important; }
     label { display:block; font-weight:700; margin:15px 0 6px; }
-    input,select,button { width:100%; font-size:18px; border-radius:10px; }
-    input,select { padding:12px; border:1px solid #cbd5e1; background:#fff; }
-    button { padding:13px 16px; border:0; margin-top:12px; cursor:pointer; font-weight:700; background:#2563eb; color:#fff; }
-    button:disabled { opacity:.65; cursor:not-allowed; }
-    button.secondary { background:#4b5563; }
-    button.success { background:#15803d; }
+    input,select,button { width:100%; font-size:18px; border-radius:13px; }
+    input,select {
+      padding:13px;
+      border:2px solid #93c5fd;
+      background:#fff;
+      color:#172554;
+      box-shadow:inset 0 -3px 0 #dbeafe;
+    }
+    input:focus,select:focus {
+      outline:3px solid rgba(250,204,21,.55);
+      border-color:#2563eb;
+    }
+    button {
+      padding:14px 17px;
+      border:0;
+      margin-top:13px;
+      cursor:pointer;
+      font-weight:900;
+      letter-spacing:.2px;
+      background:#2563eb;
+      color:#fff;
+      box-shadow:0 6px 0 #1e40af;
+      transform:translateY(0);
+      transition:transform .12s,box-shadow .12s,filter .12s;
+    }
+    button:hover { filter:brightness(1.08); transform:translateY(-1px); }
+    button:active { transform:translateY(4px); box-shadow:0 2px 0 #1e40af; }
+    button:disabled { opacity:.65; cursor:not-allowed; transform:none; }
+    button.secondary { background:#475569; box-shadow:0 6px 0 #1e293b; }
+    button.success { background:#16a34a; box-shadow:0 6px 0 #166534; }
     .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
     .status { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color:#475569; margin-bottom:12px; }
-    .progress { height:12px; background:#e5e7eb; border-radius:999px; overflow:hidden; margin-bottom:20px; }
-    .progress>div { height:100%; width:0%; background:#2563eb; transition:width .25s; }
-    .question { text-align:center; font-size:clamp(40px,11vw,72px); font-weight:800; margin:32px 0 20px; }
+    .progress {
+      height:16px;
+      background:#dbeafe;
+      border:2px solid #60a5fa;
+      border-radius:999px;
+      overflow:hidden;
+      margin-bottom:20px;
+      box-shadow:inset 0 2px 3px rgba(30,64,175,.2);
+    }
+    .progress>div {
+      height:100%;
+      width:0%;
+      background:repeating-linear-gradient(45deg,#facc15 0 12px,#f59e0b 12px 24px);
+      transition:width .25s;
+    }
+    #quiz {
+      padding:18px;
+      border-radius:20px;
+      background:
+        radial-gradient(circle at 12% 18%,rgba(255,255,255,.9) 0 30px,transparent 31px),
+        linear-gradient(180deg,#dbeafe,#eff6ff);
+      border:3px solid #60a5fa;
+    }
+    .question {
+      text-align:center;
+      font-size:clamp(46px,11vw,82px);
+      font-weight:1000;
+      margin:28px 0 20px;
+      padding:24px 12px;
+      color:#172554;
+      border:4px solid #1d4ed8;
+      border-radius:20px;
+      background:linear-gradient(135deg,#fff,#fef9c3);
+      box-shadow:0 9px 0 #1e40af,inset 0 0 0 5px #bfdbfe;
+      text-shadow:0 3px 0 #fff;
+    }
     #answer { text-align:center; font-size:32px; }
     #feedback { min-height:26px; text-align:center; font-weight:700; margin-top:10px; }
     .error { color:#b91c1c; }
@@ -37,28 +222,93 @@
     th { background:#f1f5f9; }
     .note { font-size:14px; color:#64748b; margin-top:10px; line-height:1.45; }
     .badge { display:inline-block; padding:4px 9px; border-radius:999px; background:#e0e7ff; color:#3730a3; font-size:13px; font-weight:700; }
-    .profile-panel { margin:16px 0; padding:16px; border:1px solid #dbeafe; border-radius:14px; background:#eff6ff; }
+    .profile-panel { margin:18px 0; padding:17px; border:3px solid #60a5fa; border-radius:18px; background:linear-gradient(135deg,#eff6ff,#f5f3ff); box-shadow:0 6px 0 #bfdbfe; }
     .profile-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:10px; }
-    .profile-stat { background:#fff; border-radius:10px; padding:11px; text-align:center; }
+    .profile-stat { background:#fff; border:2px solid #dbeafe; border-radius:13px; padding:11px; text-align:center; box-shadow:0 4px 0 #dbeafe; }
     .profile-stat strong { display:block; font-size:20px; margin-top:3px; }
     .xp-track { height:12px; margin-top:10px; overflow:hidden; border-radius:999px; background:#dbeafe; }
     .xp-track > div { height:100%; width:0; background:#2563eb; transition:width .3s; }
     .achievement-list { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
     .achievement { padding:8px 10px; border-radius:10px; background:#fef3c7; border:1px solid #f59e0b; font-size:13px; font-weight:700; }
+    .mission-panel { margin-top:16px; padding:16px; border-radius:16px; background:linear-gradient(135deg,#fff7ed,#fefce8); border:3px solid #fb923c; box-shadow:0 6px 0 #fed7aa; }
+    .mission-title { font-size:18px; font-weight:800; margin-bottom:4px; }
+    .mission-meta { font-size:13px; color:#7c2d12; margin-bottom:10px; }
+    .mission-item { margin:10px 0; }
+    .mission-line { display:flex; justify-content:space-between; gap:12px; font-size:14px; font-weight:700; margin-bottom:5px; }
+    .mission-track { height:10px; border-radius:999px; overflow:hidden; background:#ffedd5; }
+    .mission-track > div { height:100%; width:0; background:#f97316; transition:width .3s; }
+    .mission-complete { margin-top:12px; padding:12px; border-radius:10px; background:#ecfdf5; border-left:5px solid #16a34a; line-height:1.5; }
     .reward-banner { margin:15px 0; padding:16px; border-radius:12px; background:#ecfdf5; border-left:5px solid #16a34a; line-height:1.5; }
-    @media (max-width:560px){
-      body{padding:0;background:#fff}
-      .app{border-radius:0;box-shadow:none;padding:18px}
+    @media (max-width:650px){
+      body{padding:0;background:#dbeafe}
+      .app{border-width:0;border-radius:0;box-shadow:none;padding:15px}
+      .game-hero{grid-template-columns:1fr;padding:18px}
+      .hero-art{max-width:190px;justify-self:center}
+      .operation-ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}
       .grid,.summary-grid,.profile-grid{grid-template-columns:1fr}
+      .question{font-size:clamp(44px,16vw,70px);padding:20px 8px}
     }
   </style>
 </head>
 <body>
 <main class="app">
   <section id="setup">
-    <h1>Math Master</h1>
-    <p class="subtitle">Practice multiplication, division, addition, subtraction, or a random mixture.</p>
-    <p class="note"><strong>Version:</strong> v6.1 — Cloud Progress Sync</p>
+    <div class="game-hero">
+      <div>
+        <div class="quest-kicker">🎮 MATH ADVENTURE</div>
+        <h1 class="quest-title">Math Master<br>Quest</h1>
+        <p class="subtitle" style="color:#e0f2fe;">
+          Solve equations, earn fair XP, complete missions and unlock achievements.
+        </p>
+        <span class="hero-version">Version v6.3 — Fair Play & Math Quest</span>
+      </div>
+
+      <svg class="hero-art" viewBox="0 0 300 230" role="img"
+        aria-label="Original Math Explorer mascot jumping across equation blocks">
+        <defs>
+          <linearGradient id="cape" x1="0" x2="1">
+            <stop offset="0" stop-color="#f97316"/>
+            <stop offset="1" stop-color="#ef4444"/>
+          </linearGradient>
+        </defs>
+        <rect x="14" y="174" width="72" height="44" rx="8" fill="#facc15" stroke="#854d0e" stroke-width="6"/>
+        <text x="50" y="205" text-anchor="middle" font-size="31" font-weight="900" fill="#713f12">×</text>
+        <rect x="111" y="174" width="72" height="44" rx="8" fill="#22c55e" stroke="#14532d" stroke-width="6"/>
+        <text x="147" y="205" text-anchor="middle" font-size="31" font-weight="900" fill="#052e16">÷</text>
+        <rect x="208" y="174" width="72" height="44" rx="8" fill="#a78bfa" stroke="#4c1d95" stroke-width="6"/>
+        <text x="244" y="205" text-anchor="middle" font-size="31" font-weight="900" fill="#2e1065">+</text>
+
+        <path d="M105 92 Q67 99 52 132 Q83 126 110 119Z" fill="url(#cape)" stroke="#7f1d1d" stroke-width="5"/>
+        <circle cx="143" cy="68" r="34" fill="#fed7aa" stroke="#78350f" stroke-width="6"/>
+        <path d="M112 57 Q143 18 176 55 L170 72 L116 72Z" fill="#2563eb" stroke="#1e3a8a" stroke-width="6"/>
+        <circle cx="132" cy="67" r="4" fill="#172554"/>
+        <circle cx="155" cy="67" r="4" fill="#172554"/>
+        <path d="M133 82 Q144 89 156 81" fill="none" stroke="#7c2d12" stroke-width="4" stroke-linecap="round"/>
+
+        <rect x="112" y="99" width="64" height="55" rx="15" fill="#2563eb" stroke="#1e3a8a" stroke-width="6"/>
+        <circle cx="144" cy="126" r="19" fill="#facc15" stroke="#854d0e" stroke-width="5"/>
+        <text x="144" y="135" text-anchor="middle" font-size="24" font-weight="900" fill="#713f12">π</text>
+
+        <path d="M118 109 L87 139" stroke="#fed7aa" stroke-width="16" stroke-linecap="round"/>
+        <path d="M170 111 L202 91" stroke="#fed7aa" stroke-width="16" stroke-linecap="round"/>
+        <circle cx="207" cy="87" r="10" fill="#fff" stroke="#1e3a8a" stroke-width="5"/>
+
+        <path d="M128 151 L105 182" stroke="#172554" stroke-width="17" stroke-linecap="round"/>
+        <path d="M162 151 L189 176" stroke="#172554" stroke-width="17" stroke-linecap="round"/>
+        <path d="M91 185 L116 185" stroke="#ef4444" stroke-width="15" stroke-linecap="round"/>
+        <path d="M184 181 L207 174" stroke="#ef4444" stroke-width="15" stroke-linecap="round"/>
+
+        <circle cx="232" cy="52" r="25" fill="#facc15" stroke="#a16207" stroke-width="6"/>
+        <text x="232" y="62" text-anchor="middle" font-size="28" font-weight="900" fill="#713f12">10</text>
+      </svg>
+    </div>
+
+    <div class="operation-ribbon" aria-label="Math operations">
+      <div class="op-token"><span>×</span>Multiply</div>
+      <div class="op-token"><span>÷</span>Divide</div>
+      <div class="op-token"><span>+</span>Add</div>
+      <div class="op-token"><span>−</span>Subtract</div>
+    </div>
 
     <div class="grid">
       <div>
@@ -100,6 +350,15 @@
       For example, <strong>92 ÷ 23 = 4</strong> is valid.
     </p>
 
+    <div class="fair-play-card">
+      🛡️ <strong>Fair Play Protection:</strong>
+      Targeted Practice is always available for learning, but only the first
+      eligible set from a new assessment can earn XP. A maximum of
+      <strong>2 rewarded practice sets per day</strong> can count toward XP
+      and missions. Repeated/spammed sets are still saved, but receive
+      <strong>0 XP and 0 mission credit</strong>.
+    </div>
+
     <div id="studentProfilePanel" class="profile-panel hidden">
       <strong>🏆 Student Progress</strong>
       <div class="profile-grid">
@@ -112,6 +371,13 @@
       <div id="profileNextLevel" class="note"></div>
       <div id="profileAchievements" class="achievement-list"></div>
       <div id="profileSyncStatus" class="note">Progress is cached on this device.</div>
+
+      <div id="missionPanel" class="mission-panel hidden">
+        <div id="missionTitle" class="mission-title">🎯 Weekly Mission</div>
+        <div id="missionMeta" class="mission-meta"></div>
+        <div id="missionRequirements"></div>
+        <div id="missionReward"></div>
+      </div>
     </div>
 
     <button id="startBtn" type="button">Start Quiz</button>
@@ -166,6 +432,7 @@
       </table>
     </div>
     <div id="motivationResult"></div>
+    <div id="cloudRewardStatus"></div>
 
     <h3 style="margin-top:22px;">Learning diagnosis</h3>
     <div id="screenDiagnosis" class="note"></div>
@@ -218,7 +485,8 @@
     practiceRound: 0,
     sourceDiagnosis: [],
     parentSessionLabel: "",
-    motivationAward: null
+    motivationAward: null,
+    lastSessionId: ""
   };
 
   function shuffle(items) {
@@ -368,23 +636,57 @@
   ];
 
   function calculateSessionXp() {
-    const questionXp = state.records.length * 10;
-    const fastCorrect = state.records.filter(r => r.wrongs.length===0 && r.time<5).length;
-    const speedXp = fastCorrect * 5;
     const wrongAttempts = state.records.reduce((sum,r)=>sum+r.wrongs.length,0);
     const firstTryCorrect = state.records.filter(r=>r.wrongs.length===0).length;
     const firstTryAccuracy = state.records.length ? firstTryCorrect/state.records.length : 0;
+
+    if (state.practiceMode) {
+      return {
+        questionXp:0,
+        speedXp:0,
+        bonusXp:0,
+        totalXp:0,
+        potentialXp:30,
+        provisional:true,
+        firstTryCorrect,
+        firstTryAccuracy,
+        wrongAttempts,
+        reasons:[
+          "Cloud verification required",
+          "Eligible Targeted Practice can earn a flat +30 XP",
+          "Repeated sets or more than 2 rewarded sets today earn 0 XP"
+        ]
+      };
+    }
+
+    const questionXp = state.records.length * 10;
+    const fastCorrect = state.records.filter(r => r.wrongs.length===0 && r.time<5).length;
+    const speedXp = fastCorrect * 5;
     let bonusXp = 0;
     const reasons = [`${state.records.length} completed questions: +${questionXp} XP`];
+
     if (speedXp>0) reasons.push(`${fastCorrect} fast first-try answers: +${speedXp} XP`);
-    if (!state.practiceMode && wrongAttempts===0 && state.records.length>0) {
-      bonusXp += 50; reasons.push("Perfect assessment: +50 XP");
-    } else if (!state.practiceMode && firstTryAccuracy>=0.9) {
-      bonusXp += 25; reasons.push("At least 90% first-try accuracy: +25 XP");
+
+    if (wrongAttempts===0 && state.records.length>0) {
+      bonusXp += 50;
+      reasons.push("Perfect assessment: +50 XP");
+    } else if (firstTryAccuracy>=0.9) {
+      bonusXp += 25;
+      reasons.push("At least 90% first-try accuracy: +25 XP");
     }
-    if (state.practiceMode) { bonusXp += 30; reasons.push("Targeted Practice completed: +30 XP"); }
-    return { questionXp, speedXp, bonusXp, totalXp:questionXp+speedXp+bonusXp,
-      firstTryCorrect, firstTryAccuracy, wrongAttempts, reasons };
+
+    return {
+      questionXp,
+      speedXp,
+      bonusXp,
+      totalXp:questionXp+speedXp+bonusXp,
+      potentialXp:0,
+      provisional:false,
+      firstTryCorrect,
+      firstTryAccuracy,
+      wrongAttempts,
+      reasons
+    };
   }
 
   function updateStreak(profile) {
@@ -409,15 +711,16 @@
     if (!profile) return null;
     const oldLevel = levelFromXp(profile.totalXp);
     const xp = calculateSessionXp();
-    updateStreak(profile);
-    profile.totalXp += xp.totalXp;
-    profile.totalQuestions += state.records.length;
-    profile.totalCorrectFirstTry += xp.firstTryCorrect;
-    profile.totalWrongAttempts += xp.wrongAttempts;
-    if (state.practiceMode) profile.completedPracticeSets += 1;
-    else {
+    if (!state.practiceMode) {
+      updateStreak(profile);
+      profile.totalXp += xp.totalXp;
+      profile.totalQuestions += state.records.length;
+      profile.totalCorrectFirstTry += xp.firstTryCorrect;
+      profile.totalWrongAttempts += xp.wrongAttempts;
       profile.completedAssessments += 1;
-      if (xp.wrongAttempts===0 && state.records.length>0) profile.perfectAssessments += 1;
+      if (xp.wrongAttempts===0 && state.records.length>0) {
+        profile.perfectAssessments += 1;
+      }
     }
     const newLevel = levelFromXp(profile.totalXp);
     const newlyUnlocked = unlockAchievements(profile);
@@ -431,7 +734,7 @@
 
   function renderStudentProfile(studentId, studentName="", profileOverride=null) {
     const panel = $("studentProfilePanel");
-    if (!studentId) { panel.classList.add("hidden"); return; }
+    if (!studentId) { panel.classList.add("hidden"); renderMission(null); return; }
     const profile = profileOverride || loadStudentProfile(studentId, studentName);
     if (!profile) { panel.classList.add("hidden"); return; }
     const progress = xpProgress(profile);
@@ -450,9 +753,22 @@
 
   function motivationResultHtml(award) {
     if (!award) return "";
-    const achievements = award.newlyUnlocked.length ? `<div style="margin-top:12px;"><strong>New achievement${award.newlyUnlocked.length>1?"s":""}:</strong><div class="achievement-list">${award.newlyUnlocked.map(item=>`<span class="achievement">${item.icon} ${escapeHtml(item.name)}</span>`).join("")}</div></div>` : "";
-    const levelUp = award.levelUp ? `<p><strong>🚀 Level up!</strong> You reached Level ${award.newLevel}.</p>` : "";
-    return `<div class="reward-banner"><strong>🏆 Progress earned</strong><p style="margin:7px 0;"><strong>+${award.xp.totalXp} XP</strong> from this session.</p>${levelUp}<p style="margin:7px 0;">Current level: <strong>${award.newLevel}</strong> · Total XP: <strong>${award.profile.totalXp}</strong> · Streak: <strong>${award.profile.streakDays} day${award.profile.streakDays===1?"":"s"} 🔥</strong></p><div class="note">${award.xp.reasons.map(reason=>`• ${escapeHtml(reason)}`).join("<br>")}</div>${achievements}</div>`;
+
+    const achievements = award.newlyUnlocked.length
+      ? `<div style="margin-top:12px;"><strong>New achievement${award.newlyUnlocked.length>1?"s":""}:</strong><div class="achievement-list">${award.newlyUnlocked.map(item=>`<span class="achievement">${item.icon} ${escapeHtml(item.name)}</span>`).join("")}</div></div>`
+      : "";
+
+    const levelUp = award.levelUp
+      ? `<p><strong>🚀 Level up!</strong> You reached Level ${award.newLevel}.</p>`
+      : "";
+
+    const xpHeadline = award.xp.provisional
+      ? `<strong>☁️ XP verification pending</strong>
+         <p style="margin:7px 0;">This practice may earn up to <strong>+${award.xp.potentialXp} XP</strong> after the fair-play cloud check.</p>`
+      : `<strong>🏆 Progress earned</strong>
+         <p style="margin:7px 0;"><strong>+${award.xp.totalXp} XP</strong> from this session.</p>`;
+
+    return `<div class="reward-banner">${xpHeadline}${levelUp}<p style="margin:7px 0;">Current level: <strong>${award.newLevel}</strong> · Total XP: <strong>${award.profile.totalXp}</strong> · Streak: <strong>${award.profile.streakDays} day${award.profile.streakDays===1?"":"s"} 🔥</strong></p><div class="note">${award.xp.reasons.map(reason=>`• ${escapeHtml(reason)}`).join("<br>")}</div>${achievements}</div>`;
   }
 
 
@@ -561,12 +877,14 @@
         status.textContent =
           "☁️ No cloud profile yet. It will be created after the first saved session.";
         status.className = "note";
+        loadActiveMission(id, true);
         return null;
       }
 
       const profile = normalizeCloudProfile(response.profile, studentName);
       saveStudentProfile(profile);
       renderStudentProfile(id, studentName, profile);
+      loadActiveMission(id, true);
 
       status.textContent =
         `☁️ Cloud synced · Last updated ${new Date().toLocaleTimeString()}`;
@@ -590,6 +908,165 @@
         loadCloudProfile(studentId, studentName);
       }
     }, 700);
+  }
+
+
+  function missionPercent(currentValue, targetValue) {
+    const target = Number(targetValue || 0);
+    if (target <= 0) return 100;
+    return Math.min(100, (Number(currentValue || 0) / target) * 100);
+  }
+
+  function formatMissionDate(dateText) {
+    if (!dateText) return "";
+    const date = new Date(`${String(dateText).slice(0,10)}T00:00:00`);
+    return date.toLocaleDateString(undefined, {
+      day: "numeric", month: "short", year: "numeric"
+    });
+  }
+
+  function missionRequirementHtml(label, currentValue, targetValue, formatter=null) {
+    const current = Number(currentValue || 0);
+    const target = Number(targetValue || 0);
+    if (target <= 0) return "";
+
+    const displayCurrent = formatter ? formatter(current) : current;
+    const displayTarget = formatter ? formatter(target) : target;
+    const percent = missionPercent(current, target);
+
+    return `
+      <div class="mission-item">
+        <div class="mission-line">
+          <span>${escapeHtml(label)}</span>
+          <span>${escapeHtml(String(displayCurrent))} / ${escapeHtml(String(displayTarget))}</span>
+        </div>
+        <div class="mission-track"><div style="width:${percent}%"></div></div>
+      </div>`;
+  }
+
+  function renderMission(missionData) {
+    const panel = $("missionPanel");
+
+    if (!missionData || !missionData.mission) {
+      panel.classList.add("hidden");
+      return;
+    }
+
+    const mission = missionData.mission;
+    const progress = missionData.progress || {};
+    const requirements = missionData.requirements || {};
+
+    $("missionTitle").textContent = `🎯 ${mission.name || "Weekly Mission"}`;
+    $("missionMeta").textContent =
+      `${formatMissionDate(mission.startDate)} – ${formatMissionDate(mission.endDate)}`;
+
+    const percentFormatter = value => `${Math.round(value * 100)}%`;
+
+    $("missionRequirements").innerHTML = [
+      missionRequirementHtml("Assessments", progress.assessments, requirements.assessments),
+      missionRequirementHtml("Targeted Practice", progress.practiceSets, requirements.practiceSets),
+      missionRequirementHtml("Questions answered", progress.questions, requirements.questions),
+      missionRequirementHtml("XP earned during mission", progress.periodXp, requirements.periodXp),
+      missionRequirementHtml("First-try accuracy", progress.accuracy, requirements.accuracy, percentFormatter)
+    ].filter(Boolean).join("") ||
+      '<div class="note">No requirement has been configured.</div>';
+
+    const rewardText = mission.reward || "Parent-selected reward";
+    const minutes = Number(mission.rewardMinutes || 0);
+    const rewardDisplay = minutes > 0
+      ? `${minutes} minutes — ${rewardText}`
+      : rewardText;
+
+    $("missionReward").innerHTML = missionData.completed
+      ? `<div class="mission-complete">
+          🏆 <strong>Mission complete!</strong><br>
+          Suggested reward: <strong>${escapeHtml(rewardDisplay)}</strong><br>
+          <span class="note">Parent approval is required before the reward is given.</span>
+        </div>`
+      : `<div class="note" style="margin-top:12px;">
+          🎁 Reward when completed: <strong>${escapeHtml(rewardDisplay)}</strong>
+        </div>`;
+
+    panel.classList.remove("hidden");
+  }
+
+  async function loadActiveMission(studentId, quiet=false) {
+    const id = String(studentId || "").trim().toUpperCase();
+
+    if (!id || !cloudApiConfigured()) {
+      renderMission(null);
+      return null;
+    }
+
+    try {
+      const response = await jsonpRequest({
+        action: "getActiveMission",
+        studentId: id
+      });
+
+      if (!response || response.ok !== true) {
+        throw new Error(response?.error || "Mission lookup failed.");
+      }
+
+      if (!response.found) {
+        renderMission(null);
+        return null;
+      }
+
+      renderMission(response);
+      return response;
+    } catch (error) {
+      console.error("Mission sync error:", error);
+      if (!quiet) renderMission(null);
+      return null;
+    }
+  }
+
+
+  async function loadSessionRewardStatus(sessionId) {
+    if (!sessionId || !cloudApiConfigured()) return null;
+
+    const container = $("cloudRewardStatus");
+
+    try {
+      const response = await jsonpRequest({
+        action: "getSessionReward",
+        sessionId
+      });
+
+      if (!response || response.ok !== true || !response.found) {
+        return null;
+      }
+
+      if (response.sessionType === "Targeted Practice") {
+        if (response.rewardEligible) {
+          container.innerHTML = `
+            <div class="note ok" style="padding:12px;border-radius:12px;background:#ecfdf5;border:2px solid #22c55e;">
+              🛡️ <strong>Fair-play check passed.</strong>
+              +${response.sessionXp} XP confirmed and this practice counts toward the mission.
+              Rewarded practice today: ${response.rewardedPracticeCountToday}/${response.dailyLimit}.
+            </div>`;
+        } else {
+          container.innerHTML = `
+            <div class="note error" style="padding:12px;border-radius:12px;background:#fff7ed;border:2px solid #fb923c;color:#9a3412;">
+              🛡️ <strong>Practice saved, but no XP was awarded.</strong><br>
+              ${escapeHtml(response.eligibilityReason || "Fair-play limit reached.")}
+              This set does not count toward the mission.
+            </div>`;
+        }
+      } else {
+        container.innerHTML = `
+          <div class="note ok" style="padding:10px;border-radius:12px;background:#eff6ff;border:2px solid #60a5fa;">
+            ☁️ Assessment XP confirmed by Google Sheets:
+            <strong>+${response.sessionXp} XP</strong>.
+          </div>`;
+      }
+
+      return response;
+    } catch (error) {
+      console.error("Reward status lookup failed:", error);
+      return null;
+    }
   }
 
   function refreshProfileFromInputs() {
@@ -632,6 +1109,8 @@
     state.emailSent = false;
     state.analyticsSaved = false;
     state.motivationAward = null;
+    state.lastSessionId = "";
+    $("cloudRewardStatus").innerHTML = "";
     $("retryEmailBtn").classList.add("hidden");
     $("analyticsStatus").textContent = "";
     state.quizStart = performance.now();
@@ -925,6 +1404,8 @@
     state.emailSending = false;
     state.emailSent = false;
     state.analyticsSaved = false;
+    state.lastSessionId = "";
+    $("cloudRewardStatus").innerHTML = "";
     state.quizStart = performance.now();
 
     $("report").classList.add("hidden");
@@ -989,7 +1470,9 @@
 
   function buildAnalyticsPayload() {
     const diagnosis = getSessionDiagnosis();
-    const sessionId = `${state.studentId}-${Date.now()}`;
+    const sessionId = state.lastSessionId ||
+      `${state.studentId}-${Date.now()}`;
+    state.lastSessionId = sessionId;
     const modeLabel = state.practiceMode
       ? `Targeted Practice Set ${state.practiceRound}`
       : state.selectedMode === "mixed"
@@ -997,7 +1480,7 @@
         : labels[state.selectedMode];
 
     return {
-      schemaVersion: 2,
+      schemaVersion: 3,
       sessionId,
       studentId: state.studentId,
       studentName: state.user,
@@ -1008,6 +1491,7 @@
       practiceMode: state.practiceMode,
       practiceRound: state.practiceRound,
       parentSessionLabel: state.parentSessionLabel,
+      sourceAssessmentKey: state.parentSessionLabel,
       questionCount: state.records.length,
       totalTimeSeconds: Number(state.totalTime.toFixed(3)),
       medianTimeSeconds: Number(diagnosis.overallMedian.toFixed(3)),
@@ -1076,6 +1560,8 @@
           state.user,
           true
         );
+        await loadActiveMission(state.studentId, true);
+        await loadSessionRewardStatus(state.lastSessionId);
 
         if (profile) {
           status.textContent =
@@ -1126,8 +1612,9 @@
       ${state.practiceMode ? `
         <div class="note ok" style="margin-top:14px;">
           🎉 <strong>Targeted Practice completed!</strong><br>
-          Your progress has been saved to the learning history. No email was sent for this practice session.
-          Keep practising until these questions feel easy. 💪
+          Your progress has been saved to the learning history. No email was sent.
+          XP and mission credit are confirmed by the fair-play cloud check.
+          Repeat sets are still useful for learning even when they earn 0 XP. 💪
         </div>` : ""}`;
 
     $("operationStats").innerHTML = getOperationStats()
