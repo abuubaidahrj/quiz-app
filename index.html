@@ -140,6 +140,34 @@
       line-height:1.5;
     }
     .fair-play-card strong { color:#854d0e; }
+
+    .parent-dashboard-link {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      width:100%;
+      margin-top:13px;
+      padding:13px 16px;
+      border:2px solid #7c3aed;
+      border-radius:13px;
+      background:#f5f3ff;
+      color:#5b21b6;
+      font-size:16px;
+      font-weight:900;
+      text-decoration:none;
+      box-shadow:0 5px 0 #c4b5fd;
+      transition:transform .12s,box-shadow .12s,filter .12s;
+    }
+    .parent-dashboard-link:hover {
+      filter:brightness(1.02);
+      transform:translateY(-1px);
+    }
+    .parent-dashboard-link:active {
+      transform:translateY(3px);
+      box-shadow:0 2px 0 #c4b5fd;
+    }
+
     .hidden { display:none !important; }
     label { display:block; font-weight:700; margin:15px 0 6px; }
     input,select,button { width:100%; font-size:18px; border-radius:13px; }
@@ -260,7 +288,7 @@
         <p class="subtitle" style="color:#e0f2fe;">
           Solve equations, earn fair XP, complete missions and unlock achievements.
         </p>
-        <span class="hero-version">Version v6.3 — Fair Play & Math Quest</span>
+        <span class="hero-version">Version v7.0 — Parent Dashboard</span>
       </div>
 
       <svg class="hero-art" viewBox="0 0 300 230" role="img"
@@ -381,6 +409,9 @@
     </div>
 
     <button id="startBtn" type="button">Start Quiz</button>
+    <a class="parent-dashboard-link" href="dashboard.html">
+      👨‍👩‍👧 Open Parent Dashboard
+    </a>
   </section>
 
   <section id="quiz" class="hidden">

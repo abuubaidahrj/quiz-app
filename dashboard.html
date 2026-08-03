@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#172554">
+  <title>Math Master Parent Dashboard</title>
+  <style>
+    :root {
+      font-family:"Trebuchet MS",Arial,sans-serif;
+      color:#172554;
+      background:#e0e7ff;
+      --navy:#172554;
+      --blue:#2563eb;
+      --purple:#7c3aed;
+      --green:#16a34a;
+      --orange:#f97316;
+      --yellow:#facc15;
+      --muted:#64748b;
+      --panel:#ffffff;
+      --line:#dbeafe;
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 8% 8%,rgba(255,255,255,.9) 0 70px,transparent 71px),
+        linear-gradient(135deg,#dbeafe,#ede9fe 48%,#dcfce7);
+    }
+    button,input,select { font:inherit; }
+    button { cursor:pointer; }
+    .hidden { display:none!important; }
+
+    .shell {
+      width:min(1280px,100%);
+      margin:0 auto;
+      padding:22px;
+    }
+    .topbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:18px 20px;
+      border-radius:22px;
+      color:#fff;
+      background:linear-gradient(135deg,#172554,#312e81 55%,#5b21b6);
+      box-shadow:0 9px 0 #0f172a,0 18px 40px rgba(15,23,42,.22);
+    }
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:13px;
+    }
+    .brand-icon {
+      display:grid;
+      place-items:center;
+      width:54px;
+      height:54px;
+      border-radius:16px;
+      background:#facc15;
+      color:#713f12;
+      font-size:26px;
+      font-weight:1000;
+      box-shadow:0 5px 0 #ca8a04;
+    }
+    .brand h1 { margin:0;font-size:clamp(24px,4vw,36px); }
+    .brand p { margin:4px 0 0;color:#c7d2fe; }
+    .top-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:9px;
+    }
+    .top-actions a,.top-actions button {
+      padding:10px 13px;
+      border:1px solid rgba(255,255,255,.28);
+      border-radius:12px;
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      text-decoration:none;
+      font-weight:800;
+    }
+
+    .unlock-card {
+      width:min(520px,100%);
+      margin:70px auto;
+      padding:28px;
+      border:3px solid #6366f1;
+      border-radius:24px;
+      background:#fff;
+      box-shadow:0 10px 0 #c7d2fe,0 24px 50px rgba(49,46,129,.2);
+    }
+    .unlock-card h2 { margin-bottom:6px;font-size:30px; }
+    .unlock-card p { color:#64748b;line-height:1.55; }
+    .pin-row {
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      margin-top:18px;
+    }
+    .pin-row input {
+      min-width:0;
+      padding:14px;
+      border:2px solid #a5b4fc;
+      border-radius:13px;
+      font-size:22px;
+      letter-spacing:8px;
+      text-align:center;
+    }
+    .primary-btn {
+      padding:13px 18px;
+      border:0;
+      border-radius:13px;
+      background:#4f46e5;
+      color:#fff;
+      font-weight:900;
+      box-shadow:0 5px 0 #312e81;
+    }
+    .message {
+      min-height:22px;
+      margin-top:13px;
+      color:#b91c1c;
+      font-weight:700;
+    }
+    .family-security {
+      margin-top:18px;
+      padding:12px;
+      border-radius:12px;
+      background:#f8fafc;
+      color:#64748b;
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .controls {
+      display:grid;
+      grid-template-columns:minmax(220px,1fr) auto auto;
+      gap:10px;
+      align-items:end;
+      margin:26px 0 18px;
+      padding:16px;
+      border:2px solid #c7d2fe;
+      border-radius:18px;
+      background:rgba(255,255,255,.9);
+    }
+    label { display:block;margin-bottom:6px;font-weight:900; }
+    select {
+      width:100%;
+      padding:12px;
+      border:2px solid #93c5fd;
+      border-radius:12px;
+      background:#fff;
+      color:#172554;
+    }
+    .control-btn {
+      padding:12px 15px;
+      border:0;
+      border-radius:12px;
+      color:#fff;
+      font-weight:900;
+      background:#2563eb;
+      box-shadow:0 4px 0 #1e40af;
+    }
+    .control-btn.secondary {
+      background:#475569;
+      box-shadow:0 4px 0 #1e293b;
+    }
+    .sync-line {
+      margin:-8px 0 18px;
+      color:#64748b;
+      font-size:13px;
+    }
+
+    .student-banner {
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:16px;
+      align-items:center;
+      margin-bottom:18px;
+      padding:20px;
+      border-radius:20px;
+      color:#fff;
+      background:linear-gradient(135deg,#2563eb,#7c3aed);
+      box-shadow:0 7px 0 #3730a3;
+    }
+    .student-banner h2 { margin:0;font-size:30px; }
+    .student-banner p { margin:5px 0 0;color:#e0e7ff; }
+    .level-orb {
+      display:grid;
+      place-items:center;
+      width:86px;
+      height:86px;
+      border:6px solid rgba(255,255,255,.75);
+      border-radius:50%;
+      background:#facc15;
+      color:#713f12;
+      text-align:center;
+      box-shadow:0 6px 0 #ca8a04;
+    }
+    .level-orb span { display:block;font-size:12px;font-weight:900; }
+    .level-orb strong { display:block;font-size:31px;line-height:1; }
+
+    .metric-grid {
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .metric {
+      padding:16px;
+      border:2px solid #dbeafe;
+      border-radius:16px;
+      background:#fff;
+      box-shadow:0 5px 0 #dbeafe;
+    }
+    .metric-icon { font-size:23px; }
+    .metric-label { margin-top:7px;color:#64748b;font-size:13px;font-weight:800; }
+    .metric-value { margin-top:3px;font-size:25px;font-weight:1000;color:#172554; }
+    .metric-sub { margin-top:3px;color:#64748b;font-size:12px; }
+
+    .layout {
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      gap:18px;
+      align-items:start;
+    }
+    .stack { display:grid;gap:18px; }
+    .panel {
+      padding:19px;
+      border:2px solid #dbeafe;
+      border-radius:19px;
+      background:rgba(255,255,255,.96);
+      box-shadow:0 6px 0 #dbeafe;
+    }
+    .panel-head {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:15px;
+    }
+    .panel h3 { margin:0;font-size:21px; }
+    .panel-note { color:#64748b;font-size:13px;line-height:1.45; }
+
+    .xp-track {
+      height:14px;
+      border-radius:999px;
+      overflow:hidden;
+      background:#e0e7ff;
+      border:1px solid #a5b4fc;
+    }
+    .xp-track > div {
+      height:100%;
+      background:repeating-linear-gradient(45deg,#facc15 0 12px,#f59e0b 12px 24px);
+    }
+
+    .trend-scroll { overflow-x:auto;padding-bottom:5px; }
+    .trend-chart {
+      display:flex;
+      align-items:flex-end;
+      gap:8px;
+      min-width:720px;
+      height:240px;
+      padding:20px 10px 0;
+      border-left:2px solid #cbd5e1;
+      border-bottom:2px solid #cbd5e1;
+      background:
+        repeating-linear-gradient(
+          to top,
+          transparent 0 47px,
+          #eef2ff 48px 49px
+        );
+    }
+    .trend-day {
+      display:grid;
+      grid-template-rows:1fr auto auto;
+      gap:5px;
+      align-items:end;
+      flex:1;
+      height:100%;
+      min-width:40px;
+      text-align:center;
+    }
+    .trend-bar-wrap {
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      height:100%;
+    }
+    .trend-bar {
+      width:72%;
+      min-height:4px;
+      border-radius:9px 9px 3px 3px;
+      background:linear-gradient(180deg,#22c55e,#16a34a);
+      border:1px solid #15803d;
+      transition:height .25s;
+    }
+    .trend-day.no-data .trend-bar {
+      height:4px!important;
+      background:#cbd5e1;
+      border-color:#94a3b8;
+    }
+    .trend-value { font-size:11px;font-weight:900; }
+    .trend-label { font-size:10px;color:#64748b;white-space:nowrap; }
+
+    .operation-row { margin:14px 0; }
+    .operation-line {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:5px;
+      font-weight:900;
+    }
+    .operation-track {
+      height:13px;
+      overflow:hidden;
+      border-radius:999px;
+      background:#e2e8f0;
+    }
+    .operation-track > div {
+      height:100%;
+      background:linear-gradient(90deg,#2563eb,#7c3aed);
+    }
+    .operation-meta { margin-top:5px;color:#64748b;font-size:12px; }
+
+    .mission-card {
+      padding:17px;
+      border:3px solid #fb923c;
+      border-radius:17px;
+      background:linear-gradient(135deg,#fff7ed,#fefce8);
+      box-shadow:0 5px 0 #fed7aa;
+    }
+    .mission-card h3 { margin-bottom:4px; }
+    .mission-requirement { margin-top:12px; }
+    .mission-line {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:5px;
+      font-size:13px;
+      font-weight:900;
+    }
+    .mission-track {
+      height:10px;
+      overflow:hidden;
+      border-radius:999px;
+      background:#ffedd5;
+    }
+    .mission-track > div {
+      height:100%;
+      background:#f97316;
+    }
+    .mission-reward {
+      margin-top:15px;
+      padding:11px;
+      border-radius:11px;
+      background:#fff;
+      color:#9a3412;
+      font-weight:900;
+    }
+
+    .achievement-list {
+      display:flex;
+      flex-wrap:wrap;
+      gap:9px;
+    }
+    .achievement {
+      padding:9px 11px;
+      border:2px solid #f59e0b;
+      border-radius:12px;
+      background:#fef3c7;
+      color:#78350f;
+      font-size:13px;
+      font-weight:900;
+    }
+
+    .session-list { display:grid;gap:9px; }
+    .session-item {
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:10px;
+      align-items:center;
+      padding:11px;
+      border:1px solid #e2e8f0;
+      border-radius:12px;
+      background:#f8fafc;
+    }
+    .session-icon {
+      display:grid;
+      place-items:center;
+      width:38px;
+      height:38px;
+      border-radius:11px;
+      background:#dbeafe;
+      font-size:19px;
+    }
+    .session-title { font-weight:900; }
+    .session-meta { color:#64748b;font-size:12px;margin-top:2px; }
+    .xp-pill {
+      padding:6px 8px;
+      border-radius:999px;
+      background:#dcfce7;
+      color:#166534;
+      font-size:12px;
+      font-weight:900;
+    }
+    .xp-pill.zero { background:#fee2e2;color:#991b1b; }
+
+    .table-wrap { overflow-x:auto; }
+    table { width:100%;border-collapse:collapse;min-width:680px; }
+    th,td {
+      padding:10px;
+      border-bottom:1px solid #e2e8f0;
+      text-align:left;
+      vertical-align:top;
+      font-size:13px;
+    }
+    th { color:#475569;background:#f8fafc; }
+    .accuracy-pill {
+      display:inline-block;
+      padding:4px 7px;
+      border-radius:999px;
+      background:#e0e7ff;
+      color:#3730a3;
+      font-weight:900;
+    }
+    .empty {
+      padding:22px;
+      border:2px dashed #cbd5e1;
+      border-radius:14px;
+      text-align:center;
+      color:#64748b;
+      background:#f8fafc;
+    }
+
+    .loading {
+      position:fixed;
+      inset:0;
+      display:grid;
+      place-items:center;
+      background:rgba(15,23,42,.48);
+      z-index:10;
+    }
+    .loading-card {
+      padding:20px 24px;
+      border-radius:16px;
+      background:#fff;
+      color:#172554;
+      font-weight:900;
+      box-shadow:0 15px 50px rgba(0,0,0,.25);
+    }
+
+    @media(max-width:1050px) {
+      .metric-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+      .layout { grid-template-columns:1fr; }
+    }
+    @media(max-width:680px) {
+      .shell { padding:0; }
+      .topbar { border-radius:0;box-shadow:none;align-items:flex-start; }
+      .top-actions { flex-direction:column; }
+      .controls {
+        grid-template-columns:1fr;
+        margin:18px 12px;
+      }
+      .student-banner { margin:0 12px 18px; }
+      .metric-grid {
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        padding:0 12px;
+      }
+      .layout { padding:0 12px 24px; }
+      .student-banner h2 { font-size:24px; }
+      .level-orb { width:70px;height:70px; }
+      .pin-row { grid-template-columns:1fr; }
+      .unlock-card { margin:35px auto;padding:22px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="loading" class="loading hidden">
+    <div class="loading-card">☁️ Loading family analytics...</div>
+  </div>
+
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">∑</div>
+        <div>
+          <h1>Parent Control Center</h1>
+          <p>Math Master v7.0 · Read-only analytics</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a href="index.html">🎮 Student Quiz</a>
+        <button id="lockBtn" type="button" class="hidden">🔒 Lock</button>
+      </div>
+    </header>
+
+    <section id="unlockView" class="unlock-card">
+      <h2>👨‍👩‍👧 Parent access</h2>
+      <p>
+        Enter the Parent Dashboard PIN configured in Google Apps Script.
+        The PIN is kept only for this browser tab.
+      </p>
+      <div class="pin-row">
+        <input id="pinInput" type="password" inputmode="numeric"
+          maxlength="8" placeholder="••••" autocomplete="one-time-code">
+        <button id="unlockBtn" class="primary-btn" type="button">
+          Unlock Dashboard
+        </button>
+      </div>
+      <div id="unlockMessage" class="message"></div>
+      <div class="family-security">
+        This is a lightweight family PIN, not full Google-account
+        authentication. Do not share the dashboard PIN publicly.
+      </div>
+    </section>
+
+    <section id="dashboardView" class="hidden">
+      <div class="controls">
+        <div>
+          <label for="studentSelect">Student</label>
+          <select id="studentSelect"></select>
+        </div>
+        <button id="refreshBtn" class="control-btn" type="button">
+          ↻ Refresh
+        </button>
+        <button id="changePinBtn" class="control-btn secondary" type="button">
+          Change PIN
+        </button>
+      </div>
+
+      <div id="syncLine" class="sync-line"></div>
+
+      <section class="student-banner">
+        <div>
+          <h2 id="studentName">Student</h2>
+          <p id="studentIdLabel"></p>
+          <div style="margin-top:13px;">
+            <div class="xp-track"><div id="levelProgressBar"></div></div>
+            <p id="levelProgressText"
+              style="margin:7px 0 0;color:#e0e7ff;font-size:13px;"></p>
+          </div>
+        </div>
+        <div class="level-orb">
+          <div><span>LEVEL</span><strong id="levelValue">1</strong></div>
+        </div>
+      </section>
+
+      <section id="metricGrid" class="metric-grid"></section>
+
+      <div class="layout">
+        <div class="stack">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>📈 Assessment accuracy trend</h3>
+                <div class="panel-note">
+                  Last 14 calendar days ending at the latest assessment.
+                  Dates remain visible even on days with no activity.
+                </div>
+              </div>
+            </div>
+            <div class="trend-scroll">
+              <div id="trendChart" class="trend-chart"></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>🧠 Questions needing attention</h3>
+                <div class="panel-note">
+                  Calculated from normal assessments only, so repeated
+                  Targeted Practice cannot distort this list.
+                </div>
+              </div>
+            </div>
+            <div id="weakQuestions"></div>
+          </section>
+        </div>
+
+        <div class="stack">
+          <section id="missionPanel" class="panel"></section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>➗ Performance by operation</h3>
+                <div class="panel-note">
+                  First-try accuracy and average response time.
+                </div>
+              </div>
+            </div>
+            <div id="operationStats"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>🏆 Achievements</h3>
+                <div class="panel-note">Cloud-synced badges.</div>
+              </div>
+            </div>
+            <div id="achievements" class="achievement-list"></div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>🕒 Recent activity</h3>
+                <div class="panel-note">
+                  Includes fair-play XP decisions for Targeted Practice.
+                </div>
+              </div>
+            </div>
+            <div id="recentSessions" class="session-list"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgsLdSvTidRNDXpZ3PgoMBwwrEofRnwHYRawyMKq9D4edbbrIBaSYIcHES8TZTMWXd/exec";
+    const PIN_SESSION_KEY = "mathMasterParentDashboardPin";
+
+    let activePin = "";
+    let activeStudentId = "";
+    let callbackCounter = 0;
+
+    const $ = id => document.getElementById(id);
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function formatPercent(value) {
+      return `${Math.round(Number(value || 0) * 100)}%`;
+    }
+
+    function formatSeconds(value) {
+      const number = Number(value || 0);
+      return number ? `${number.toFixed(1)}s` : "—";
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "No activity yet";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "—";
+      return date.toLocaleString(undefined, {
+        day:"numeric",month:"short",year:"numeric",
+        hour:"2-digit",minute:"2-digit"
+      });
+    }
+
+    function formatDate(value) {
+      if (!value) return "—";
+      const date = new Date(`${String(value).slice(0,10)}T00:00:00`);
+      if (Number.isNaN(date.getTime())) return String(value);
+      return date.toLocaleDateString(undefined, {
+        day:"numeric",month:"short",year:"numeric"
+      });
+    }
+
+    function jsonpRequest(parameters, timeoutMs=15000) {
+      return new Promise((resolve,reject) => {
+        const callbackName =
+          `parentDashboardCallback_${Date.now()}_${callbackCounter++}`;
+        const script = document.createElement("script");
+        let timer;
+
+        const cleanup = () => {
+          clearTimeout(timer);
+          if (script.parentNode) script.parentNode.removeChild(script);
+          try { delete window[callbackName]; }
+          catch (_) { window[callbackName] = undefined; }
+        };
+
+        window[callbackName] = data => {
+          cleanup();
+          resolve(data);
+        };
+
+        script.onerror = () => {
+          cleanup();
+          reject(new Error("Unable to contact Google Apps Script."));
+        };
+
+        const query = new URLSearchParams({
+          ...parameters,
+          callback:callbackName,
+          cacheBust:String(Date.now())
+        });
+
+        script.src = `${APPS_SCRIPT_URL}?${query.toString()}`;
+        document.body.appendChild(script);
+
+        timer = setTimeout(() => {
+          cleanup();
+          reject(new Error("Dashboard request timed out."));
+        }, timeoutMs);
+      });
+    }
+
+    function setLoading(loading) {
+      $("loading").classList.toggle("hidden", !loading);
+    }
+
+    async function loadDashboard(studentId="") {
+      if (!activePin) return;
+
+      setLoading(true);
+      $("unlockMessage").textContent = "";
+
+      try {
+        const response = await jsonpRequest({
+          action:"getParentDashboard",
+          pin:activePin,
+          studentId:studentId || activeStudentId
+        });
+
+        if (!response || response.ok !== true) {
+          const error = new Error(
+            response?.error || "Unable to load dashboard."
+          );
+          error.code = response?.code || "";
+          throw error;
+        }
+
+        if (!response.students?.length || !response.dashboard) {
+          showDashboard();
+          $("dashboardView").innerHTML = `
+            <div class="empty" style="margin-top:24px;">
+              No student profile is available yet. Complete a quiz first.
+            </div>`;
+          return;
+        }
+
+        activeStudentId = response.selectedStudentId;
+        sessionStorage.setItem(PIN_SESSION_KEY, activePin);
+
+        populateStudents(
+          response.students,
+          response.selectedStudentId
+        );
+        renderDashboard(response.dashboard);
+        showDashboard();
+
+        $("syncLine").textContent =
+          `Cloud data refreshed: ${formatDateTime(response.generatedAt)}`;
+      } catch (error) {
+        console.error(error);
+
+        if (
+          error.code === "INVALID_PIN" ||
+          error.code === "PIN_NOT_CONFIGURED"
+        ) {
+          sessionStorage.removeItem(PIN_SESSION_KEY);
+          activePin = "";
+          showUnlock();
+          $("unlockMessage").textContent = error.message;
+        } else {
+          $("unlockMessage").textContent = error.message;
+          if (!$("dashboardView").classList.contains("hidden")) {
+            alert(error.message);
+          }
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function showDashboard() {
+      $("unlockView").classList.add("hidden");
+      $("dashboardView").classList.remove("hidden");
+      $("lockBtn").classList.remove("hidden");
+    }
+
+    function showUnlock() {
+      $("dashboardView").classList.add("hidden");
+      $("unlockView").classList.remove("hidden");
+      $("lockBtn").classList.add("hidden");
+      $("pinInput").value = "";
+      setTimeout(() => $("pinInput").focus(), 50);
+    }
+
+    function populateStudents(students, selectedId) {
+      const select = $("studentSelect");
+      select.innerHTML = students.map(student => `
+        <option value="${escapeHtml(student.studentId)}"
+          ${student.studentId===selectedId?"selected":""}>
+          ${escapeHtml(student.studentName)} ·
+          ${escapeHtml(student.studentId)}
+        </option>
+      `).join("");
+    }
+
+    function renderDashboard(data) {
+      const summary = data.summary;
+      const profile = data.profile;
+
+      $("studentName").textContent =
+        data.student.studentName || data.student.studentId;
+      $("studentIdLabel").textContent =
+        `Student ID: ${data.student.studentId}`;
+      $("levelValue").textContent = summary.level;
+
+      const levelPercent = Math.min(
+        100,
+        (summary.xpIntoLevel / summary.xpNeededForLevel) * 100
+      );
+
+      $("levelProgressBar").style.width = `${levelPercent}%`;
+      $("levelProgressText").textContent =
+        `${summary.xpIntoLevel} / ${summary.xpNeededForLevel} XP toward Level ${summary.level + 1}`;
+
+      renderMetrics(summary);
+      renderTrend(data.trend);
+      renderOperations(data.operationStats);
+      renderWeakQuestions(data.weakQuestions);
+      renderRecentSessions(data.recentSessions);
+      renderAchievements(data.achievements);
+      renderMission(data.activeMission);
+    }
+
+    function renderMetrics(summary) {
+      const metrics = [
+        ["⭐","Lifetime XP",summary.totalXp,
+          `Level ${summary.level}`],
+        ["🔥","Current streak",
+          `${summary.currentStreak} days`,
+          `Best: ${summary.longestStreak} days`],
+        ["📝","Assessments",summary.assessments,
+          `${summary.assessmentQuestions} assessment questions`],
+        ["🎯","Eligible practice",
+          summary.eligiblePracticeSets,
+          "Fair-play rewarded sets"],
+        ["✅","Assessment accuracy",
+          formatPercent(summary.assessmentAccuracy),
+          `${summary.wrongAttempts} wrong attempts`],
+        ["⏱️","Average time",
+          formatSeconds(summary.averageAssessmentTime),
+          `Last: ${formatDateTime(summary.lastActivity)}`]
+      ];
+
+      $("metricGrid").innerHTML = metrics.map(metric => `
+        <article class="metric">
+          <div class="metric-icon">${metric[0]}</div>
+          <div class="metric-label">${escapeHtml(metric[1])}</div>
+          <div class="metric-value">${escapeHtml(metric[2])}</div>
+          <div class="metric-sub">${escapeHtml(metric[3])}</div>
+        </article>
+      `).join("");
+    }
+
+    function renderTrend(points) {
+      $("trendChart").innerHTML = points.map(point => {
+        const height = point.questions
+          ? Math.max(8, Math.round(point.accuracy * 100))
+          : 4;
+
+        return `
+          <div class="trend-day ${point.questions?"":"no-data"}"
+            title="${escapeHtml(point.label)}:
+              ${point.questions} questions,
+              ${formatPercent(point.accuracy)} accuracy">
+            <div class="trend-bar-wrap">
+              <div class="trend-bar"
+                style="height:${height}%"></div>
+            </div>
+            <div class="trend-value">
+              ${point.questions ? formatPercent(point.accuracy) : "—"}
+            </div>
+            <div class="trend-label">${escapeHtml(point.label)}</div>
+          </div>`;
+      }).join("");
+    }
+
+    function renderOperations(items) {
+      const container = $("operationStats");
+
+      if (!items?.length) {
+        container.innerHTML =
+          '<div class="empty">No assessment data yet.</div>';
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="operation-row">
+          <div class="operation-line">
+            <span>${escapeHtml(item.symbol)} ${escapeHtml(item.label)}</span>
+            <span>${formatPercent(item.accuracy)}</span>
+          </div>
+          <div class="operation-track">
+            <div style="width:${Math.round(item.accuracy*100)}%"></div>
+          </div>
+          <div class="operation-meta">
+            ${item.questions} questions ·
+            ${formatSeconds(item.averageTime)} average ·
+            ${item.wrongAttempts} wrong attempts
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderWeakQuestions(items) {
+      const container = $("weakQuestions");
+
+      if (!items?.length) {
+        container.innerHTML =
+          '<div class="empty">No weak assessment questions detected.</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Operation</th>
+                <th>Accuracy</th>
+                <th>Avg. time</th>
+                <th>Common wrong answers</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${items.map(item => `
+                <tr>
+                  <td><strong>${escapeHtml(item.question)}</strong>
+                    <div class="panel-note">
+                      Tested ${item.tests} time${item.tests===1?"":"s"}
+                    </div>
+                  </td>
+                  <td>${escapeHtml(item.operationLabel)}</td>
+                  <td>
+                    <span class="accuracy-pill">
+                      ${formatPercent(item.accuracy)}
+                    </span>
+                  </td>
+                  <td>${formatSeconds(item.averageTime)}</td>
+                  <td>${
+                    item.commonWrongAnswers?.length
+                      ? escapeHtml(item.commonWrongAnswers.join(", "))
+                      : "—"
+                  }</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    function renderRecentSessions(items) {
+      const container = $("recentSessions");
+
+      if (!items?.length) {
+        container.innerHTML =
+          '<div class="empty">No session history yet.</div>';
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const practice = item.sessionType === "Targeted Practice";
+        const icon = practice ? "🎯" : "📝";
+        const xpClass = item.sessionXp > 0 ? "" : " zero";
+
+        return `
+          <div class="session-item"
+            title="${escapeHtml(item.eligibilityReason || "")}">
+            <div class="session-icon">${icon}</div>
+            <div>
+              <div class="session-title">
+                ${escapeHtml(item.sessionType || "Session")}
+              </div>
+              <div class="session-meta">
+                ${formatDateTime(item.completedAt)} ·
+                ${item.questions} questions · Level ${item.level}
+              </div>
+            </div>
+            <div class="xp-pill${xpClass}">
+              +${item.sessionXp} XP
+            </div>
+          </div>`;
+      }).join("");
+    }
+
+    function renderAchievements(items) {
+      const container = $("achievements");
+
+      if (!items?.length) {
+        container.innerHTML =
+          '<div class="empty">No achievement unlocked yet.</div>';
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <span class="achievement"
+          title="${item.unlockedAt
+            ? `Unlocked ${formatDateTime(item.unlockedAt)}`
+            : "Unlocked achievement"}">
+          🏅 ${escapeHtml(item.name)}
+        </span>
+      `).join("");
+    }
+
+    function requirementHtml(label,current,target,percentMode=false) {
+      target = Number(target || 0);
+      if (target <= 0) return "";
+
+      current = Number(current || 0);
+      const percentage = Math.min(100,(current/target)*100);
+      const currentLabel = percentMode
+        ? formatPercent(current)
+        : current;
+      const targetLabel = percentMode
+        ? formatPercent(target)
+        : target;
+
+      return `
+        <div class="mission-requirement">
+          <div class="mission-line">
+            <span>${escapeHtml(label)}</span>
+            <span>${escapeHtml(currentLabel)} /
+              ${escapeHtml(targetLabel)}</span>
+          </div>
+          <div class="mission-track">
+            <div style="width:${percentage}%"></div>
+          </div>
+        </div>`;
+    }
+
+    function renderMission(activeMission) {
+      const panel = $("missionPanel");
+
+      if (!activeMission) {
+        panel.innerHTML = `
+          <div class="panel-head">
+            <div>
+              <h3>🎮 Weekly mission</h3>
+              <div class="panel-note">No active mission right now.</div>
+            </div>
+          </div>
+          <div class="empty">
+            Create missions in the Google Sheets Missions tab for now.
+          </div>`;
+        return;
+      }
+
+      const mission = activeMission.mission;
+      const progress = activeMission.progress;
+      const requirements = activeMission.requirements;
+
+      panel.innerHTML = `
+        <div class="mission-card">
+          <h3>🎮 ${escapeHtml(mission.name)}</h3>
+          <div class="panel-note">
+            ${formatDate(mission.startDate)} –
+            ${formatDate(mission.endDate)}
+          </div>
+
+          ${requirementHtml(
+            "Assessments",
+            progress.assessments,
+            requirements.assessments
+          )}
+          ${requirementHtml(
+            "Eligible practice",
+            progress.practiceSets,
+            requirements.practiceSets
+          )}
+          ${requirementHtml(
+            "Questions",
+            progress.questions,
+            requirements.questions
+          )}
+          ${requirementHtml(
+            "Period XP",
+            progress.periodXp,
+            requirements.periodXp
+          )}
+          ${requirementHtml(
+            "First-try accuracy",
+            progress.accuracy,
+            requirements.accuracy,
+            true
+          )}
+
+          <div class="mission-reward">
+            ${activeMission.completed ? "🏆 Mission complete" : "🎁 Reward"}:
+            ${mission.rewardMinutes
+              ? `${mission.rewardMinutes} minutes — `
+              : ""}
+            ${escapeHtml(mission.reward || "Parent-selected reward")}
+          </div>
+        </div>`;
+    }
+
+    async function unlockDashboard() {
+      const pin = $("pinInput").value.trim();
+
+      if (!/^\d{4,8}$/.test(pin)) {
+        $("unlockMessage").textContent =
+          "Enter the 4 to 8 digit Parent Dashboard PIN.";
+        return;
+      }
+
+      activePin = pin;
+      await loadDashboard();
+    }
+
+    function lockDashboard() {
+      sessionStorage.removeItem(PIN_SESSION_KEY);
+      activePin = "";
+      activeStudentId = "";
+      showUnlock();
+    }
+
+    $("unlockBtn").addEventListener("click", unlockDashboard);
+    $("pinInput").addEventListener("keydown", event => {
+      if (event.key === "Enter") unlockDashboard();
+    });
+    $("refreshBtn").addEventListener("click", () =>
+      loadDashboard(activeStudentId)
+    );
+    $("studentSelect").addEventListener("change", event =>
+      loadDashboard(event.target.value)
+    );
+    $("lockBtn").addEventListener("click", lockDashboard);
+    $("changePinBtn").addEventListener("click", lockDashboard);
+
+    const savedPin = sessionStorage.getItem(PIN_SESSION_KEY);
+
+    if (savedPin) {
+      activePin = savedPin;
+      loadDashboard();
+    } else {
+      showUnlock();
+    }
+  </script>
+</body>
+</html>
