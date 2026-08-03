@@ -1,53 +1,78 @@
-# Math Master v7.0.1 — Parent Dashboard Performance Fix
+# Math Master v7.1 — Mission Builder
 
-## Cause of the timeout
+## What this phase adds
 
-The v7.0 read request ran `setupSheets()` more than once.
+Parents can now manage weekly missions from `dashboard.html`:
 
-That setup function formats every tab and runs `autoResizeColumns()`. It is
-appropriate during installation, but too expensive to run before every
-dashboard read. The browser stopped waiting after 15 seconds.
+- Create a mission
+- Edit a mission
+- Save as Draft or Active
+- Archive a mission
+- Review mission history and live progress
+- Prevent overlapping active missions for the same student
 
-## Fixes
+The mission is still manually created by the parent. Automatic weekly mission
+generation will be added only after this builder is verified.
 
-- Removed `setupSheets()` from read-only GET requests.
-- Avoided a second StudentProfiles read.
-- Reused loaded XP and response data for mission calculations.
-- Increased the browser's initial wait from 15 to 45 seconds.
-- Added server processing time to the dashboard status line.
-
-## Install
+## Backend installation
 
 1. Open the Math Master spreadsheet.
 2. Go to `Extensions → Apps Script`.
-3. Replace the current `Code.gs` with the supplied v7.0.1 file.
+3. Replace the existing `Code.gs` with the supplied v7.1 file.
 4. Save.
-5. Do not run `setupSheets()` for this patch.
-6. Update the existing Web App:
+5. Run `setupSheets()` once.
+6. Update the existing Web App deployment:
    `Deploy → Manage deployments → Edit → New version → Deploy`
-7. Replace GitHub files:
-   - `index.html`
-   - `dashboard.html`
-8. Commit the changes.
 
-## Test
+Your existing Parent PIN remains valid.
+
+## GitHub installation
+
+Replace these files in the root of `quiz-app`:
+
+- `index.html`
+- `dashboard.html`
+
+Commit the changes.
+
+## Test URLs
 
 Quiz:
 
-https://abuubaidahrj.github.io/quiz-app/?version=v7-0-1
+https://abuubaidahrj.github.io/quiz-app/?version=v7-1
 
 Dashboard:
 
-https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-0-1
+https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-1
 
-A successful dashboard load displays:
+## Recommended first mission
 
-`Server processing: X.Xs`
+- Mission name: Nintendo Weekend Mission
+- Start/end: Monday to Sunday
+- Assessments: 3
+- Eligible practice: 2
+- Questions: 50
+- Minimum accuracy: 80%
+- Mission-period XP: 0
+- Reward: Nintendo this weekend
+- Reward minutes: 60
+- Status: Active
 
-## If it still times out
+Only fair-play eligible Targeted Practice counts.
 
-Open Apps Script → Executions and inspect the latest `doGet`:
+## Important behavior
 
-- Completed: browser or deployment/cache issue
-- Failed: open the execution to see the exact error
-- Running: spreadsheet reads are still taking too long
+- Lifetime historical XP does not complete a new mission.
+- Only activity inside Start Date and End Date is counted.
+- Active missions for the same student cannot overlap.
+- Archive an old active mission before creating another mission over the same
+  date range.
+- Archived missions remain in Google Sheets for history.
+
+## Next phase
+
+v7.2 will add:
+
+- automatic weekly mission templates;
+- automatic Monday mission creation;
+- parent approval and reward redemption states.

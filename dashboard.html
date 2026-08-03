@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#172554">
-  <title>Math Master Parent Dashboard</title>
+  <title>Math Master Parent Dashboard & Mission Builder</title>
   <style>
     :root {
       font-family:"Trebuchet MS",Arial,sans-serif;
@@ -135,7 +135,7 @@
 
     .controls {
       display:grid;
-      grid-template-columns:minmax(220px,1fr) auto auto;
+      grid-template-columns:minmax(220px,1fr) auto auto auto;
       gap:10px;
       align-items:end;
       margin:26px 0 18px;
@@ -171,6 +171,164 @@
       color:#64748b;
       font-size:13px;
     }
+
+    .control-btn.builder {
+      background:#f97316;
+      box-shadow:0 4px 0 #c2410c;
+    }
+    .builder-panel {
+      margin:0 0 20px;
+      padding:20px;
+      border:3px solid #8b5cf6;
+      border-radius:20px;
+      background:linear-gradient(135deg,#faf5ff,#eff6ff);
+      box-shadow:0 7px 0 #ddd6fe;
+    }
+    .builder-head {
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      align-items:flex-start;
+      margin-bottom:18px;
+    }
+    .builder-head h2 {
+      margin:0 0 4px;
+      font-size:26px;
+    }
+    .builder-grid {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:13px;
+    }
+    .builder-field.wide {
+      grid-column:span 2;
+    }
+    .builder-field.full {
+      grid-column:1 / -1;
+    }
+    .builder-field input,
+    .builder-field select,
+    .builder-field textarea {
+      width:100%;
+      padding:11px 12px;
+      border:2px solid #c4b5fd;
+      border-radius:11px;
+      background:#fff;
+      color:#172554;
+    }
+    .builder-field textarea {
+      min-height:82px;
+      resize:vertical;
+    }
+    .builder-hint {
+      margin-top:4px;
+      color:#64748b;
+      font-size:11px;
+      line-height:1.4;
+    }
+    .builder-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:17px;
+    }
+    .builder-actions button {
+      width:auto;
+      padding:11px 15px;
+      border:0;
+      border-radius:11px;
+      color:#fff;
+      font-weight:900;
+    }
+    .save-mission-btn {
+      background:#16a34a;
+      box-shadow:0 4px 0 #166534;
+    }
+    .new-mission-btn {
+      background:#2563eb;
+      box-shadow:0 4px 0 #1e40af;
+    }
+    .close-builder-btn {
+      background:#475569;
+      box-shadow:0 4px 0 #1e293b;
+    }
+    .builder-message {
+      min-height:22px;
+      margin-top:13px;
+      font-weight:800;
+    }
+    .builder-message.ok { color:#166534; }
+    .builder-message.error { color:#b91c1c; }
+    .mission-history {
+      margin-top:22px;
+      padding-top:18px;
+      border-top:2px dashed #c4b5fd;
+    }
+    .mission-history-grid {
+      display:grid;
+      gap:10px;
+    }
+    .history-card {
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:13px;
+      align-items:center;
+      padding:13px;
+      border:2px solid #e2e8f0;
+      border-radius:13px;
+      background:#fff;
+    }
+    .history-title {
+      font-weight:1000;
+      font-size:16px;
+    }
+    .history-meta {
+      margin-top:4px;
+      color:#64748b;
+      font-size:12px;
+      line-height:1.45;
+    }
+    .history-status {
+      display:inline-block;
+      padding:3px 7px;
+      border-radius:999px;
+      margin-left:5px;
+      background:#e0e7ff;
+      color:#3730a3;
+      font-size:11px;
+      font-weight:900;
+    }
+    .history-status.active {
+      background:#dcfce7;
+      color:#166534;
+    }
+    .history-status.archived {
+      background:#e2e8f0;
+      color:#475569;
+    }
+    .history-status.completed {
+      background:#fef3c7;
+      color:#92400e;
+    }
+    .history-actions {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:7px;
+    }
+    .history-actions button {
+      width:auto;
+      margin:0;
+      padding:8px 10px;
+      border:0;
+      border-radius:9px;
+      color:#fff;
+      font-size:12px;
+      font-weight:900;
+    }
+    .edit-mission-btn { background:#2563eb; }
+    .archive-mission-btn { background:#dc2626; }
+
 
     .student-banner {
       display:grid;
@@ -454,6 +612,7 @@
     @media(max-width:1050px) {
       .metric-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
       .layout { grid-template-columns:1fr; }
+      .builder-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     }
     @media(max-width:680px) {
       .shell { padding:0; }
@@ -473,6 +632,12 @@
       .level-orb { width:70px;height:70px; }
       .pin-row { grid-template-columns:1fr; }
       .unlock-card { margin:35px auto;padding:22px; }
+      .builder-panel { margin:0 12px 20px;padding:16px; }
+      .builder-grid { grid-template-columns:1fr; }
+      .builder-field.wide,
+      .builder-field.full { grid-column:auto; }
+      .history-card { grid-template-columns:1fr; }
+      .history-actions { justify-content:flex-start; }
     }
   </style>
 </head>
@@ -487,7 +652,7 @@
         <div class="brand-icon">∑</div>
         <div>
           <h1>Parent Control Center</h1>
-          <p>Math Master v7.0.1 · Faster read-only analytics</p>
+          <p>Math Master v7.1 · Mission Builder</p>
         </div>
       </div>
       <div class="top-actions">
@@ -525,12 +690,141 @@
         <button id="refreshBtn" class="control-btn" type="button">
           ↻ Refresh
         </button>
+        <button id="missionBuilderBtn"
+          class="control-btn builder" type="button">
+          🎯 Mission Builder
+        </button>
         <button id="changePinBtn" class="control-btn secondary" type="button">
           Change PIN
         </button>
       </div>
 
       <div id="syncLine" class="sync-line"></div>
+
+      <section id="missionBuilder" class="builder-panel hidden">
+        <div class="builder-head">
+          <div>
+            <h2>🎯 Weekly Mission Builder</h2>
+            <div class="panel-note">
+              Create or edit a mission for the selected student.
+              Only activity inside the mission dates is counted.
+            </div>
+          </div>
+          <button id="builderCloseTop" class="control-btn secondary"
+            type="button" style="width:auto;">
+            ✕ Close
+          </button>
+        </div>
+
+        <input id="missionId" type="hidden">
+
+        <div class="builder-grid">
+          <div class="builder-field wide">
+            <label for="missionName">Mission name</label>
+            <input id="missionName" maxlength="100"
+              placeholder="Nintendo Weekend Mission">
+          </div>
+
+          <div class="builder-field">
+            <label for="missionStartDate">Start date</label>
+            <input id="missionStartDate" type="date">
+          </div>
+
+          <div class="builder-field">
+            <label for="missionEndDate">End date</label>
+            <input id="missionEndDate" type="date">
+          </div>
+
+          <div class="builder-field">
+            <label for="missionAssessments">Assessments</label>
+            <input id="missionAssessments" type="number"
+              min="0" max="50" step="1" value="3">
+          </div>
+
+          <div class="builder-field">
+            <label for="missionPractice">Eligible practice</label>
+            <input id="missionPractice" type="number"
+              min="0" max="14" step="1" value="2">
+            <div class="builder-hint">
+              Fair-play rewarded Targeted Practice only.
+            </div>
+          </div>
+
+          <div class="builder-field">
+            <label for="missionQuestions">Questions</label>
+            <input id="missionQuestions" type="number"
+              min="0" max="5000" step="1" value="50">
+          </div>
+
+          <div class="builder-field">
+            <label for="missionAccuracy">Minimum accuracy (%)</label>
+            <input id="missionAccuracy" type="number"
+              min="0" max="100" step="1" value="80">
+          </div>
+
+          <div class="builder-field">
+            <label for="missionPeriodXp">Mission-period XP</label>
+            <input id="missionPeriodXp" type="number"
+              min="0" max="100000" step="1" value="0">
+            <div class="builder-hint">
+              Lifetime historical XP is not used.
+            </div>
+          </div>
+
+          <div class="builder-field wide">
+            <label for="missionReward">Reward</label>
+            <input id="missionReward" maxlength="150"
+              placeholder="Nintendo this weekend"
+              value="Nintendo this weekend">
+          </div>
+
+          <div class="builder-field">
+            <label for="missionRewardMinutes">Reward minutes</label>
+            <input id="missionRewardMinutes" type="number"
+              min="0" max="1440" step="5" value="60">
+          </div>
+
+          <div class="builder-field">
+            <label for="missionStatus">Status</label>
+            <select id="missionStatus">
+              <option value="Draft">Draft</option>
+              <option value="Active" selected>Active</option>
+            </select>
+          </div>
+
+          <div class="builder-field full">
+            <label for="missionNotes">Parent notes</label>
+            <textarea id="missionNotes" maxlength="300"
+              placeholder="Parent approval is required before reward redemption."></textarea>
+          </div>
+        </div>
+
+        <div class="builder-actions">
+          <button id="saveMissionBtn" class="save-mission-btn"
+            type="button">
+            💾 Save Mission
+          </button>
+          <button id="newMissionBtn" class="new-mission-btn"
+            type="button">
+            ＋ New Mission
+          </button>
+          <button id="closeMissionBuilderBtn" class="close-builder-btn"
+            type="button">
+            Close
+          </button>
+        </div>
+
+        <div id="builderMessage" class="builder-message"></div>
+
+        <div class="mission-history">
+          <h3>Mission history for selected student</h3>
+          <div class="panel-note" style="margin-bottom:11px;">
+            Active missions cannot overlap the same dates.
+            Archive an old mission before creating an overlapping one.
+          </div>
+          <div id="missionHistoryList" class="mission-history-grid"></div>
+        </div>
+      </section>
 
       <section class="student-banner">
         <div>
@@ -628,6 +922,8 @@
     let activePin = "";
     let activeStudentId = "";
     let callbackCounter = 0;
+    let currentDashboardData = null;
+    let currentMissions = [];
 
     const $ = id => document.getElementById(id);
 
@@ -746,6 +1042,8 @@
         }
 
         activeStudentId = response.selectedStudentId;
+        currentDashboardData = response.dashboard;
+        currentMissions = response.dashboard.missions || [];
         sessionStorage.setItem(PIN_SESSION_KEY, activePin);
 
         populateStudents(
@@ -835,6 +1133,7 @@
       renderRecentSessions(data.recentSessions);
       renderAchievements(data.achievements);
       renderMission(data.activeMission);
+      renderMissionHistory(data.missions || []);
     }
 
     function renderMetrics(summary) {
@@ -1056,7 +1355,7 @@
             </div>
           </div>
           <div class="empty">
-            Create missions in the Google Sheets Missions tab for now.
+            Use Mission Builder above to create the first mission.
           </div>`;
         return;
       }
@@ -1110,6 +1409,333 @@
         </div>`;
     }
 
+
+    function localDateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2,"0");
+      const day = String(date.getDate()).padStart(2,"0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function currentWeekRange() {
+      const now = new Date();
+      const day = now.getDay();
+      const mondayOffset = day === 0 ? -6 : 1 - day;
+      const monday = new Date(now);
+      monday.setDate(now.getDate() + mondayOffset);
+      monday.setHours(0,0,0,0);
+
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+
+      return {
+        start: localDateKey(monday),
+        end: localDateKey(sunday)
+      };
+    }
+
+    function resetMissionForm() {
+      const week = currentWeekRange();
+
+      $("missionId").value = "";
+      $("missionName").value = "Nintendo Weekend Mission";
+      $("missionStartDate").value = week.start;
+      $("missionEndDate").value = week.end;
+      $("missionAssessments").value = 3;
+      $("missionPractice").value = 2;
+      $("missionQuestions").value = 50;
+      $("missionAccuracy").value = 80;
+      $("missionPeriodXp").value = 0;
+      $("missionReward").value = "Nintendo this weekend";
+      $("missionRewardMinutes").value = 60;
+      $("missionStatus").value = "Active";
+      $("missionNotes").value =
+        "Parent approval is required before reward redemption.";
+      setBuilderMessage("", "");
+    }
+
+    function openMissionBuilder(missionId="") {
+      $("missionBuilder").classList.remove("hidden");
+
+      if (missionId) {
+        editMission(missionId);
+      } else {
+        resetMissionForm();
+      }
+
+      renderMissionHistory(currentMissions);
+      $("missionBuilder").scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }
+
+    function closeMissionBuilder() {
+      $("missionBuilder").classList.add("hidden");
+      setBuilderMessage("", "");
+    }
+
+    function setBuilderMessage(message, type="") {
+      const element = $("builderMessage");
+      element.textContent = message;
+      element.className = `builder-message ${type}`.trim();
+    }
+
+    function editMission(missionId) {
+      const item = currentMissions.find(entry =>
+        entry.mission.id === missionId
+      );
+
+      if (!item) {
+        setBuilderMessage("Mission could not be loaded.", "error");
+        return;
+      }
+
+      const mission = item.mission;
+      const requirements = item.requirements;
+
+      $("missionId").value = mission.id;
+      $("missionName").value = mission.name || "";
+      $("missionStartDate").value = mission.startDate || "";
+      $("missionEndDate").value = mission.endDate || "";
+      $("missionAssessments").value =
+        Number(requirements.assessments || 0);
+      $("missionPractice").value =
+        Number(requirements.practiceSets || 0);
+      $("missionQuestions").value =
+        Number(requirements.questions || 0);
+      $("missionAccuracy").value =
+        Math.round(Number(requirements.accuracy || 0) * 100);
+      $("missionPeriodXp").value =
+        Number(requirements.periodXp || 0);
+      $("missionReward").value = mission.reward || "";
+      $("missionRewardMinutes").value =
+        Number(mission.rewardMinutes || 0);
+      $("missionStatus").value =
+        mission.status === "Active" ? "Active" : "Draft";
+      $("missionNotes").value = mission.notes || "";
+
+      setBuilderMessage(
+        `Editing: ${mission.name}`,
+        ""
+      );
+    }
+
+    function missionFormParameters() {
+      return {
+        action:"saveMission",
+        pin:activePin,
+        missionId:$("missionId").value.trim(),
+        studentId:activeStudentId,
+        missionName:$("missionName").value.trim(),
+        startDate:$("missionStartDate").value,
+        endDate:$("missionEndDate").value,
+        assessments:$("missionAssessments").value,
+        practiceSets:$("missionPractice").value,
+        questions:$("missionQuestions").value,
+        accuracyPercent:$("missionAccuracy").value,
+        periodXp:$("missionPeriodXp").value,
+        reward:$("missionReward").value.trim(),
+        rewardMinutes:$("missionRewardMinutes").value,
+        status:$("missionStatus").value,
+        notes:$("missionNotes").value.trim()
+      };
+    }
+
+    function validateMissionForm(parameters) {
+      if (!parameters.missionName) {
+        return "Mission name is required.";
+      }
+
+      if (!parameters.startDate || !parameters.endDate) {
+        return "Start date and end date are required.";
+      }
+
+      if (parameters.startDate > parameters.endDate) {
+        return "End date must be on or after start date.";
+      }
+
+      const requirements = [
+        Number(parameters.assessments || 0),
+        Number(parameters.practiceSets || 0),
+        Number(parameters.questions || 0),
+        Number(parameters.accuracyPercent || 0),
+        Number(parameters.periodXp || 0)
+      ];
+
+      if (!requirements.some(value => value > 0)) {
+        return "Set at least one mission requirement above zero.";
+      }
+
+      if (!parameters.reward) {
+        return "Reward description is required.";
+      }
+
+      return "";
+    }
+
+    async function saveMission() {
+      const parameters = missionFormParameters();
+      const validationError = validateMissionForm(parameters);
+
+      if (validationError) {
+        setBuilderMessage(validationError, "error");
+        return;
+      }
+
+      setBuilderMessage("Saving mission to Google Sheets...", "");
+      setLoading(true);
+
+      try {
+        const response = await jsonpRequest(parameters, 45000);
+
+        if (!response || response.ok !== true) {
+          throw new Error(response?.error || "Mission could not be saved.");
+        }
+
+        setBuilderMessage(response.message, "ok");
+        await loadDashboard(activeStudentId);
+
+        $("missionBuilder").classList.remove("hidden");
+
+        if (response.missionId) {
+          editMission(response.missionId);
+        }
+
+        renderMissionHistory(currentMissions);
+      } catch (error) {
+        console.error(error);
+        setBuilderMessage(error.message, "error");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function archiveMission(missionId) {
+      const item = currentMissions.find(entry =>
+        entry.mission.id === missionId
+      );
+
+      if (!item) return;
+
+      const confirmed = confirm(
+        `Archive "${item.mission.name}"?\n\n` +
+        "It will stop appearing as an active mission, " +
+        "but its history will remain in Google Sheets."
+      );
+
+      if (!confirmed) return;
+
+      setLoading(true);
+
+      try {
+        const response = await jsonpRequest({
+          action:"archiveMission",
+          pin:activePin,
+          studentId:activeStudentId,
+          missionId:missionId
+        }, 45000);
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error || "Mission could not be archived."
+          );
+        }
+
+        await loadDashboard(activeStudentId);
+        $("missionBuilder").classList.remove("hidden");
+        resetMissionForm();
+        setBuilderMessage(response.message, "ok");
+        renderMissionHistory(currentMissions);
+      } catch (error) {
+        console.error(error);
+        setBuilderMessage(error.message, "error");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function renderMissionHistory(items) {
+      const container = $("missionHistoryList");
+
+      if (!container) return;
+
+      if (!items?.length) {
+        container.innerHTML = `
+          <div class="empty">
+            No mission has been created for this student.
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const mission = item.mission;
+        const status = String(mission.status || "Draft");
+        const statusClass = item.completed
+          ? "completed"
+          : status.toLowerCase();
+
+        const progressParts = [];
+
+        if (item.requirements.assessments > 0) {
+          progressParts.push(
+            `${item.progress.assessments}/${item.requirements.assessments} assessments`
+          );
+        }
+
+        if (item.requirements.practiceSets > 0) {
+          progressParts.push(
+            `${item.progress.practiceSets}/${item.requirements.practiceSets} practice`
+          );
+        }
+
+        if (item.requirements.questions > 0) {
+          progressParts.push(
+            `${item.progress.questions}/${item.requirements.questions} questions`
+          );
+        }
+
+        if (item.requirements.accuracy > 0) {
+          progressParts.push(
+            `${formatPercent(item.progress.accuracy)} accuracy`
+          );
+        }
+
+        return `
+          <div class="history-card">
+            <div>
+              <div class="history-title">
+                ${escapeHtml(mission.name)}
+                <span class="history-status ${statusClass}">
+                  ${item.completed ? "Completed" : escapeHtml(status)}
+                </span>
+              </div>
+              <div class="history-meta">
+                ${formatDate(mission.startDate)} –
+                ${formatDate(mission.endDate)}<br>
+                ${escapeHtml(progressParts.join(" · ") || "No progress requirement")}<br>
+                Reward:
+                ${mission.rewardMinutes
+                  ? `${mission.rewardMinutes} minutes — `
+                  : ""}
+                ${escapeHtml(mission.reward || "Parent-selected reward")}
+              </div>
+            </div>
+            <div class="history-actions">
+              ${status !== "Archived"
+                ? `<button class="edit-mission-btn"
+                    data-edit-mission="${escapeHtml(mission.id)}"
+                    type="button">Edit</button>
+                   <button class="archive-mission-btn"
+                    data-archive-mission="${escapeHtml(mission.id)}"
+                    type="button">Archive</button>`
+                : `<span class="panel-note">Archived</span>`
+              }
+            </div>
+          </div>`;
+      }).join("");
+    }
+
     async function unlockDashboard() {
       const pin = $("pinInput").value.trim();
 
@@ -1137,9 +1763,41 @@
     $("refreshBtn").addEventListener("click", () =>
       loadDashboard(activeStudentId)
     );
-    $("studentSelect").addEventListener("change", event =>
-      loadDashboard(event.target.value)
+    $("studentSelect").addEventListener("change", async event => {
+      closeMissionBuilder();
+      await loadDashboard(event.target.value);
+    });
+    $("missionBuilderBtn").addEventListener("click", () =>
+      openMissionBuilder()
     );
+    $("saveMissionBtn").addEventListener("click", saveMission);
+    $("newMissionBtn").addEventListener("click", resetMissionForm);
+    $("closeMissionBuilderBtn").addEventListener(
+      "click",
+      closeMissionBuilder
+    );
+    $("builderCloseTop").addEventListener(
+      "click",
+      closeMissionBuilder
+    );
+    $("missionHistoryList").addEventListener("click", event => {
+      const editButton = event.target.closest("[data-edit-mission]");
+      const archiveButton = event.target.closest(
+        "[data-archive-mission]"
+      );
+
+      if (editButton) {
+        editMission(editButton.dataset.editMission);
+        $("missionBuilder").scrollIntoView({
+          behavior:"smooth",
+          block:"start"
+        });
+      }
+
+      if (archiveButton) {
+        archiveMission(archiveButton.dataset.archiveMission);
+      }
+    });
     $("lockBtn").addEventListener("click", lockDashboard);
     $("changePinBtn").addEventListener("click", lockDashboard);
 
