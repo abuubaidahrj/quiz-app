@@ -21,6 +21,63 @@
       --line:#dbeafe;
     }
     * { box-sizing:border-box; }
+
+    html {
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+    }
+    body {
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+      padding-top:env(safe-area-inset-top);
+      padding-bottom:env(safe-area-inset-bottom);
+    }
+    img,svg,canvas {
+      max-width:100%;
+    }
+    input,select,textarea,button,a {
+      max-width:100%;
+    }
+    input,select,textarea {
+      font-size:16px;
+    }
+    button,
+    .top-actions a {
+      min-height:44px;
+      touch-action:manipulation;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .brand,
+    .brand > div:last-child,
+    .top-actions,
+    .controls > *,
+    .student-banner > *,
+    .layout > *,
+    .stack,
+    .panel,
+    .panel > *,
+    .history-card > *,
+    .session-item > *,
+    .reward-breakdown-item > * {
+      min-width:0;
+    }
+    .brand h1,
+    .brand p,
+    .panel h3,
+    .history-title,
+    .history-meta,
+    .session-title,
+    .session-meta,
+    .mission-reward,
+    .reward-breakdown-name,
+    .reward-breakdown-reward {
+      overflow-wrap:anywhere;
+    }
+
     body {
       margin:0;
       min-height:100vh;
@@ -35,7 +92,11 @@
     .shell {
       width:min(1280px,100%);
       margin:0 auto;
-      padding:22px;
+      padding:
+        22px
+        max(22px,env(safe-area-inset-right))
+        28px
+        max(22px,env(safe-area-inset-left));
     }
     .topbar {
       display:flex;
@@ -70,7 +131,9 @@
     .top-actions {
       display:flex;
       flex-wrap:wrap;
+      justify-content:flex-end;
       gap:9px;
+      min-width:0;
     }
     .top-actions a,.top-actions button {
       padding:10px 13px;
@@ -79,7 +142,9 @@
       background:rgba(255,255,255,.12);
       color:#fff;
       text-decoration:none;
+      text-align:center;
       font-weight:800;
+      line-height:1.2;
     }
 
     .unlock-card {
@@ -170,7 +235,62 @@
       margin:-8px 0 18px;
       color:#64748b;
       font-size:13px;
+      overflow-wrap:anywhere;
     }
+
+    .connection-banner {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:13px;
+      align-items:center;
+      margin:-7px 0 18px;
+      padding:12px 13px;
+      border:2px solid #f59e0b;
+      border-radius:14px;
+      background:#fffbeb;
+      color:#78350f;
+      box-shadow:0 4px 0 #fde68a;
+    }
+    .connection-banner.error {
+      border-color:#ef4444;
+      background:#fef2f2;
+      color:#991b1b;
+      box-shadow:0 4px 0 #fecaca;
+    }
+    .connection-banner.online {
+      border-color:#22c55e;
+      background:#ecfdf5;
+      color:#166534;
+      box-shadow:0 4px 0 #bbf7d0;
+    }
+    .connection-banner strong {
+      display:block;
+      margin-bottom:3px;
+    }
+    .connection-banner span {
+      display:block;
+      font-size:12px;
+      line-height:1.45;
+      overflow-wrap:anywhere;
+    }
+    .connection-banner button {
+      width:auto;
+      padding:9px 12px;
+      border:0;
+      border-radius:10px;
+      background:#92400e;
+      color:#fff;
+      font-weight:900;
+      box-shadow:0 3px 0 rgba(69,26,3,.45);
+      white-space:nowrap;
+    }
+    .connection-banner.error button {
+      background:#b91c1c;
+    }
+    .connection-banner.online button {
+      background:#15803d;
+    }
+
 
     .control-btn.builder {
       background:#f97316;
@@ -409,8 +529,13 @@
       gap:18px;
       align-items:start;
     }
-    .stack { display:grid;gap:18px; }
+    .stack {
+      display:grid;
+      gap:18px;
+      min-width:0;
+    }
     .panel {
+      min-width:0;
       padding:19px;
       border:2px solid #dbeafe;
       border-radius:19px;
@@ -439,7 +564,13 @@
       background:repeating-linear-gradient(45deg,#facc15 0 12px,#f59e0b 12px 24px);
     }
 
-    .trend-scroll { overflow-x:auto;padding-bottom:5px; }
+    .trend-scroll {
+      max-width:100%;
+      overflow-x:auto;
+      padding-bottom:5px;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior-inline:contain;
+    }
     .trend-chart {
       display:flex;
       align-items:flex-end;
@@ -544,44 +675,145 @@
       font-weight:900;
     }
     .reward-bank {
+      min-width:0;
       padding:18px;
       border:3px solid #f59e0b;
       border-radius:18px;
       background:linear-gradient(135deg,#fef3c7,#fff7ed);
       box-shadow:0 6px 0 #fde68a;
+      overflow:hidden;
+    }
+    .reward-bank-head {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:14px;
+      align-items:center;
+    }
+    .reward-bank-title h3 {
+      margin:0;
+      font-size:22px;
+    }
+    .reward-bank-summary {
+      margin-top:7px;
+      color:#78350f;
+      font-size:13px;
+      line-height:1.45;
+    }
+    .reward-ready-card {
+      min-width:150px;
+      padding:11px 14px;
+      border:2px solid #16a34a;
+      border-radius:14px;
+      background:#ecfdf5;
+      text-align:right;
+      color:#166534;
+    }
+    .reward-ready-card span {
+      display:block;
+      font-size:12px;
+      font-weight:900;
+    }
+    .reward-ready-card strong {
+      display:block;
+      margin-top:2px;
+      font-size:24px;
+      line-height:1.1;
     }
     .reward-bank-grid {
       display:grid;
       grid-template-columns:repeat(4,minmax(0,1fr));
       gap:9px;
-      margin-top:13px;
+      margin-top:14px;
     }
     .reward-bank-stat {
+      min-width:0;
       padding:11px;
       border-radius:12px;
       background:#fff;
-      text-align:center;
+      text-align:left;
       border:1px solid #fcd34d;
+    }
+    .reward-bank-stat span {
+      display:block;
+      color:#92400e;
+      font-size:12px;
+      font-weight:900;
+      line-height:1.3;
     }
     .reward-bank-stat strong {
       display:block;
-      margin-top:3px;
+      margin-top:5px;
       font-size:22px;
-      color:#92400e;
+      line-height:1.1;
+      color:#78350f;
+    }
+    .reward-bank-stat small {
+      display:block;
+      margin-top:3px;
+      color:#a16207;
+      font-size:11px;
+      line-height:1.3;
+    }
+    .reward-breakdown-title {
+      margin-top:16px;
+      color:#78350f;
+      font-size:13px;
+      font-weight:1000;
     }
     .reward-breakdown {
       display:grid;
-      gap:7px;
-      margin-top:13px;
+      gap:8px;
+      margin-top:8px;
     }
     .reward-breakdown-item {
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      padding:9px 10px;
-      border-radius:10px;
-      background:rgba(255,255,255,.8);
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:12px;
+      align-items:center;
+      min-width:0;
+      padding:10px 11px;
+      border-radius:11px;
+      background:rgba(255,255,255,.88);
+      border:1px solid rgba(245,158,11,.22);
       font-size:12px;
+    }
+    .reward-breakdown-main {
+      min-width:0;
+    }
+    .reward-breakdown-name {
+      display:block;
+      color:#78350f;
+      font-size:13px;
+      font-weight:1000;
+      line-height:1.35;
+    }
+    .reward-breakdown-meta {
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:5px 7px;
+      margin-top:5px;
+    }
+    .reward-breakdown-reward {
+      color:#64748b;
+      font-size:11px;
+      line-height:1.35;
+    }
+    .reward-breakdown-minutes {
+      min-width:72px;
+      text-align:right;
+      color:#92400e;
+      font-size:19px;
+      font-weight:1000;
+      white-space:nowrap;
+    }
+    .reward-breakdown-minutes span {
+      display:block;
+      margin-top:1px;
+      font-size:10px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.04em;
     }
     .reward-action-btn {
       width:auto!important;
@@ -611,6 +843,34 @@
       font-weight:900;
     }
 
+
+
+    .queue-health {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+      gap:9px;
+      margin:12px 0;
+    }
+    .queue-health-item {
+      padding:10px;
+      border-radius:11px;
+      background:#eef2ff;
+      border:1px solid #c7d2fe;
+    }
+    .queue-health-item strong {
+      display:block;
+      color:#3730a3;
+      margin-bottom:3px;
+    }
+    .handoff-panel {
+      padding:12px;
+      margin:12px 0;
+      border-radius:12px;
+      border:2px solid #22c55e;
+      background:#ecfdf5;
+      color:#14532d;
+      line-height:1.5;
+    }
 
     .rules-list {
       display:grid;
@@ -682,7 +942,12 @@
     }
     .xp-pill.zero { background:#fee2e2;color:#991b1b; }
 
-    .table-wrap { overflow-x:auto; }
+    .table-wrap {
+      max-width:100%;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior-inline:contain;
+    }
     table { width:100%;border-collapse:collapse;min-width:680px; }
     th,td {
       padding:10px;
@@ -727,41 +992,298 @@
     }
 
     @media(max-width:1050px) {
-      .metric-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
-      .layout { grid-template-columns:1fr; }
-      .builder-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .metric-grid {
+        grid-template-columns:repeat(3,minmax(0,1fr));
+      }
+      .layout {
+        grid-template-columns:1fr;
+      }
+      .builder-grid {
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .reward-bank-grid {
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
     }
+
     @media(max-width:680px) {
-      .shell { padding:0; }
-      .topbar { border-radius:0;box-shadow:none;align-items:flex-start; }
-      .top-actions { flex-direction:column; }
+      body {
+        background:linear-gradient(180deg,#dbeafe,#ede9fe 58%,#dcfce7);
+      }
+      .shell {
+        width:100%;
+        padding:
+          max(12px,env(safe-area-inset-top))
+          max(12px,env(safe-area-inset-right))
+          max(24px,env(safe-area-inset-bottom))
+          max(12px,env(safe-area-inset-left));
+      }
+      .topbar {
+        flex-direction:column;
+        align-items:stretch;
+        gap:15px;
+        padding:16px;
+        border-radius:18px;
+        box-shadow:0 6px 0 #0f172a,0 12px 28px rgba(15,23,42,.18);
+      }
+      .brand {
+        width:100%;
+        align-items:flex-start;
+      }
+      .brand-icon {
+        flex:0 0 auto;
+        width:46px;
+        height:46px;
+        border-radius:13px;
+        font-size:23px;
+      }
+      .brand h1 {
+        font-size:clamp(22px,7vw,29px);
+        line-height:1.08;
+      }
+      .brand p {
+        font-size:13px;
+        line-height:1.35;
+      }
+      .top-actions {
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        width:100%;
+      }
+      .top-actions a,
+      .top-actions button {
+        display:grid;
+        place-items:center;
+        width:100%;
+        padding:10px;
+        white-space:normal;
+      }
+      .unlock-card {
+        width:100%;
+        margin:24px auto;
+        padding:20px;
+        border-radius:19px;
+      }
+      .unlock-card h2 {
+        font-size:26px;
+      }
+      .pin-row {
+        grid-template-columns:1fr;
+      }
       .controls {
         grid-template-columns:1fr;
-        margin:18px 12px;
+        margin:18px 0;
+        padding:14px;
       }
-      .student-banner { margin:0 12px 18px; }
+      .controls .control-btn {
+        width:100%;
+      }
+      .sync-line {
+        margin:-6px 2px 16px;
+      }
+      .connection-banner {
+        grid-template-columns:1fr;
+        margin:-5px 0 17px;
+      }
+      .connection-banner button {
+        width:100%;
+      }
+      .builder-panel {
+        margin:0 0 18px;
+        padding:14px;
+        border-radius:17px;
+      }
+      .builder-head {
+        flex-direction:column;
+      }
+      .builder-head h2 {
+        font-size:23px;
+      }
+      .builder-grid {
+        grid-template-columns:1fr;
+      }
+      .builder-field.wide,
+      .builder-field.full {
+        grid-column:auto;
+      }
+      .builder-actions {
+        display:grid;
+        grid-template-columns:1fr;
+      }
+      .builder-actions button {
+        width:100%;
+      }
+      .student-banner {
+        grid-template-columns:minmax(0,1fr) auto;
+        gap:12px;
+        margin:0 0 17px;
+        padding:16px;
+        border-radius:17px;
+      }
+      .student-banner h2 {
+        font-size:23px;
+        line-height:1.15;
+      }
+      .level-orb {
+        width:68px;
+        height:68px;
+        border-width:4px;
+      }
+      .level-orb strong {
+        font-size:26px;
+      }
       .metric-grid {
         grid-template-columns:repeat(2,minmax(0,1fr));
-        padding:0 12px;
+        gap:9px;
+        margin-bottom:17px;
+        padding:0;
       }
-      .layout { padding:0 12px 24px; }
-      .student-banner h2 { font-size:24px; }
-      .level-orb { width:70px;height:70px; }
-      .pin-row { grid-template-columns:1fr; }
-      .unlock-card { margin:35px auto;padding:22px; }
-      .builder-panel { margin:0 12px 20px;padding:16px; }
-      .builder-grid { grid-template-columns:1fr; }
-      .builder-field.wide,
-      .builder-field.full { grid-column:auto; }
-      .history-card { grid-template-columns:1fr; }
-      .history-actions { justify-content:flex-start; }
-      .reward-bank-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .metric {
+        padding:13px;
+        border-radius:14px;
+      }
+      .metric-value {
+        font-size:22px;
+      }
+      .layout {
+        gap:16px;
+        padding:0;
+      }
+      .stack {
+        gap:16px;
+      }
+      .panel {
+        padding:14px;
+        border-radius:16px;
+      }
+      .panel-head {
+        flex-direction:column;
+        margin-bottom:12px;
+      }
+      .panel h3 {
+        font-size:19px;
+      }
+      .mission-card {
+        padding:14px;
+      }
+      .mission-line {
+        align-items:flex-start;
+      }
+      .queue-health {
+        grid-template-columns:1fr;
+      }
+      .history-card {
+        grid-template-columns:1fr;
+        align-items:start;
+      }
+      .history-status {
+        margin:4px 4px 0 0;
+      }
+      .history-actions {
+        justify-content:flex-start;
+      }
+      .history-actions button {
+        flex:1 1 130px;
+      }
+      .reward-bank {
+        padding:14px;
+        border-radius:16px;
+      }
+      .reward-bank-head {
+        grid-template-columns:1fr;
+      }
+      .reward-ready-card {
+        width:100%;
+        min-width:0;
+        text-align:left;
+      }
+      .reward-bank-grid {
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .reward-breakdown-item {
+        align-items:start;
+      }
+      .session-item {
+        grid-template-columns:auto minmax(0,1fr);
+        align-items:start;
+      }
+      .session-item .xp-pill {
+        grid-column:2;
+        justify-self:start;
+      }
+      .rule-row {
+        grid-template-columns:32px minmax(0,1fr);
+      }
+      .credit-chip {
+        flex:1 1 120px;
+        text-align:center;
+      }
+      table {
+        min-width:620px;
+      }
+    }
+
+    @media(max-width:430px) {
+      .top-actions {
+        grid-template-columns:1fr;
+      }
+      .student-banner {
+        grid-template-columns:1fr;
+      }
+      .level-orb {
+        justify-self:start;
+      }
+      .metric-grid {
+        grid-template-columns:1fr;
+      }
+      .reward-bank-grid {
+        grid-template-columns:1fr;
+      }
+      .reward-breakdown-item {
+        grid-template-columns:1fr;
+      }
+      .reward-breakdown-minutes {
+        min-width:0;
+        text-align:left;
+      }
+      .reward-breakdown-minutes span {
+        display:inline;
+        margin-left:3px;
+      }
+      .mission-line,
+      .operation-line {
+        flex-direction:column;
+        gap:2px;
+      }
+      .history-actions {
+        display:grid;
+        grid-template-columns:1fr;
+      }
+      .history-actions button {
+        width:100%;
+      }
+    }
+
+    @supports (-webkit-touch-callout:none) {
+      select,
+      input,
+      textarea {
+        font-size:16px;
+      }
+      .topbar,
+      .panel,
+      .reward-bank,
+      .builder-panel {
+        -webkit-transform:translateZ(0);
+      }
     }
   </style>
 </head>
 <body>
   <div id="loading" class="loading hidden">
-    <div class="loading-card">☁️ Loading family analytics...</div>
+    <div id="loadingText" class="loading-card">
+      ☁️ Loading family analytics...
+    </div>
   </div>
 
   <div class="shell">
@@ -770,7 +1292,7 @@
         <div class="brand-icon">∑</div>
         <div>
           <h1>Parent Control Center</h1>
-          <p>Math Master v7.2.2 · Unlimited Fair Progress</p>
+          <p>Math Master v7.3.2 · Resilient Responsive Dashboard</p>
         </div>
       </div>
       <div class="top-actions">
@@ -818,6 +1340,18 @@
       </div>
 
       <div id="syncLine" class="sync-line"></div>
+
+      <div id="connectionBanner"
+        class="connection-banner hidden"
+        role="status" aria-live="polite">
+        <div>
+          <strong id="connectionTitle">Live connection unavailable</strong>
+          <span id="connectionDetail"></span>
+        </div>
+        <button id="retryConnectionBtn" type="button">
+          ↻ Retry now
+        </button>
+      </div>
 
       <section id="missionBuilder" class="builder-panel hidden">
         <div class="builder-head">
@@ -907,7 +1441,7 @@
           </div>
 
           <div class="builder-field">
-            <label for="missionQueueOrder">Queue order</label>
+            <label for="missionQueueOrder">Sequence order</label>
             <input id="missionQueueOrder" type="number"
               min="0" max="9999" step="1" value="0">
             <div class="builder-hint">
@@ -950,7 +1484,7 @@
         <div class="mission-history">
           <h3>Mission history for selected student</h3>
           <div class="panel-note" style="margin-bottom:11px;">
-            Missions may share the same date range. Queue order decides
+            Missions may share the same date range. Sequence order decides
             which mission is Current and which missions remain Locked.
           </div>
           <div id="missionHistoryList" class="mission-history-grid"></div>
@@ -1113,10 +1647,15 @@
   <script>
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgsLdSvTidRNDXpZ3PgoMBwwrEofRnwHYRawyMKq9D4edbbrIBaSYIcHES8TZTMWXd/exec";
     const PIN_SESSION_KEY = "mathMasterParentDashboardPin";
+    const DASHBOARD_SNAPSHOT_PREFIX =
+      "mathMasterParentDashboardSnapshot:v732";
+    const DASHBOARD_SNAPSHOT_MAX_AGE_MS =
+      24 * 60 * 60 * 1000;
 
     let activePin = "";
     let activeStudentId = "";
     let callbackCounter = 0;
+    let dashboardLoadSequence = 0;
     let currentDashboardData = null;
     let currentMissions = [];
 
@@ -1159,12 +1698,17 @@
       });
     }
 
-    function jsonpRequest(parameters, timeoutMs=45000) {
+    function wait(milliseconds) {
+      return new Promise(resolve => setTimeout(resolve, milliseconds));
+    }
+
+    function jsonpRequestOnce(parameters, timeoutMs=45000) {
       return new Promise((resolve,reject) => {
         const callbackName =
           `parentDashboardCallback_${Date.now()}_${callbackCounter++}`;
         const script = document.createElement("script");
         let timer;
+        let settled = false;
 
         const cleanup = () => {
           clearTimeout(timer);
@@ -1173,62 +1717,260 @@
           catch (_) { window[callbackName] = undefined; }
         };
 
-        window[callbackName] = data => {
+        const finish = handler => value => {
+          if (settled) return;
+          settled = true;
           cleanup();
-          resolve(data);
+          handler(value);
         };
 
-        script.onerror = () => {
-          cleanup();
-          reject(new Error("Unable to contact Google Apps Script."));
-        };
+        window[callbackName] = finish(resolve);
+
+        script.async = true;
+        script.referrerPolicy = "no-referrer";
+        script.onerror = finish(() => {
+          const error = new Error(
+            "Unable to contact Google Apps Script."
+          );
+          error.code = "NETWORK_ERROR";
+          reject(error);
+        });
 
         const query = new URLSearchParams({
           ...parameters,
           callback:callbackName,
-          cacheBust:String(Date.now())
+          cacheBust:`${Date.now()}-${callbackCounter}`
         });
 
         script.src = `${APPS_SCRIPT_URL}?${query.toString()}`;
         document.body.appendChild(script);
 
-        timer = setTimeout(() => {
-          cleanup();
-          reject(new Error(
-            "Dashboard request timed out after 45 seconds. " +
-            "Check Apps Script → Executions for the latest doGet request."
-          ));
-        }, timeoutMs);
+        timer = setTimeout(finish(() => {
+          const error = new Error(
+            `Dashboard request timed out after ` +
+            `${Math.round(timeoutMs / 1000)} seconds.`
+          );
+          error.code = "TIMEOUT";
+          reject(error);
+        }), timeoutMs);
       });
     }
 
-    function setLoading(loading) {
+    async function jsonpRequest(
+      parameters,
+      timeoutMs=45000,
+      options={}
+    ) {
+      // Automatic retries are allowed only for read-only calls. Mission
+      // writes are intentionally never replayed automatically.
+      const retrySafe = options.retrySafe === true;
+      const maximumAttempts = retrySafe
+        ? Math.max(1, Number(options.maxAttempts || 3))
+        : 1;
+      let lastError;
+
+      for (
+        let attempt = 1;
+        attempt <= maximumAttempts;
+        attempt++
+      ) {
+        options.onAttempt?.(attempt, maximumAttempts);
+
+        try {
+          return await jsonpRequestOnce(parameters, timeoutMs);
+        } catch (error) {
+          lastError = error;
+
+          const mayRetry =
+            retrySafe &&
+            error?.code === "NETWORK_ERROR" &&
+            attempt < maximumAttempts;
+
+          if (!mayRetry) throw error;
+
+          const delay =
+            attempt === 1 ? 800 :
+            attempt === 2 ? 1800 :
+            3000;
+
+          await wait(delay + Math.floor(Math.random() * 250));
+        }
+      }
+
+      throw lastError || new Error("Google Apps Script request failed.");
+    }
+
+    function setLoading(loading, message="☁️ Loading family analytics...") {
+      $("loadingText").textContent = message;
       $("loading").classList.toggle("hidden", !loading);
     }
 
-    async function loadDashboard(studentId="") {
+    function snapshotKey(studentId="") {
+      const id = String(studentId || "LAST").trim().toUpperCase();
+      return `${DASHBOARD_SNAPSHOT_PREFIX}:${id || "LAST"}`;
+    }
+
+    function saveDashboardSnapshot(response) {
+      try {
+        const record = {
+          savedAt:Date.now(),
+          response
+        };
+        const serialized = JSON.stringify(record);
+        sessionStorage.setItem(
+          snapshotKey(response.selectedStudentId),
+          serialized
+        );
+        sessionStorage.setItem(snapshotKey("LAST"), serialized);
+      } catch (error) {
+        console.warn("Dashboard snapshot could not be saved:", error);
+      }
+    }
+
+    function readDashboardSnapshot(studentId="") {
+      try {
+        const raw =
+          sessionStorage.getItem(snapshotKey(studentId)) ||
+          sessionStorage.getItem(snapshotKey("LAST"));
+
+        if (!raw) return null;
+
+        const record = JSON.parse(raw);
+        const age = Date.now() - Number(record.savedAt || 0);
+
+        if (
+          !record.response ||
+          !Number.isFinite(age) ||
+          age < 0 ||
+          age > DASHBOARD_SNAPSHOT_MAX_AGE_MS
+        ) {
+          return null;
+        }
+
+        return {
+          ...record,
+          age
+        };
+      } catch (error) {
+        console.warn("Dashboard snapshot could not be read:", error);
+        return null;
+      }
+    }
+
+    function hideConnectionBanner() {
+      $("connectionBanner").classList.add("hidden");
+      $("connectionBanner").classList.remove("error","online");
+    }
+
+    function showConnectionBanner({
+      kind="warning",
+      title,
+      detail,
+      retry=true
+    }) {
+      const banner = $("connectionBanner");
+      banner.classList.remove("hidden","error","online");
+
+      if (kind === "error") banner.classList.add("error");
+      if (kind === "online") banner.classList.add("online");
+
+      $("connectionTitle").textContent = title;
+      $("connectionDetail").textContent = detail;
+      $("retryConnectionBtn").classList.toggle("hidden", !retry);
+    }
+
+    function applyDashboardResponse(response, snapshotTime=0) {
+      activeStudentId = response.selectedStudentId;
+      currentDashboardData = response.dashboard;
+      currentMissions = response.dashboard.missions || [];
+
+      populateStudents(
+        response.students,
+        response.selectedStudentId
+      );
+      renderDashboard(response.dashboard);
+      showDashboard();
+
+      const performanceText =
+        Number.isFinite(response.performanceMs)
+          ? ` · Server processing: ${(response.performanceMs/1000).toFixed(1)}s`
+          : "";
+      const snapshotText = snapshotTime
+        ? ` · Snapshot saved ${formatDateTime(snapshotTime)}`
+        : "";
+
+      $("syncLine").textContent =
+        `Cloud data refreshed: ${formatDateTime(response.generatedAt)}` +
+        performanceText +
+        snapshotText;
+    }
+
+    async function probeAppsScriptHealth() {
+      try {
+        const response = await jsonpRequest(
+          {action:"health"},
+          15000,
+          {
+            retrySafe:true,
+            maxAttempts:2
+          }
+        );
+
+        return Boolean(response?.ok);
+      } catch (_) {
+        return false;
+      }
+    }
+
+    async function loadDashboard(studentId="", options={}) {
       if (!activePin) return;
 
-      setLoading(true);
+      const loadId = ++dashboardLoadSequence;
+      const requestedStudent =
+        studentId || activeStudentId || "";
+      const quiet = options.quiet === true;
+
+      if (!quiet) {
+        setLoading(true, "☁️ Loading family analytics...");
+      }
+
       $("unlockMessage").textContent = "";
 
       try {
-        const response = await jsonpRequest({
-          action:"getParentDashboard",
-          pin:activePin,
-          studentId:studentId || activeStudentId
-        });
+        const response = await jsonpRequest(
+          {
+            action:"getParentDashboard",
+            pin:activePin,
+            studentId:requestedStudent
+          },
+          45000,
+          {
+            retrySafe:true,
+            maxAttempts:3,
+            onAttempt:(attempt,total) => {
+              if (!quiet && total > 1) {
+                const wording = attempt === 1
+                  ? "☁️ Loading family analytics..."
+                  : `☁️ Reconnecting to analytics (${attempt}/${total})...`;
+                setLoading(true, wording);
+              }
+            }
+          }
+        );
+
+        if (loadId !== dashboardLoadSequence) return;
 
         if (!response || response.ok !== true) {
           const error = new Error(
             response?.error || "Unable to load dashboard."
           );
-          error.code = response?.code || "";
+          error.code = response?.code || "SERVER_RESPONSE";
           throw error;
         }
 
         if (!response.students?.length || !response.dashboard) {
           showDashboard();
+          hideConnectionBanner();
           $("dashboardView").innerHTML = `
             <div class="empty" style="margin-top:24px;">
               No student profile is available yet. Complete a quiz first.
@@ -1236,26 +1978,13 @@
           return;
         }
 
-        activeStudentId = response.selectedStudentId;
-        currentDashboardData = response.dashboard;
-        currentMissions = response.dashboard.missions || [];
         sessionStorage.setItem(PIN_SESSION_KEY, activePin);
-
-        populateStudents(
-          response.students,
-          response.selectedStudentId
-        );
-        renderDashboard(response.dashboard);
-        showDashboard();
-
-        const performanceText =
-          Number.isFinite(response.performanceMs)
-            ? ` · Server processing: ${(response.performanceMs/1000).toFixed(1)}s`
-            : "";
-
-        $("syncLine").textContent =
-          `Cloud data refreshed: ${formatDateTime(response.generatedAt)}${performanceText}`;
+        saveDashboardSnapshot(response);
+        applyDashboardResponse(response);
+        hideConnectionBanner();
       } catch (error) {
+        if (loadId !== dashboardLoadSequence) return;
+
         console.error(error);
 
         if (
@@ -1266,14 +1995,69 @@
           activePin = "";
           showUnlock();
           $("unlockMessage").textContent = error.message;
-        } else {
-          $("unlockMessage").textContent = error.message;
-          if (!$("dashboardView").classList.contains("hidden")) {
-            alert(error.message);
-          }
+          return;
+        }
+
+        const cached = readDashboardSnapshot(requestedStudent);
+
+        if (cached?.response?.dashboard) {
+          applyDashboardResponse(
+            cached.response,
+            cached.savedAt
+          );
+
+          showConnectionBanner({
+            kind:"warning",
+            title:"Showing the last successful dashboard snapshot",
+            detail:
+              `${error.message} Your saved analytics remain visible while ` +
+              `the live connection is retried.`,
+            retry:true
+          });
+
+          probeAppsScriptHealth().then(healthy => {
+            if (loadId !== dashboardLoadSequence) return;
+
+            showConnectionBanner({
+              kind:healthy ? "online" : "error",
+              title:healthy
+                ? "Apps Script is online, but the full analytics request failed"
+                : "Live Apps Script connection is unavailable",
+              detail:healthy
+                ? "The failure was likely during analytics processing. Tap Retry now; the last successful snapshot is still displayed."
+                : "Check the internet connection and the latest Apps Script execution. The last successful snapshot is still displayed.",
+              retry:true
+            });
+          });
+
+          return;
+        }
+
+        const online = navigator.onLine;
+        const healthy = online
+          ? await probeAppsScriptHealth()
+          : false;
+
+        const detail = !online
+          ? "This device appears to be offline. Reconnect and tap Unlock Dashboard again."
+          : healthy
+            ? "Apps Script responded to a health check, but the full analytics request failed. Check Apps Script → Executions for the latest getParentDashboard request."
+            : "The Apps Script endpoint did not answer after three connection attempts. Check the deployment and internet connection, then retry.";
+
+        $("unlockMessage").textContent = detail;
+
+        if (!$("dashboardView").classList.contains("hidden")) {
+          showConnectionBanner({
+            kind:"error",
+            title:error.message,
+            detail,
+            retry:true
+          });
         }
       } finally {
-        setLoading(false);
+        if (loadId === dashboardLoadSequence && !quiet) {
+          setLoading(false);
+        }
       }
     }
 
@@ -1328,7 +2112,12 @@
       renderRecentSessions(data.recentSessions);
       renderAchievements(data.achievements);
       renderRewardBank(data.rewardBank);
-      renderMission(data.activeMission, data.nextMission);
+      renderMission(
+        data.activeMission,
+        data.nextMission,
+        data.handoff || null,
+        data.missions || []
+      );
       renderMissionHistory(data.missions || []);
     }
 
@@ -1548,8 +2337,25 @@
         </div>`;
     }
 
-        function renderMission(activeMission, nextMission=null) {
+        function renderMission(activeMission, nextMission=null, handoff=null, missions=[]) {
       const panel = $("missionPanel");
+      const completedCount = (missions || []).filter(item =>
+        String(item?.mission?.status || "").toLowerCase() === "completed"
+      ).length;
+      const lockedCount = (missions || []).filter(item => {
+        const status = String(item?.mission?.status || "").toLowerCase();
+        return status === "locked" || status === "queued" || status === "scheduled";
+      }).length;
+      const handoffHtml = handoff?.completedMission
+        ? `<div class="handoff-panel">
+            🏆 <strong>${escapeHtml(handoff.completedMission.name)}</strong>
+            completed.
+            ${handoff.activatedMission
+              ? `🚀 <strong>${escapeHtml(handoff.activatedMission.name)}</strong>
+                 is now CURRENT · Sequence #${Number(handoff.activatedMission.queueOrder || 0)}.`
+              : "All available missions are finished."}
+          </div>`
+        : "";
 
       if (!activeMission) {
         panel.innerHTML = `
@@ -1559,10 +2365,19 @@
               <div class="panel-note">No Current mission right now.</div>
             </div>
           </div>
+          ${handoffHtml}
+          <div class="queue-health">
+            <div class="queue-health-item">
+              <strong>Completed</strong>${completedCount}
+            </div>
+            <div class="queue-health-item">
+              <strong>Waiting / scheduled</strong>${lockedCount}
+            </div>
+          </div>
           <div class="empty">
             ${nextMission
-              ? `Next queued mission: <strong>${escapeHtml(nextMission.name)}</strong>
-                 · Queue ${Number(nextMission.queueOrder || 0)}`
+              ? `Next mission: <strong>${escapeHtml(nextMission.name)}</strong>
+                 · Sequence #${Number(nextMission.queueOrder || 0)}`
               : "Use Mission Builder to add a mission."}
           </div>`;
         return;
@@ -1577,11 +2392,11 @@
           <h3>
             🎮 ${escapeHtml(mission.name)}
             <span class="history-status active">
-              ${escapeHtml(mission.status || "Current")}
+              CURRENT MISSION
             </span>
           </h3>
           <div class="panel-note">
-            Queue ${Number(mission.queueOrder || 0)} ·
+            Sequence #${Number(mission.queueOrder || 0)} ·
             ${formatDate(mission.startDate)} –
             ${formatDate(mission.endDate)}<br>
             Activated: ${formatDateTime(mission.activatedAt)}
@@ -1622,10 +2437,24 @@
             ${escapeHtml(mission.reward || "Parent-selected reward")}
           </div>
 
+          ${handoffHtml}
+          <div class="queue-health">
+            <div class="queue-health-item">
+              <strong>Current position</strong>
+              Sequence #${Number(mission.queueOrder || 0)}
+            </div>
+            <div class="queue-health-item">
+              <strong>Completed</strong>${completedCount}
+            </div>
+            <div class="queue-health-item">
+              <strong>Waiting / scheduled</strong>${lockedCount}
+            </div>
+          </div>
           ${nextMission
             ? `<div class="next-mission-mini">
-                🔒 Next: <strong>${escapeHtml(nextMission.name)}</strong>
-                · Queue ${Number(nextMission.queueOrder || 0)}
+                🔒 LOCKED NEXT:
+                <strong>${escapeHtml(nextMission.name)}</strong>
+                · Sequence #${Number(nextMission.queueOrder || 0)}
               </div>`
             : ""}
         </div>`;
@@ -1633,57 +2462,112 @@
 
 
 
+
+    function rewardStatusLabel(status) {
+      const value = String(status || "").trim();
+
+      if (value === "Pending Approval") return "Awaiting approval";
+      if (value === "Approved") return "Ready to use";
+      if (value === "Redeemed") return "Used";
+
+      return value || "Awaiting approval";
+    }
+
+    function rewardStatusClass(status) {
+      return String(status || "pending-approval")
+        .toLowerCase()
+        .replace(/\s+/g,"-");
+    }
+
     function renderRewardBank(bank) {
       const panel = $("rewardBankPanel");
 
       if (!bank) {
         panel.innerHTML = `
-          <div class="empty">Weekly reward data is unavailable.</div>`;
+          <div class="empty">Weekly reward information is unavailable.</div>`;
         return;
       }
+
+      const completed = Number(bank.completedMissions || 0);
+      const earned = Number(bank.earnedMinutes || 0);
+      const pending = Number(bank.pendingMinutes || 0);
+      const ready = Number(
+        bank.availableMinutes ?? bank.approvedMinutes ?? 0
+      );
+      const used = Number(bank.redeemedMinutes || 0);
+
+      const summary = completed
+        ? `${completed} mission${completed === 1 ? "" : "s"} completed this week, earning ${earned} reward minute${earned === 1 ? "" : "s"}.`
+        : "No mission reward has been earned during this week yet.";
 
       const breakdown = bank.items?.length
         ? bank.items.map(item => `
             <div class="reward-breakdown-item">
-              <span>
-                ${escapeHtml(item.name)}
-                <span class="history-status ${String(item.rewardStatus || "").toLowerCase().replaceAll(" ","-")}">
-                  ${escapeHtml(item.rewardStatus || "Pending")}
-                </span>
-              </span>
-              <strong>+${Number(item.minutes || 0)} min</strong>
+              <div class="reward-breakdown-main">
+                <strong class="reward-breakdown-name">
+                  ${escapeHtml(item.name)}
+                </strong>
+                <div class="reward-breakdown-meta">
+                  <span class="history-status ${rewardStatusClass(item.rewardStatus)}">
+                    ${escapeHtml(rewardStatusLabel(item.rewardStatus))}
+                  </span>
+                  ${item.reward
+                    ? `<span class="reward-breakdown-reward">
+                        ${escapeHtml(item.reward)}
+                      </span>`
+                    : ""}
+                </div>
+              </div>
+              <div class="reward-breakdown-minutes">
+                +${Number(item.minutes || 0)}
+                <span>minutes</span>
+              </div>
             </div>
           `).join("")
-        : `<div class="empty">No mission completed this week yet.</div>`;
+        : `<div class="empty">Complete a mission to begin earning reward minutes.</div>`;
 
       panel.innerHTML = `
         <div class="reward-bank">
-          <h3 style="margin:0;">🎮 Weekly Reward Bank</h3>
-          <div class="panel-note">
-            ${formatDate(bank.weekStart)} – ${formatDate(bank.weekEnd)}
+          <div class="reward-bank-head">
+            <div class="reward-bank-title">
+              <h3>🎮 Weekly Reward Bank</h3>
+              <div class="panel-note">
+                ${formatDate(bank.weekStart)} – ${formatDate(bank.weekEnd)}
+              </div>
+              <div class="reward-bank-summary">
+                ${escapeHtml(summary)}
+              </div>
+            </div>
+            <div class="reward-ready-card">
+              <span>Ready to use now</span>
+              <strong>${ready} min</strong>
+            </div>
           </div>
+
           <div class="reward-bank-grid">
             <div class="reward-bank-stat">
-              Completed
-              <strong>${Number(bank.completedMissions || 0)}</strong>
+              <span>Missions completed</span>
+              <strong>${completed}</strong>
+              <small>Finished this week</small>
             </div>
             <div class="reward-bank-stat">
-              Earned
-              <strong>${Number(bank.earnedMinutes || 0)}m</strong>
+              <span>Total minutes earned</span>
+              <strong>${earned} min</strong>
+              <small>All completed rewards</small>
             </div>
             <div class="reward-bank-stat">
-              Pending
-              <strong>${Number(bank.pendingMinutes || 0)}m</strong>
+              <span>Awaiting approval</span>
+              <strong>${pending} min</strong>
+              <small>Parent action needed</small>
             </div>
             <div class="reward-bank-stat">
-              Approved
-              <strong>${Number(bank.approvedMinutes || 0)}m</strong>
-            </div>
-            <div class="reward-bank-stat">
-              Redeemed
-              <strong>${Number(bank.redeemedMinutes || 0)}m</strong>
+              <span>Already used</span>
+              <strong>${used} min</strong>
+              <small>Marked as redeemed</small>
             </div>
           </div>
+
+          <div class="reward-breakdown-title">Mission reward breakdown</div>
           <div class="reward-breakdown">${breakdown}</div>
         </div>`;
     }
@@ -2006,14 +2890,14 @@
           <div class="history-card">
             <div>
               <div class="history-title">
-                Queue ${Number(mission.queueOrder || 0)} ·
+                Sequence #${Number(mission.queueOrder || 0)} ·
                 ${escapeHtml(mission.name)}
                 <span class="history-status ${statusClass}">
                   ${escapeHtml(status)}
                 </span>
                 ${rewardStatus
                   ? `<span class="history-status">
-                      ${escapeHtml(rewardStatus)}
+                      ${escapeHtml(rewardStatusLabel(rewardStatus))}
                     </span>`
                   : ""}
               </div>
@@ -2118,6 +3002,8 @@
       sessionStorage.removeItem(PIN_SESSION_KEY);
       activePin = "";
       activeStudentId = "";
+      dashboardLoadSequence++;
+      hideConnectionBanner();
       showUnlock();
     }
 
@@ -2126,6 +3012,9 @@
       if (event.key === "Enter") unlockDashboard();
     });
     $("refreshBtn").addEventListener("click", () =>
+      loadDashboard(activeStudentId)
+    );
+    $("retryConnectionBtn").addEventListener("click", () =>
       loadDashboard(activeStudentId)
     );
     $("studentSelect").addEventListener("change", async event => {
@@ -2185,6 +3074,12 @@
     });
     $("lockBtn").addEventListener("click", lockDashboard);
     $("changePinBtn").addEventListener("click", lockDashboard);
+
+    window.addEventListener("online", () => {
+      if (activePin && !$("dashboardView").classList.contains("hidden")) {
+        loadDashboard(activeStudentId, {quiet:true});
+      }
+    });
 
     const savedPin = sessionStorage.getItem(PIN_SESSION_KEY);
 

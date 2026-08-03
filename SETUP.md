@@ -1,85 +1,89 @@
-# Math Master v7.2.2 — Unlimited Fair Progress
+# Math Master v7.3.2 — Resilient Responsive Dashboard
 
-## Why this patch exists
+## Which version to install
 
-v7.2.1 contained two arbitrary daily caps:
+Install v7.3.2 only.
 
-- maximum 8 rewarded assessment credits per day;
-- maximum 2 rewarded Targeted Practice sets per day.
+It replaces both v7.3 and v7.3.1. It contains:
 
-Those limits could stop a motivated student even when the work was genuine.
-They have been removed.
+- instant mission handoff;
+- responsive iPhone/iOS Parent Dashboard;
+- improved Weekly Reward Bank;
+- unlimited legitimate progress;
+- fair question rotation;
+- analytics connection resilience.
 
-## New policy
+## Analytics reliability improvements
 
-### Assessments
+### Safe automatic retries
 
-There is no daily assessment-credit limit.
+Read-only Parent Dashboard requests retry up to three times when the browser
+cannot load the Apps Script JSONP response.
 
-Every assessment can earn credits when it passes:
+Mission creation, archive, approval and redemption requests are never replayed
+automatically, avoiding duplicate write operations.
 
-- server-issued one-time attempt;
-- at least 10 completed questions;
-- at least 60% first-try accuracy;
-- reasonable completion time;
-- valid Math Master questions;
-- fresh-enough question set;
-- no duplicate session;
-- current-mission activation window.
+### Last successful snapshot
 
-Credits remain:
+The last successful dashboard response is kept in `sessionStorage` for up to
+24 hours.
 
-- 10 questions = 1 credit
-- 20 questions = 2 credits
-- 30 questions = 3 credits
-- 40 questions = 4 credits
-- 50+ questions = maximum 5 credits per session
+If live analytics temporarily fails:
 
-### Targeted Practice
+- the dashboard does not become blank;
+- the last successful data remains visible;
+- a banner clearly says it is a saved snapshot;
+- `Retry now` attempts live synchronization again.
 
-There is no daily rewarded-practice limit.
+The snapshot remains confined to the current browser tab session.
 
-The first Targeted Practice linked to each different source assessment can earn
-30 XP and mission credit.
+### Health check
 
-Repeating Targeted Practice from the same source assessment remains saved for
-learning, but earns 0 XP and 0 mission credit. This prevents spam without
-blocking genuine additional study.
+When the full analytics request fails, the dashboard performs a small health
+check:
 
-## Eligible-practice counting fix
+- if health succeeds, Apps Script is online and the issue occurred during the
+  heavier analytics request;
+- if health fails, the message points to internet, deployment or Apps Script
+  execution availability.
 
-The patch also:
+### Faster server processing
 
-- validates that the source assessment exists in cloud history;
-- counts older eligible rows where Reward Eligible was blank but Session XP
-  was positive;
-- polls Google Apps Script until the session reward result exists instead of
-  assuming the POST completes within 1.5 seconds;
-- refreshes the profile and mission only after the eligibility result is
-  available.
+The earlier dashboard request read the complete `Responses` and `XPHistory`
+sheets twice:
+
+1. during mission queue refresh;
+2. during analytics construction.
+
+v7.3.2 reads each sheet once and reuses those rows for the queue calculation.
+
+### Stale-response protection
+
+When two dashboard requests overlap, only the latest request is allowed to
+update the screen. A slower old response cannot replace newer student data.
 
 ## Installation
 
 1. Open the Math Master spreadsheet.
 2. Go to `Extensions → Apps Script`.
-3. Replace the current `Code.gs` with v7.2.2.
+3. Replace the current `Code.gs` with v7.3.2.
 4. Save.
 5. Run `setupSheets()` once.
-6. Update the existing Web App deployment:
+6. Update the same web-app deployment:
    `Deploy → Manage deployments → Edit → New version → Deploy`
-7. Replace GitHub root files:
+7. Replace these files in the GitHub repository root:
    - `index.html`
    - `dashboard.html`
-8. Commit changes.
+8. Commit the changes.
 
-The existing Parent PIN remains valid.
+Existing PIN, students, missions, XP, rewards and history remain valid.
 
 ## Test URLs
 
 Student:
 
-https://abuubaidahrj.github.io/quiz-app/?version=v7-2-2
+https://abuubaidahrj.github.io/quiz-app/?version=v7-3-2
 
 Parent Dashboard:
 
-https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-2-2
+https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-3-2

@@ -1,36 +1,48 @@
-# Math Master v7.2.2 — Test Checklist
+# Math Master v7.3.2 — Test Checklist
 
-## Assessment unlimited progress
+## Basic analytics
 
-- [ ] Complete enough valid assessments to exceed 8 credits in one day.
-- [ ] Credits after 8 continue to be awarded.
-- [ ] Notification says there is no daily assessment-credit limit.
-- [ ] Duplicate/fresh-set checks still work.
+- [ ] Unlock the dashboard.
+- [ ] Analytics loads and the synchronization timestamp appears.
+- [ ] Server processing time is displayed.
+- [ ] Changing students loads the correct student.
+- [ ] Repeated fast student changes do not show stale data.
 
-## Targeted Practice
+## Retry and snapshot
 
-- [ ] Complete Assessment A.
-- [ ] Complete its first Targeted Practice.
-- [ ] It earns 30 XP and one eligible practice count.
-- [ ] Repeat practice from Assessment A.
-- [ ] It earns 0 XP and does not add mission practice count.
-- [ ] Complete Assessment B.
-- [ ] Complete its first Targeted Practice.
-- [ ] It earns 30 XP and another mission practice count.
-- [ ] Repeat with more distinct assessments on the same day.
-- [ ] There is no daily practice cap.
+- [ ] Load the dashboard successfully once.
+- [ ] Temporarily disconnect the device from the internet.
+- [ ] Tap Refresh.
+- [ ] The last successful dashboard remains visible.
+- [ ] A connection banner explains that a snapshot is being shown.
+- [ ] Reconnect the internet and tap Retry now.
+- [ ] Live analytics replaces the snapshot.
+- [ ] The banner disappears after success.
 
-## Cloud timing
+## Safe writes
 
-- [ ] After a session, the page waits for cloud eligibility.
-- [ ] The final message says eligibility was confirmed.
-- [ ] Parent Dashboard shows the updated practice count without requiring a
-  long manual wait.
+- [ ] Save one new mission.
+- [ ] Only one mission row is created.
+- [ ] Archive, approve and redeem actions are not duplicated.
+- [ ] Read-only retries do not replay write operations.
 
-## Existing protection
+## Performance
 
-- [ ] Duplicate session still gets no extra reward.
-- [ ] Low accuracy still gets no assessment credits.
-- [ ] Unrealistic speed still gets no credits.
-- [ ] Highly duplicated question sets are regenerated or rejected.
-- [ ] Mission 1 activity is not reused by Mission 2.
+- [ ] Open Apps Script → Executions.
+- [ ] Check `getParentDashboard` duration before and after the patch.
+- [ ] Confirm a normal refresh has only one execution.
+- [ ] Confirm there is no repeated full-sheet read caused by the frontend.
+
+## Responsive dashboard
+
+- [ ] iPhone portrait has no horizontal page scrolling.
+- [ ] Weekly Reward Bank wording and cards fit correctly.
+- [ ] Long mission and reward names wrap.
+- [ ] Tables scroll inside their own panels.
+
+## Existing functions
+
+- [ ] Mission 2 activates immediately after Mission 1.
+- [ ] Unlimited valid assessment credits remain active.
+- [ ] Unlimited legitimate Targeted Practice remains active.
+- [ ] Fair question rotation still works.

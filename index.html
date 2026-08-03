@@ -141,6 +141,30 @@
     }
     .fair-play-card strong { color:#854d0e; }
 
+
+    .mission-handoff {
+      margin:12px 0;
+      padding:13px 14px;
+      border-radius:14px;
+      border:2px solid #22c55e;
+      background:#ecfdf5;
+      color:#14532d;
+      box-shadow:0 5px 0 #bbf7d0;
+      line-height:1.5;
+    }
+    .mission-handoff strong {
+      color:#166534;
+    }
+    .mission-handoff .handoff-arrow {
+      display:inline-block;
+      margin:0 6px;
+      font-weight:900;
+    }
+    .sequence-label {
+      font-weight:900;
+      color:#4338ca;
+    }
+
     .qualification-panel {
       margin:15px 0;
       border:2px solid #60a5fa;
@@ -377,7 +401,7 @@
         <p class="subtitle" style="color:#e0f2fe;">
           Solve equations, earn fair XP, complete missions and unlock achievements.
         </p>
-        <span class="hero-version">Version v7.2 — Mission Queue & Fair Play</span>
+        <span class="hero-version">Version v7.3.2 — Resilient Responsive Dashboard</span>
       </div>
 
       <svg class="hero-art" viewBox="0 0 300 230" role="img"
@@ -642,7 +666,9 @@
     attemptHash: "",
     attemptExpiresAt: "",
     questionSelection: "all",
-    assessmentStarting: false
+    assessmentStarting: false,
+    activeMissionId: "",
+    lastHandoffKey: ""
   };
 
   function shuffle(items) {
@@ -1119,6 +1145,47 @@
       </div>`;
   }
 
+
+  function missionSequenceLabel(mission) {
+    return `Sequence #${Number(mission?.queueOrder || 0)}`;
+  }
+
+  function handoffKey(handoff) {
+    const completedId = handoff?.completedMission?.id || "";
+    const activatedId = handoff?.activatedMission?.id || "";
+    return `${completedId}->${activatedId}`;
+  }
+
+  function missionHandoffHtml(handoff) {
+    if (!handoff?.completedMission) return "";
+
+    const completed = handoff.completedMission;
+    const activated = handoff.activatedMission;
+
+    if (activated) {
+      const timing = handoff.immediate
+        ? "Activated immediately"
+        : handoff.delaySeconds !== null
+          ? `Activated after ${handoff.delaySeconds} second${handoff.delaySeconds===1?"":"s"}`
+          : "Activated";
+
+      return `
+        <div class="mission-handoff">
+          🏆 <strong>${escapeHtml(completed.name)}</strong> completed
+          <span class="handoff-arrow">→</span>
+          🚀 <strong>${escapeHtml(activated.name)}</strong> is now CURRENT.<br>
+          <span class="sequence-label">${escapeHtml(missionSequenceLabel(activated))}</span>
+          · ${escapeHtml(timing)}
+        </div>`;
+    }
+
+    return `
+      <div class="mission-handoff">
+        🏆 <strong>${escapeHtml(completed.name)}</strong> completed.<br>
+        🎉 All currently available queued missions are finished.
+      </div>`;
+  }
+
     function renderMission(missionData) {
     const panel = $("missionPanel");
 
@@ -1130,6 +1197,8 @@
     const rewardBank = missionData.rewardBank || null;
     const latestCompleted = missionData.latestCompletedMission || null;
     const nextMission = missionData.nextMission || null;
+    const handoff = missionData.handoff || null;
+    const handoffHtml = missionHandoffHtml(handoff);
 
     if (!missionData.mission) {
       const latestHtml = latestCompleted
@@ -1144,7 +1213,7 @@
         ? `<div class="next-mission-mini">
             🔒 <strong>Next mission:</strong>
             ${escapeHtml(nextMission.name)}
-            · Queue ${Number(nextMission.queueOrder || 0)}
+            · ${escapeHtml(missionSequenceLabel(nextMission))}
           </div>`
         : "";
 
@@ -1167,7 +1236,8 @@
       $("missionTitle").innerHTML =
         `🎯 Mission Queue <span class="mission-status-pill">No current mission</span>`;
       $("missionMeta").textContent = "";
-      $("missionRequirements").innerHTML = latestHtml + nextHtml;
+      $("missionRequirements").innerHTML =
+        handoffHtml + latestHtml + nextHtml;
       $("missionReward").innerHTML = bankHtml;
       panel.classList.remove("hidden");
       return;
@@ -1180,11 +1250,14 @@
 
     $("missionTitle").innerHTML =
       `🎯 ${escapeHtml(mission.name || "Mission")} ` +
-      `<span class="mission-status-pill">${escapeHtml(mission.status || "Current")}</span>`;
+      `<span class="mission-status-pill">CURRENT MISSION</span>`;
 
     $("missionMeta").textContent =
-      `Queue ${Number(mission.queueOrder || 0)} · ` +
-      `${formatMissionDate(mission.startDate)} – ${formatMissionDate(mission.endDate)}`;
+      `${missionSequenceLabel(mission)} · ` +
+      `${formatMissionDate(mission.startDate)} – ${formatMissionDate(mission.endDate)} · ` +
+      `Activated ${mission.activatedAt
+        ? new Date(mission.activatedAt).toLocaleString()
+        : "now"}`;
 
     $("missionRequirements").innerHTML = [
       missionRequirementHtml(
@@ -1235,7 +1308,7 @@
       ? `<div class="next-mission-mini">
           🔒 Next in queue:
           <strong>${escapeHtml(nextMission.name)}</strong>
-          · Queue ${Number(nextMission.queueOrder || 0)}
+          · ${escapeHtml(missionSequenceLabel(nextMission))}
         </div>`
       : "";
 
@@ -1251,6 +1324,7 @@
       : "";
 
     $("missionReward").innerHTML = `
+      ${handoffHtml}
       <div class="note" style="margin-top:12px;">
         🎁 Reward when completed: <strong>${escapeHtml(rewardDisplay)}</strong>
       </div>
@@ -1279,10 +1353,12 @@
 
       if (!response.found) {
         renderMission(response);
+        state.activeMissionId = "";
         return response;
       }
 
       renderMission(response);
+      state.activeMissionId = response.mission?.id || "";
       return response;
     } catch (error) {
       console.error("Mission sync error:", error);
@@ -2125,7 +2201,26 @@
           state.user,
           true
         );
-        await loadActiveMission(state.studentId, true);
+        const missionResult = await loadActiveMission(
+          state.studentId,
+          true
+        );
+
+        const currentHandoffKey = handoffKey(
+          missionResult?.handoff
+        );
+
+        if (
+          missionResult?.handoff?.completedMission &&
+          currentHandoffKey &&
+          currentHandoffKey !== state.lastHandoffKey
+        ) {
+          $("cloudRewardStatus").insertAdjacentHTML(
+            "beforeend",
+            missionHandoffHtml(missionResult.handoff)
+          );
+          state.lastHandoffKey = currentHandoffKey;
+        }
 
         if (rewardResult && profile) {
           status.textContent =
