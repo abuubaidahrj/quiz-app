@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#172554">
-  <title>Math Master Parent Dashboard & Mission Builder</title>
+  <title>Math Master Parent Dashboard, Mission Queue & Reward Bank</title>
   <style>
     :root {
       font-family:"Trebuchet MS",Arial,sans-serif;
@@ -197,7 +197,7 @@
     }
     .builder-grid {
       display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
+      grid-template-columns:repeat(5,minmax(0,1fr));
       gap:13px;
     }
     .builder-field.wide {
@@ -298,9 +298,35 @@
       font-size:11px;
       font-weight:900;
     }
-    .history-status.active {
+    .history-status.active,
+    .history-status.current {
       background:#dcfce7;
       color:#166534;
+    }
+    .history-status.locked {
+      background:#e0e7ff;
+      color:#3730a3;
+    }
+    .history-status.queued,
+    .history-status.scheduled {
+      background:#dbeafe;
+      color:#1e40af;
+    }
+    .history-status.expired {
+      background:#fee2e2;
+      color:#991b1b;
+    }
+    .history-status.pending-approval {
+      background:#ffedd5;
+      color:#9a3412;
+    }
+    .history-status.approved {
+      background:#dcfce7;
+      color:#166534;
+    }
+    .history-status.redeemed {
+      background:#f3e8ff;
+      color:#6b21a8;
     }
     .history-status.archived {
       background:#e2e8f0;
@@ -517,6 +543,58 @@
       color:#9a3412;
       font-weight:900;
     }
+    .reward-bank {
+      padding:18px;
+      border:3px solid #f59e0b;
+      border-radius:18px;
+      background:linear-gradient(135deg,#fef3c7,#fff7ed);
+      box-shadow:0 6px 0 #fde68a;
+    }
+    .reward-bank-grid {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:9px;
+      margin-top:13px;
+    }
+    .reward-bank-stat {
+      padding:11px;
+      border-radius:12px;
+      background:#fff;
+      text-align:center;
+      border:1px solid #fcd34d;
+    }
+    .reward-bank-stat strong {
+      display:block;
+      margin-top:3px;
+      font-size:22px;
+      color:#92400e;
+    }
+    .reward-breakdown {
+      display:grid;
+      gap:7px;
+      margin-top:13px;
+    }
+    .reward-breakdown-item {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:9px 10px;
+      border-radius:10px;
+      background:rgba(255,255,255,.8);
+      font-size:12px;
+    }
+    .reward-action-btn {
+      width:auto!important;
+      padding:8px 10px!important;
+      margin:0!important;
+      border:0;
+      border-radius:9px;
+      color:#fff;
+      font-size:12px;
+      font-weight:900;
+    }
+    .approve-reward-btn { background:#16a34a; }
+    .redeem-reward-btn { background:#7c3aed; }
 
     .achievement-list {
       display:flex;
@@ -530,6 +608,45 @@
       background:#fef3c7;
       color:#78350f;
       font-size:13px;
+      font-weight:900;
+    }
+
+
+    .rules-list {
+      display:grid;
+      gap:8px;
+      margin-top:12px;
+    }
+    .rule-row {
+      display:grid;
+      grid-template-columns:34px 1fr;
+      gap:9px;
+      align-items:start;
+      padding:9px;
+      border-radius:11px;
+      background:#f8fafc;
+      border:1px solid #dbeafe;
+    }
+    .rule-icon {
+      display:grid;
+      place-items:center;
+      width:32px;
+      height:32px;
+      border-radius:9px;
+      background:#dbeafe;
+    }
+    .credit-chip-list {
+      display:flex;
+      flex-wrap:wrap;
+      gap:7px;
+      margin-top:12px;
+    }
+    .credit-chip {
+      padding:6px 8px;
+      border-radius:999px;
+      background:#e0e7ff;
+      color:#3730a3;
+      font-size:12px;
       font-weight:900;
     }
 
@@ -638,6 +755,7 @@
       .builder-field.full { grid-column:auto; }
       .history-card { grid-template-columns:1fr; }
       .history-actions { justify-content:flex-start; }
+      .reward-bank-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
     }
   </style>
 </head>
@@ -652,7 +770,7 @@
         <div class="brand-icon">∑</div>
         <div>
           <h1>Parent Control Center</h1>
-          <p>Math Master v7.1 · Mission Builder</p>
+          <p>Math Master v7.2.1 · Fair Question Rotation</p>
         </div>
       </div>
       <div class="top-actions">
@@ -706,8 +824,9 @@
           <div>
             <h2>🎯 Weekly Mission Builder</h2>
             <div class="panel-note">
-              Create or edit a mission for the selected student.
-              Only activity inside the mission dates is counted.
+              Create several missions on the same dates. The queue opens
+              one mission at a time, and activity cannot be reused by the
+              next mission.
             </div>
           </div>
           <button id="builderCloseTop" class="control-btn secondary"
@@ -736,9 +855,12 @@
           </div>
 
           <div class="builder-field">
-            <label for="missionAssessments">Assessments</label>
+            <label for="missionAssessments">Assessment credits</label>
             <input id="missionAssessments" type="number"
-              min="0" max="50" step="1" value="3">
+              min="0" max="100" step="1" value="4">
+            <div class="builder-hint">
+              10 questions = 1 credit; 50 questions = 5 credits.
+            </div>
           </div>
 
           <div class="builder-field">
@@ -785,10 +907,19 @@
           </div>
 
           <div class="builder-field">
+            <label for="missionQueueOrder">Queue order</label>
+            <input id="missionQueueOrder" type="number"
+              min="0" max="9999" step="1" value="0">
+            <div class="builder-hint">
+              Use 0 to assign the next order automatically.
+            </div>
+          </div>
+
+          <div class="builder-field">
             <label for="missionStatus">Status</label>
             <select id="missionStatus">
               <option value="Draft">Draft</option>
-              <option value="Active" selected>Active</option>
+              <option value="Queued" selected>Queued</option>
             </select>
           </div>
 
@@ -819,8 +950,8 @@
         <div class="mission-history">
           <h3>Mission history for selected student</h3>
           <div class="panel-note" style="margin-bottom:11px;">
-            Active missions cannot overlap the same dates.
-            Archive an old mission before creating an overlapping one.
+            Missions may share the same date range. Queue order decides
+            which mission is Current and which missions remain Locked.
           </div>
           <div id="missionHistoryList" class="mission-history-grid"></div>
         </div>
@@ -865,8 +996,8 @@
               <div>
                 <h3>🧠 Questions needing attention</h3>
                 <div class="panel-note">
-                  Calculated from normal assessments only, so repeated
-                  Targeted Practice cannot distort this list.
+                  Calculated from fair-play eligible assessments only.
+                  Rejected, duplicate and spam sessions cannot distort it.
                 </div>
               </div>
             </div>
@@ -875,14 +1006,65 @@
         </div>
 
         <div class="stack">
+          <section id="rewardBankPanel" class="panel"></section>
           <section id="missionPanel" class="panel"></section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h3>🛡️ Mission credit qualification</h3>
+                <div class="panel-note">
+                  These are the current server-side assessment rules.
+                </div>
+              </div>
+            </div>
+            <div class="credit-chip-list">
+              <span class="credit-chip">10 Q = 1 credit</span>
+              <span class="credit-chip">20 Q = 2 credits</span>
+              <span class="credit-chip">30 Q = 3 credits</span>
+              <span class="credit-chip">40 Q = 4 credits</span>
+              <span class="credit-chip">50+ Q = max 5</span>
+            </div>
+            <div class="rules-list">
+              <div class="rule-row">
+                <div class="rule-icon">✅</div>
+                <div><strong>Minimum 60% first-try accuracy</strong><br>
+                <span class="panel-note">Random clicking does not qualify.</span></div>
+              </div>
+              <div class="rule-row">
+                <div class="rule-icon">⏱️</div>
+                <div><strong>At least 1 second per question</strong><br>
+                <span class="panel-note">Unrealistically fast sessions are learning-only.</span></div>
+              </div>
+              <div class="rule-row">
+                <div class="rule-icon">🔄</div>
+                <div><strong>Fair question rotation</strong><br>
+                <span class="panel-note">
+                  Sets with 80% or more overlap are regenerated before the quiz starts.
+                  A few repeated questions are allowed.
+                </span></div>
+              </div>
+              <div class="rule-row">
+                <div class="rule-icon">8</div>
+                <div><strong>Maximum 8 rewarded credits daily</strong><br>
+                <span class="panel-note">Extra study is still saved without mission credits.</span></div>
+              </div>
+              <div class="rule-row">
+                <div class="rule-icon">🎯</div>
+                <div><strong>Current mission only</strong><br>
+                <span class="panel-note">
+                  Activity must occur after that queued mission is activated.
+                </span></div>
+              </div>
+            </div>
+          </section>
 
           <section class="panel">
             <div class="panel-head">
               <div>
                 <h3>➗ Performance by operation</h3>
                 <div class="panel-note">
-                  First-try accuracy and average response time.
+                  Verified first-try accuracy and average response time.
                 </div>
               </div>
             </div>
@@ -904,7 +1086,8 @@
               <div>
                 <h3>🕒 Recent activity</h3>
                 <div class="panel-note">
-                  Includes fair-play XP decisions for Targeted Practice.
+                  Shows assessment credits, duplicate checks and
+                  Targeted Practice fair-play decisions.
                 </div>
               </div>
             </div>
@@ -1132,25 +1315,26 @@
       renderWeakQuestions(data.weakQuestions);
       renderRecentSessions(data.recentSessions);
       renderAchievements(data.achievements);
-      renderMission(data.activeMission);
+      renderRewardBank(data.rewardBank);
+      renderMission(data.activeMission, data.nextMission);
       renderMissionHistory(data.missions || []);
     }
 
-    function renderMetrics(summary) {
+        function renderMetrics(summary) {
       const metrics = [
         ["⭐","Lifetime XP",summary.totalXp,
           `Level ${summary.level}`],
         ["🔥","Current streak",
           `${summary.currentStreak} days`,
           `Best: ${summary.longestStreak} days`],
-        ["📝","Assessments",summary.assessments,
-          `${summary.assessmentQuestions} assessment questions`],
+        ["🛡️","Assessment credits",summary.assessmentCredits,
+          `${summary.assessments} eligible sessions`],
         ["🎯","Eligible practice",
           summary.eligiblePracticeSets,
           "Fair-play rewarded sets"],
         ["✅","Assessment accuracy",
           formatPercent(summary.assessmentAccuracy),
-          `${summary.wrongAttempts} wrong attempts`],
+          `${summary.assessmentQuestions} verified questions`],
         ["⏱️","Average time",
           formatSeconds(summary.averageAssessmentTime),
           `Last: ${formatDateTime(summary.lastActivity)}`]
@@ -1264,7 +1448,7 @@
         </div>`;
     }
 
-    function renderRecentSessions(items) {
+        function renderRecentSessions(items) {
       const container = $("recentSessions");
 
       if (!items?.length) {
@@ -1277,6 +1461,9 @@
         const practice = item.sessionType === "Targeted Practice";
         const icon = practice ? "🎯" : "📝";
         const xpClass = item.sessionXp > 0 ? "" : " zero";
+        const creditText = practice
+          ? (item.rewardEligible ? "Eligible practice" : "No mission credit")
+          : `${Number(item.assessmentCredits || 0)} assessment credit${Number(item.assessmentCredits || 0)===1?"":"s"}`;
 
         return `
           <div class="session-item"
@@ -1288,8 +1475,14 @@
               </div>
               <div class="session-meta">
                 ${formatDateTime(item.completedAt)} ·
-                ${item.questions} questions · Level ${item.level}
+                ${item.questions} questions · ${escapeHtml(creditText)}
+                ${item.questionOverlap > 0
+                  ? ` · ${Math.round(item.questionOverlap*100)}% overlap`
+                  : ""}
               </div>
+              ${item.eligibilityReason
+                ? `<div class="session-meta">${escapeHtml(item.eligibilityReason)}</div>`
+                : ""}
             </div>
             <div class="xp-pill${xpClass}">
               +${item.sessionXp} XP
@@ -1343,19 +1536,22 @@
         </div>`;
     }
 
-    function renderMission(activeMission) {
+        function renderMission(activeMission, nextMission=null) {
       const panel = $("missionPanel");
 
       if (!activeMission) {
         panel.innerHTML = `
           <div class="panel-head">
             <div>
-              <h3>🎮 Weekly mission</h3>
-              <div class="panel-note">No active mission right now.</div>
+              <h3>🎮 Mission queue</h3>
+              <div class="panel-note">No Current mission right now.</div>
             </div>
           </div>
           <div class="empty">
-            Use Mission Builder above to create the first mission.
+            ${nextMission
+              ? `Next queued mission: <strong>${escapeHtml(nextMission.name)}</strong>
+                 · Queue ${Number(nextMission.queueOrder || 0)}`
+              : "Use Mission Builder to add a mission."}
           </div>`;
         return;
       }
@@ -1366,16 +1562,23 @@
 
       panel.innerHTML = `
         <div class="mission-card">
-          <h3>🎮 ${escapeHtml(mission.name)}</h3>
+          <h3>
+            🎮 ${escapeHtml(mission.name)}
+            <span class="history-status active">
+              ${escapeHtml(mission.status || "Current")}
+            </span>
+          </h3>
           <div class="panel-note">
+            Queue ${Number(mission.queueOrder || 0)} ·
             ${formatDate(mission.startDate)} –
-            ${formatDate(mission.endDate)}
+            ${formatDate(mission.endDate)}<br>
+            Activated: ${formatDateTime(mission.activatedAt)}
           </div>
 
           ${requirementHtml(
-            "Assessments",
-            progress.assessments,
-            requirements.assessments
+            "Assessment credits",
+            progress.assessmentCredits,
+            requirements.assessmentCredits
           )}
           ${requirementHtml(
             "Eligible practice",
@@ -1400,15 +1603,78 @@
           )}
 
           <div class="mission-reward">
-            ${activeMission.completed ? "🏆 Mission complete" : "🎁 Reward"}:
+            🎁 Reward:
             ${mission.rewardMinutes
               ? `${mission.rewardMinutes} minutes — `
               : ""}
             ${escapeHtml(mission.reward || "Parent-selected reward")}
           </div>
+
+          ${nextMission
+            ? `<div class="next-mission-mini">
+                🔒 Next: <strong>${escapeHtml(nextMission.name)}</strong>
+                · Queue ${Number(nextMission.queueOrder || 0)}
+              </div>`
+            : ""}
         </div>`;
     }
 
+
+
+    function renderRewardBank(bank) {
+      const panel = $("rewardBankPanel");
+
+      if (!bank) {
+        panel.innerHTML = `
+          <div class="empty">Weekly reward data is unavailable.</div>`;
+        return;
+      }
+
+      const breakdown = bank.items?.length
+        ? bank.items.map(item => `
+            <div class="reward-breakdown-item">
+              <span>
+                ${escapeHtml(item.name)}
+                <span class="history-status ${String(item.rewardStatus || "").toLowerCase().replaceAll(" ","-")}">
+                  ${escapeHtml(item.rewardStatus || "Pending")}
+                </span>
+              </span>
+              <strong>+${Number(item.minutes || 0)} min</strong>
+            </div>
+          `).join("")
+        : `<div class="empty">No mission completed this week yet.</div>`;
+
+      panel.innerHTML = `
+        <div class="reward-bank">
+          <h3 style="margin:0;">🎮 Weekly Reward Bank</h3>
+          <div class="panel-note">
+            ${formatDate(bank.weekStart)} – ${formatDate(bank.weekEnd)}
+          </div>
+          <div class="reward-bank-grid">
+            <div class="reward-bank-stat">
+              Completed
+              <strong>${Number(bank.completedMissions || 0)}</strong>
+            </div>
+            <div class="reward-bank-stat">
+              Earned
+              <strong>${Number(bank.earnedMinutes || 0)}m</strong>
+            </div>
+            <div class="reward-bank-stat">
+              Pending
+              <strong>${Number(bank.pendingMinutes || 0)}m</strong>
+            </div>
+            <div class="reward-bank-stat">
+              Approved
+              <strong>${Number(bank.approvedMinutes || 0)}m</strong>
+            </div>
+            <div class="reward-bank-stat">
+              Redeemed
+              <strong>${Number(bank.redeemedMinutes || 0)}m</strong>
+            </div>
+          </div>
+          <div class="reward-breakdown">${breakdown}</div>
+        </div>`;
+    }
 
     function localDateKey(date) {
       const year = date.getFullYear();
@@ -1441,14 +1707,15 @@
       $("missionName").value = "Nintendo Weekend Mission";
       $("missionStartDate").value = week.start;
       $("missionEndDate").value = week.end;
-      $("missionAssessments").value = 3;
+      $("missionAssessments").value = 4;
       $("missionPractice").value = 2;
       $("missionQuestions").value = 50;
       $("missionAccuracy").value = 80;
       $("missionPeriodXp").value = 0;
       $("missionReward").value = "Nintendo this weekend";
       $("missionRewardMinutes").value = 60;
-      $("missionStatus").value = "Active";
+      $("missionQueueOrder").value = 0;
+      $("missionStatus").value = "Queued";
       $("missionNotes").value =
         "Parent approval is required before reward redemption.";
       setBuilderMessage("", "");
@@ -1499,7 +1766,7 @@
       $("missionStartDate").value = mission.startDate || "";
       $("missionEndDate").value = mission.endDate || "";
       $("missionAssessments").value =
-        Number(requirements.assessments || 0);
+        Number(requirements.assessmentCredits || 0);
       $("missionPractice").value =
         Number(requirements.practiceSets || 0);
       $("missionQuestions").value =
@@ -1511,8 +1778,10 @@
       $("missionReward").value = mission.reward || "";
       $("missionRewardMinutes").value =
         Number(mission.rewardMinutes || 0);
+      $("missionQueueOrder").value =
+        Number(mission.queueOrder || 0);
       $("missionStatus").value =
-        mission.status === "Active" ? "Active" : "Draft";
+        mission.status === "Draft" ? "Draft" : "Queued";
       $("missionNotes").value = mission.notes || "";
 
       setBuilderMessage(
@@ -1530,13 +1799,14 @@
         missionName:$("missionName").value.trim(),
         startDate:$("missionStartDate").value,
         endDate:$("missionEndDate").value,
-        assessments:$("missionAssessments").value,
+        assessmentCredits:$("missionAssessments").value,
         practiceSets:$("missionPractice").value,
         questions:$("missionQuestions").value,
         accuracyPercent:$("missionAccuracy").value,
         periodXp:$("missionPeriodXp").value,
         reward:$("missionReward").value.trim(),
         rewardMinutes:$("missionRewardMinutes").value,
+        queueOrder:$("missionQueueOrder").value,
         status:$("missionStatus").value,
         notes:$("missionNotes").value.trim()
       };
@@ -1556,7 +1826,7 @@
       }
 
       const requirements = [
-        Number(parameters.assessments || 0),
+        Number(parameters.assessmentCredits || 0),
         Number(parameters.practiceSets || 0),
         Number(parameters.questions || 0),
         Number(parameters.accuracyPercent || 0),
@@ -1655,7 +1925,7 @@
       }
     }
 
-    function renderMissionHistory(items) {
+        function renderMissionHistory(items) {
       const container = $("missionHistoryList");
 
       if (!container) return;
@@ -1671,15 +1941,12 @@
       container.innerHTML = items.map(item => {
         const mission = item.mission;
         const status = String(mission.status || "Draft");
-        const statusClass = item.completed
-          ? "completed"
-          : status.toLowerCase();
-
+        const statusClass = status.toLowerCase().replaceAll(" ","-");
         const progressParts = [];
 
-        if (item.requirements.assessments > 0) {
+        if (item.requirements.assessmentCredits > 0) {
           progressParts.push(
-            `${item.progress.assessments}/${item.requirements.assessments} assessments`
+            `${item.progress.assessmentCredits}/${item.requirements.assessmentCredits} credits`
           );
         }
 
@@ -1701,18 +1968,52 @@
           );
         }
 
+        const rewardStatus = mission.rewardStatus || "";
+        let rewardAction = "";
+
+        if (status === "Completed" &&
+            rewardStatus === "Pending Approval") {
+          rewardAction = `
+            <button class="reward-action-btn approve-reward-btn"
+              data-approve-reward="${escapeHtml(mission.id)}"
+              type="button">Approve Reward</button>`;
+        } else if (
+          status === "Completed" &&
+          rewardStatus === "Approved"
+        ) {
+          rewardAction = `
+            <button class="reward-action-btn redeem-reward-btn"
+              data-redeem-reward="${escapeHtml(mission.id)}"
+              type="button">Mark Redeemed</button>`;
+        }
+
+        const editable = !["Completed","Expired","Archived"].includes(status);
+        const archivable = !["Completed","Archived"].includes(status);
+
         return `
           <div class="history-card">
             <div>
               <div class="history-title">
+                Queue ${Number(mission.queueOrder || 0)} ·
                 ${escapeHtml(mission.name)}
                 <span class="history-status ${statusClass}">
-                  ${item.completed ? "Completed" : escapeHtml(status)}
+                  ${escapeHtml(status)}
                 </span>
+                ${rewardStatus
+                  ? `<span class="history-status">
+                      ${escapeHtml(rewardStatus)}
+                    </span>`
+                  : ""}
               </div>
               <div class="history-meta">
                 ${formatDate(mission.startDate)} –
                 ${formatDate(mission.endDate)}<br>
+                Activated: ${mission.activatedAt
+                  ? formatDateTime(mission.activatedAt)
+                  : "Not yet"} ·
+                Completed: ${mission.completedAt
+                  ? formatDateTime(mission.completedAt)
+                  : "—"}<br>
                 ${escapeHtml(progressParts.join(" · ") || "No progress requirement")}<br>
                 Reward:
                 ${mission.rewardMinutes
@@ -1722,18 +2023,70 @@
               </div>
             </div>
             <div class="history-actions">
-              ${status !== "Archived"
+              ${editable
                 ? `<button class="edit-mission-btn"
                     data-edit-mission="${escapeHtml(mission.id)}"
-                    type="button">Edit</button>
-                   <button class="archive-mission-btn"
+                    type="button">Edit</button>`
+                : ""}
+              ${archivable
+                ? `<button class="archive-mission-btn"
                     data-archive-mission="${escapeHtml(mission.id)}"
                     type="button">Archive</button>`
-                : `<span class="panel-note">Archived</span>`
-              }
+                : ""}
+              ${rewardAction}
+              ${status === "Archived"
+                ? `<span class="panel-note">Archived</span>`
+                : ""}
             </div>
           </div>`;
       }).join("");
+    }
+
+
+    async function updateRewardStatus(missionId, action) {
+      const item = currentMissions.find(entry =>
+        entry.mission.id === missionId
+      );
+
+      if (!item) return;
+
+      const verb = action === "approveMissionReward"
+        ? "approve"
+        : "mark as redeemed";
+
+      if (!confirm(
+        `${verb.charAt(0).toUpperCase()+verb.slice(1)} reward for ` +
+        `"${item.mission.name}"?`
+      )) {
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const response = await jsonpRequest({
+          action,
+          pin:activePin,
+          studentId:activeStudentId,
+          missionId
+        }, 45000);
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error || "Reward status could not be updated."
+          );
+        }
+
+        await loadDashboard(activeStudentId);
+        $("missionBuilder").classList.remove("hidden");
+        renderMissionHistory(currentMissions);
+        setBuilderMessage(response.message, "ok");
+      } catch (error) {
+        console.error(error);
+        setBuilderMessage(error.message, "error");
+      } finally {
+        setLoading(false);
+      }
     }
 
     async function unlockDashboard() {
@@ -1785,6 +2138,12 @@
       const archiveButton = event.target.closest(
         "[data-archive-mission]"
       );
+      const approveButton = event.target.closest(
+        "[data-approve-reward]"
+      );
+      const redeemButton = event.target.closest(
+        "[data-redeem-reward]"
+      );
 
       if (editButton) {
         editMission(editButton.dataset.editMission);
@@ -1796,6 +2155,20 @@
 
       if (archiveButton) {
         archiveMission(archiveButton.dataset.archiveMission);
+      }
+
+      if (approveButton) {
+        updateRewardStatus(
+          approveButton.dataset.approveReward,
+          "approveMissionReward"
+        );
+      }
+
+      if (redeemButton) {
+        updateRewardStatus(
+          redeemButton.dataset.redeemReward,
+          "redeemMissionReward"
+        );
       }
     });
     $("lockBtn").addEventListener("click", lockDashboard);

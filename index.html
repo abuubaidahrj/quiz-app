@@ -141,6 +141,67 @@
     }
     .fair-play-card strong { color:#854d0e; }
 
+    .qualification-panel {
+      margin:15px 0;
+      border:2px solid #60a5fa;
+      border-radius:15px;
+      overflow:hidden;
+      background:#eff6ff;
+      box-shadow:0 5px 0 #bfdbfe;
+    }
+    .qualification-panel summary {
+      padding:13px 15px;
+      cursor:pointer;
+      font-weight:900;
+      color:#1e3a8a;
+      list-style:none;
+    }
+    .qualification-panel summary::-webkit-details-marker {
+      display:none;
+    }
+    .qualification-panel summary::after {
+      content:"＋";
+      float:right;
+      font-size:20px;
+    }
+    .qualification-panel[open] summary::after {
+      content:"−";
+    }
+    .qualification-body {
+      padding:0 15px 15px;
+      color:#334155;
+      line-height:1.55;
+    }
+    .credit-table {
+      width:100%;
+      border-collapse:collapse;
+      margin:10px 0;
+      background:#fff;
+      border-radius:10px;
+      overflow:hidden;
+    }
+    .credit-table th,
+    .credit-table td {
+      padding:8px 9px;
+      border-bottom:1px solid #dbeafe;
+      text-align:left;
+      font-size:13px;
+    }
+    .qualification-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+    .qualification-actions button {
+      width:auto;
+      margin:0;
+      padding:8px 10px;
+      border-radius:9px;
+      font-size:13px;
+    }
+
+
     .parent-dashboard-link {
       display:flex;
       align-items:center;
@@ -266,6 +327,34 @@
     .mission-track { height:10px; border-radius:999px; overflow:hidden; background:#ffedd5; }
     .mission-track > div { height:100%; width:0; background:#f97316; transition:width .3s; }
     .mission-complete { margin-top:12px; padding:12px; border-radius:10px; background:#ecfdf5; border-left:5px solid #16a34a; line-height:1.5; }
+    .mission-status-pill {
+      display:inline-block;
+      margin-left:7px;
+      padding:3px 8px;
+      border-radius:999px;
+      background:#dbeafe;
+      color:#1e3a8a;
+      font-size:11px;
+      font-weight:900;
+      vertical-align:middle;
+    }
+    .reward-bank-mini {
+      margin-top:13px;
+      padding:12px;
+      border-radius:12px;
+      background:#f5f3ff;
+      border:2px solid #a78bfa;
+      color:#4c1d95;
+      line-height:1.55;
+    }
+    .next-mission-mini {
+      margin-top:10px;
+      padding:10px;
+      border-radius:10px;
+      background:#eff6ff;
+      border-left:4px solid #2563eb;
+      color:#1e3a8a;
+    }
     .reward-banner { margin:15px 0; padding:16px; border-radius:12px; background:#ecfdf5; border-left:5px solid #16a34a; line-height:1.5; }
     @media (max-width:650px){
       body{padding:0;background:#dbeafe}
@@ -288,7 +377,7 @@
         <p class="subtitle" style="color:#e0f2fe;">
           Solve equations, earn fair XP, complete missions and unlock achievements.
         </p>
-        <span class="hero-version">Version v7.1 — Mission Builder</span>
+        <span class="hero-version">Version v7.2 — Mission Queue & Fair Play</span>
       </div>
 
       <svg class="hero-art" viewBox="0 0 300 230" role="img"
@@ -380,12 +469,43 @@
 
     <div class="fair-play-card">
       🛡️ <strong>Fair Play Protection:</strong>
-      Targeted Practice is always available for learning, but only the first
-      eligible set from a new assessment can earn XP. A maximum of
-      <strong>2 rewarded practice sets per day</strong> can count toward XP
-      and missions. Repeated/spammed sets are still saved, but receive
-      <strong>0 XP and 0 mission credit</strong>.
+      The system now rotates recently used questions and automatically tries
+      another set before the quiz starts when a candidate is too similar.
+      A few repeated questions are normal and will not reject the assessment.
+      Eligible assessments earn <strong>1 credit per 10 questions</strong>,
+      up to 5 credits per session.
     </div>
+
+    <details id="qualificationRules" class="qualification-panel">
+      <summary>🛡️ How to earn mission assessment credits</summary>
+      <div class="qualification-body">
+        <table class="credit-table">
+          <thead>
+            <tr><th>Completed questions</th><th>Eligible credits</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>10</td><td>1 credit</td></tr>
+            <tr><td>20</td><td>2 credits</td></tr>
+            <tr><td>30</td><td>3 credits</td></tr>
+            <tr><td>40</td><td>4 credits</td></tr>
+            <tr><td>50 or more</td><td>Maximum 5 credits</td></tr>
+          </tbody>
+        </table>
+        <strong>Qualification checks</strong><br>
+        ✅ Complete at least 10 questions.<br>
+        ✅ Achieve at least 60% first-try accuracy.<br>
+        ✅ Average at least 1 second per question.<br>
+        ✅ Use the server-issued one-time attempt.<br>
+        ✅ Stay within the daily limit of 8 rewarded credits.<br>
+        ✅ Complete the assessment after the current mission activates.<br>
+        ✅ Use a sufficiently fresh set. The system regenerates sets with
+        80% or more overlap before the quiz starts.<br><br>
+        <strong>Important:</strong> one or two repeated questions are allowed.
+        For a new 50-question assessment, 8 repeated questions count as only
+        16% overlap. “All questions” uses the full pool, so only the first
+        recent full-pool completion is rewarded; repeats remain learning-only.
+      </div>
+    </details>
 
     <div id="studentProfilePanel" class="profile-panel hidden">
       <strong>🏆 Student Progress</strong>
@@ -517,7 +637,12 @@
     sourceDiagnosis: [],
     parentSessionLabel: "",
     motivationAward: null,
-    lastSessionId: ""
+    lastSessionId: "",
+    attemptId: "",
+    attemptHash: "",
+    attemptExpiresAt: "",
+    questionSelection: "all",
+    assessmentStarting: false
   };
 
   function shuffle(items) {
@@ -666,10 +791,13 @@
     { id:"level_five", icon:"🚀", name:"Level 5", test:p=>levelFromXp(p.totalXp)>=5 }
   ];
 
-  function calculateSessionXp() {
+    function calculateSessionXp() {
     const wrongAttempts = state.records.reduce((sum,r)=>sum+r.wrongs.length,0);
     const firstTryCorrect = state.records.filter(r=>r.wrongs.length===0).length;
     const firstTryAccuracy = state.records.length ? firstTryCorrect/state.records.length : 0;
+    const fastCorrect = state.records.filter(
+      r => r.wrongs.length===0 && r.time<5
+    ).length;
 
     if (state.practiceMode) {
       return {
@@ -683,7 +811,7 @@
         firstTryAccuracy,
         wrongAttempts,
         reasons:[
-          "Cloud verification required",
+          "Cloud fair-play verification required",
           "Eligible Targeted Practice can earn a flat +30 XP",
           "Repeated sets or more than 2 rewarded sets today earn 0 XP"
         ]
@@ -691,28 +819,46 @@
     }
 
     const questionXp = state.records.length * 10;
-    const fastCorrect = state.records.filter(r => r.wrongs.length===0 && r.time<5).length;
     const speedXp = fastCorrect * 5;
     let bonusXp = 0;
-    const reasons = [`${state.records.length} completed questions: +${questionXp} XP`];
+    const reasons = [
+      `${state.records.length} completed questions: potential +${questionXp} XP`
+    ];
 
-    if (speedXp>0) reasons.push(`${fastCorrect} fast first-try answers: +${speedXp} XP`);
+    if (speedXp>0) {
+      reasons.push(
+        `${fastCorrect} fast first-try answers: potential +${speedXp} XP`
+      );
+    }
 
     if (wrongAttempts===0 && state.records.length>0) {
       bonusXp += 50;
-      reasons.push("Perfect assessment: +50 XP");
+      reasons.push("Perfect assessment: potential +50 XP");
     } else if (firstTryAccuracy>=0.9) {
       bonusXp += 25;
-      reasons.push("At least 90% first-try accuracy: +25 XP");
+      reasons.push("At least 90% first-try accuracy: potential +25 XP");
     }
+
+    const rawCredits = Math.min(
+      5,
+      Math.floor(state.records.length / 10)
+    );
+
+    reasons.push(
+      `Potential assessment credits: ${rawCredits} ` +
+      `(1 credit per 10 questions)`
+    );
+    reasons.push(
+      "Final XP and credits require secure cloud fair-play verification"
+    );
 
     return {
       questionXp,
       speedXp,
       bonusXp,
-      totalXp:questionXp+speedXp+bonusXp,
-      potentialXp:0,
-      provisional:false,
+      totalXp:0,
+      potentialXp:questionXp+speedXp+bonusXp,
+      provisional:true,
       firstTryCorrect,
       firstTryAccuracy,
       wrongAttempts,
@@ -737,28 +883,26 @@
     return newlyUnlocked;
   }
 
-  function awardSessionMotivation() {
+    function awardSessionMotivation() {
     const profile = loadStudentProfile(state.studentId, state.user);
     if (!profile) return null;
+
     const oldLevel = levelFromXp(profile.totalXp);
     const xp = calculateSessionXp();
-    if (!state.practiceMode) {
-      updateStreak(profile);
-      profile.totalXp += xp.totalXp;
-      profile.totalQuestions += state.records.length;
-      profile.totalCorrectFirstTry += xp.firstTryCorrect;
-      profile.totalWrongAttempts += xp.wrongAttempts;
-      profile.completedAssessments += 1;
-      if (xp.wrongAttempts===0 && state.records.length>0) {
-        profile.perfectAssessments += 1;
-      }
-    }
-    const newLevel = levelFromXp(profile.totalXp);
-    const newlyUnlocked = unlockAchievements(profile);
-    profile.recentAwards = [{ completedAt:new Date().toISOString(), xp:xp.totalXp,
-      practiceMode:state.practiceMode, questionCount:state.records.length }, ...(profile.recentAwards||[])].slice(0,20);
-    saveStudentProfile(profile);
-    return { profile, xp, oldLevel, newLevel, levelUp:newLevel>oldLevel, newlyUnlocked };
+
+    // v7.2: cloud fair-play is authoritative for both assessments
+    // and Targeted Practice. Local lifetime XP is not changed here.
+    const newLevel = oldLevel;
+    const newlyUnlocked = [];
+
+    return {
+      profile,
+      xp,
+      oldLevel,
+      newLevel,
+      levelUp:false,
+      newlyUnlocked
+    };
   }
 
   function achievementById(id) { return ACHIEVEMENTS.find(item=>item.id===id); }
@@ -975,30 +1119,100 @@
       </div>`;
   }
 
-  function renderMission(missionData) {
+    function renderMission(missionData) {
     const panel = $("missionPanel");
 
-    if (!missionData || !missionData.mission) {
+    if (!missionData) {
       panel.classList.add("hidden");
+      return;
+    }
+
+    const rewardBank = missionData.rewardBank || null;
+    const latestCompleted = missionData.latestCompletedMission || null;
+    const nextMission = missionData.nextMission || null;
+
+    if (!missionData.mission) {
+      const latestHtml = latestCompleted
+        ? `<div class="mission-complete">
+            🏆 <strong>Mission complete:</strong><br>
+            ${Number(latestCompleted.rewardMinutes || 0)} minutes —
+            ${escapeHtml(latestCompleted.reward || "Parent-selected reward")}
+          </div>`
+        : "";
+
+      const nextHtml = nextMission
+        ? `<div class="next-mission-mini">
+            🔒 <strong>Next mission:</strong>
+            ${escapeHtml(nextMission.name)}
+            · Queue ${Number(nextMission.queueOrder || 0)}
+          </div>`
+        : "";
+
+      const bankHtml = rewardBank
+        ? `<div class="reward-bank-mini">
+            🎮 <strong>Weekly Reward Bank</strong><br>
+            ${Number(rewardBank.completedMissions || 0)} missions completed ·
+            <strong>${Number(rewardBank.earnedMinutes || 0)} minutes earned</strong><br>
+            ${Number(rewardBank.pendingMinutes || 0)} pending approval ·
+            ${Number(rewardBank.approvedMinutes || 0)} approved ·
+            ${Number(rewardBank.redeemedMinutes || 0)} redeemed
+          </div>`
+        : "";
+
+      if (!latestHtml && !nextHtml && !bankHtml) {
+        panel.classList.add("hidden");
+        return;
+      }
+
+      $("missionTitle").innerHTML =
+        `🎯 Mission Queue <span class="mission-status-pill">No current mission</span>`;
+      $("missionMeta").textContent = "";
+      $("missionRequirements").innerHTML = latestHtml + nextHtml;
+      $("missionReward").innerHTML = bankHtml;
+      panel.classList.remove("hidden");
       return;
     }
 
     const mission = missionData.mission;
     const progress = missionData.progress || {};
     const requirements = missionData.requirements || {};
-
-    $("missionTitle").textContent = `🎯 ${mission.name || "Weekly Mission"}`;
-    $("missionMeta").textContent =
-      `${formatMissionDate(mission.startDate)} – ${formatMissionDate(mission.endDate)}`;
-
     const percentFormatter = value => `${Math.round(value * 100)}%`;
 
+    $("missionTitle").innerHTML =
+      `🎯 ${escapeHtml(mission.name || "Mission")} ` +
+      `<span class="mission-status-pill">${escapeHtml(mission.status || "Current")}</span>`;
+
+    $("missionMeta").textContent =
+      `Queue ${Number(mission.queueOrder || 0)} · ` +
+      `${formatMissionDate(mission.startDate)} – ${formatMissionDate(mission.endDate)}`;
+
     $("missionRequirements").innerHTML = [
-      missionRequirementHtml("Assessments", progress.assessments, requirements.assessments),
-      missionRequirementHtml("Targeted Practice", progress.practiceSets, requirements.practiceSets),
-      missionRequirementHtml("Questions answered", progress.questions, requirements.questions),
-      missionRequirementHtml("XP earned during mission", progress.periodXp, requirements.periodXp),
-      missionRequirementHtml("First-try accuracy", progress.accuracy, requirements.accuracy, percentFormatter)
+      missionRequirementHtml(
+        "Assessment credits",
+        progress.assessmentCredits,
+        requirements.assessmentCredits
+      ),
+      missionRequirementHtml(
+        "Eligible Targeted Practice",
+        progress.practiceSets,
+        requirements.practiceSets
+      ),
+      missionRequirementHtml(
+        "Questions answered",
+        progress.questions,
+        requirements.questions
+      ),
+      missionRequirementHtml(
+        "XP earned during mission",
+        progress.periodXp,
+        requirements.periodXp
+      ),
+      missionRequirementHtml(
+        "First-try accuracy",
+        progress.accuracy,
+        requirements.accuracy,
+        percentFormatter
+      )
     ].filter(Boolean).join("") ||
       '<div class="note">No requirement has been configured.</div>';
 
@@ -1008,15 +1222,39 @@
       ? `${minutes} minutes — ${rewardText}`
       : rewardText;
 
-    $("missionReward").innerHTML = missionData.completed
+    const latestHtml = latestCompleted &&
+      latestCompleted.id !== mission.id
       ? `<div class="mission-complete">
-          🏆 <strong>Mission complete!</strong><br>
-          Suggested reward: <strong>${escapeHtml(rewardDisplay)}</strong><br>
-          <span class="note">Parent approval is required before the reward is given.</span>
+          🏆 Latest mission complete:
+          <strong>${Number(latestCompleted.rewardMinutes || 0)} minutes —
+          ${escapeHtml(latestCompleted.reward || "")}</strong>
         </div>`
-      : `<div class="note" style="margin-top:12px;">
-          🎁 Reward when completed: <strong>${escapeHtml(rewardDisplay)}</strong>
-        </div>`;
+      : "";
+
+    const nextHtml = nextMission
+      ? `<div class="next-mission-mini">
+          🔒 Next in queue:
+          <strong>${escapeHtml(nextMission.name)}</strong>
+          · Queue ${Number(nextMission.queueOrder || 0)}
+        </div>`
+      : "";
+
+    const bankHtml = rewardBank
+      ? `<div class="reward-bank-mini">
+          🎮 This week:
+          <strong>${Number(rewardBank.earnedMinutes || 0)} minutes earned</strong>
+          from ${Number(rewardBank.completedMissions || 0)} completed mission${Number(rewardBank.completedMissions || 0)===1?"":"s"}.
+          ${Number(rewardBank.pendingMinutes || 0)} minutes pending,
+          ${Number(rewardBank.approvedMinutes || 0)} approved,
+          ${Number(rewardBank.redeemedMinutes || 0)} redeemed.
+        </div>`
+      : "";
+
+    $("missionReward").innerHTML = `
+      <div class="note" style="margin-top:12px;">
+        🎁 Reward when completed: <strong>${escapeHtml(rewardDisplay)}</strong>
+      </div>
+      ${latestHtml}${nextHtml}${bankHtml}`;
 
     panel.classList.remove("hidden");
   }
@@ -1040,8 +1278,8 @@
       }
 
       if (!response.found) {
-        renderMission(null);
-        return null;
+        renderMission(response);
+        return response;
       }
 
       renderMission(response);
@@ -1074,8 +1312,9 @@
           container.innerHTML = `
             <div class="note ok" style="padding:12px;border-radius:12px;background:#ecfdf5;border:2px solid #22c55e;">
               🛡️ <strong>Fair-play check passed.</strong>
-              +${response.sessionXp} XP confirmed and this practice counts toward the mission.
-              Rewarded practice today: ${response.rewardedPracticeCountToday}/${response.dailyLimit}.
+              +${response.sessionXp} XP confirmed and this practice counts toward the current mission.
+              Rewarded practice today:
+              ${response.rewardedPracticeCountToday}/${response.dailyPracticeLimit}.
             </div>`;
         } else {
           container.innerHTML = `
@@ -1085,11 +1324,35 @@
               This set does not count toward the mission.
             </div>`;
         }
-      } else {
+      } else if (response.rewardEligible) {
         container.innerHTML = `
-          <div class="note ok" style="padding:10px;border-radius:12px;background:#eff6ff;border:2px solid #60a5fa;">
-            ☁️ Assessment XP confirmed by Google Sheets:
-            <strong>+${response.sessionXp} XP</strong>.
+          <div class="note ok" style="padding:12px;border-radius:12px;background:#ecfdf5;border:2px solid #22c55e;">
+            🔐 <strong>Secure assessment verified.</strong><br>
+            <strong>+${response.assessmentCredits} assessment credit${response.assessmentCredits===1?"":"s"}</strong>
+            and <strong>+${response.sessionXp} XP</strong> confirmed.<br>
+            Daily credits:
+            ${response.rewardedAssessmentCreditsToday}/${response.dailyAssessmentCreditLimit}.
+          </div>`;
+      } else {
+        const overlapText = response.questionOverlap > 0
+          ? `<br>Question overlap: ${Math.round(response.questionOverlap * 100)}%.`
+          : "";
+
+        container.innerHTML = `
+          <div class="note error" style="padding:12px;border-radius:12px;background:#fff7ed;border:2px solid #fb923c;color:#9a3412;">
+            🔐 <strong>Assessment saved for diagnosis, but no XP or mission credit was awarded.</strong><br>
+            <strong>Reason:</strong>
+            ${escapeHtml(response.eligibilityReason || "Assessment fair-play check failed.")}
+            ${overlapText}
+            <div class="qualification-actions">
+              <button type="button" onclick="openQualificationRules()">
+                🛡️ View qualification rules
+              </button>
+              <button type="button" class="secondary"
+                onclick="document.getElementById('againBtn').click()">
+                🔄 Start a fresh assessment
+              </button>
+            </div>
           </div>`;
       }
 
@@ -1098,6 +1361,15 @@
       console.error("Reward status lookup failed:", error);
       return null;
     }
+  }
+
+  function openQualificationRules() {
+    const panel = $("qualificationRules");
+    panel.open = true;
+    panel.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
   }
 
   function refreshProfileFromInputs() {
@@ -1117,23 +1389,246 @@
     $("coverageNote").innerHTML = `<span class="badge">${total} available questions</span><br>${descriptions[mode]}`;
   }
 
-  function chooseQuestions(mode, requested) {
-    const shuffled = shuffle(pools[mode]);
-    if (requested === "all") return shuffled;
-    const count = Math.min(Number(requested), shuffled.length);
-    return shuffled.slice(0, count);
+
+  function canonicalQuestionKey(question) {
+    const operation = String(question.operation || "").toLowerCase();
+    let a = Number(question.a);
+    let b = Number(question.b);
+    const answer = Number(question.answer);
+
+    if ((operation === "multiply" || operation === "add") && a > b) {
+      [a, b] = [b, a];
+    }
+
+    return [operation, a, b, answer].join("|");
   }
 
-  function startQuiz() {
+  async function sha256Hex(text) {
+    const bytes = new TextEncoder().encode(String(text || ""));
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+
+    return Array.from(new Uint8Array(digest))
+      .map(value => value.toString(16).padStart(2, "0"))
+      .join("");
+  }
+
+  async function questionSetHash(questions) {
+    const keys = [...new Set(
+      (questions || []).map(canonicalQuestionKey)
+    )].sort();
+
+    return sha256Hex(keys.join("||"));
+  }
+
+  function rotationStorageKey(studentId, mode) {
+    return `mathMasterRotation:v721:${String(studentId || "").toUpperCase()}:${mode}`;
+  }
+
+  function readQuestionRotation(studentId, mode) {
+    try {
+      const value = JSON.parse(
+        localStorage.getItem(rotationStorageKey(studentId, mode)) || "[]"
+      );
+
+      return Array.isArray(value) ? value.filter(Boolean) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function rememberQuestionRotation(studentId, mode, questions) {
+    const selectedKeys = [...new Set(
+      (questions || []).map(canonicalQuestionKey)
+    )];
+    const previous = readQuestionRotation(studentId, mode)
+      .filter(key => !selectedKeys.includes(key));
+    const combined = previous.concat(selectedKeys).slice(-600);
+
+    localStorage.setItem(
+      rotationStorageKey(studentId, mode),
+      JSON.stringify(combined)
+    );
+  }
+
+  function questionSetKeys(questions) {
+    return [...new Set(
+      (questions || []).map(canonicalQuestionKey)
+    )].sort();
+  }
+
+  async function requestAssessmentAttempt(
+    studentId,
+    studentName,
+    questions,
+    mode,
+    selection
+  ) {
+    const keys = questionSetKeys(questions);
+    const hash = await sha256Hex(keys.join("||"));
+    const response = await jsonpRequest({
+      action: "startAssessmentAttempt",
+      studentId,
+      studentName,
+      questionCount: questions.length,
+      questionSetHash: hash,
+      questionSetKeys: selection === "all" ? "" : keys.join("||"),
+      mode,
+      selection,
+      clientNonce: crypto.randomUUID
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`
+    }, 20000);
+
+    return {
+      ...response,
+      questionSetHash: hash
+    };
+  }
+
+  function chooseQuestions(mode, requested, studentId) {
+    const shuffledPool = shuffle(pools[mode]);
+
+    if (requested === "all") {
+      return shuffledPool;
+    }
+
+    // For short assessments, do not place both 7×8 and 8×7 in the
+    // same set. They remain valid ordered questions in All mode.
+    const conceptualPool = [];
+    const seenConcepts = new Set();
+
+    shuffledPool.forEach(question => {
+      const key = canonicalQuestionKey(question);
+
+      if (!seenConcepts.has(key)) {
+        seenConcepts.add(key);
+        conceptualPool.push(question);
+      }
+    });
+
+    const history = readQuestionRotation(studentId, mode);
+    const lastSeen = new Map();
+
+    history.forEach((key, index) => lastSeen.set(key, index));
+
+    conceptualPool.sort((first, second) => {
+      const firstKey = canonicalQuestionKey(first);
+      const secondKey = canonicalQuestionKey(second);
+      const firstSeen = lastSeen.has(firstKey)
+        ? lastSeen.get(firstKey)
+        : -1;
+      const secondSeen = lastSeen.has(secondKey)
+        ? lastSeen.get(secondKey)
+        : -1;
+
+      // Unseen first, then least recently used.
+      return firstSeen - secondSeen;
+    });
+
+    const count = Math.min(Number(requested), conceptualPool.length);
+    return conceptualPool.slice(0, count);
+  }
+
+    async function startQuiz() {
+    if (state.assessmentStarting) return;
+
     state.studentId = $("studentId").value.trim().toUpperCase() ||
       `STUDENT-${Date.now().toString().slice(-6)}`;
     state.user = $("username").value.trim() || state.studentId;
     state.selectedMode = $("mode").value;
+    state.questionSelection = $("questionCount").value;
     state.practiceMode = false;
     state.practiceRound = 0;
     state.sourceDiagnosis = [];
     state.parentSessionLabel = "";
-    state.questions = chooseQuestions(state.selectedMode, $("questionCount").value);
+
+    const startButton = $("startBtn");
+    const originalText = startButton.textContent;
+    state.assessmentStarting = true;
+    startButton.disabled = true;
+    startButton.textContent = "🔄 Finding a fresh question set...";
+
+    try {
+      const maximumCandidates =
+        state.questionSelection === "all" ? 1 : 8;
+      let prepared = null;
+      let lastDetail = "";
+
+      for (
+        let candidateNumber = 1;
+        candidateNumber <= maximumCandidates;
+        candidateNumber++
+      ) {
+        const candidateQuestions = chooseQuestions(
+          state.selectedMode,
+          state.questionSelection,
+          state.studentId
+        );
+
+        if (!candidateQuestions.length) {
+          throw new Error("No questions are available for this mode.");
+        }
+
+        const response = await requestAssessmentAttempt(
+          state.studentId,
+          state.user,
+          candidateQuestions,
+          state.selectedMode,
+          state.questionSelection
+        );
+
+        if (response?.ok === true && response.attemptId) {
+          prepared = {
+            questions: candidateQuestions,
+            attempt: response
+          };
+          break;
+        }
+
+        lastDetail = response?.detail ||
+          response?.error ||
+          "The candidate set could not be used.";
+
+        if (!response?.retrySuggested) {
+          throw new Error(lastDetail);
+        }
+
+        startButton.textContent =
+          `🔄 Rotating questions (${candidateNumber}/${maximumCandidates})...`;
+      }
+
+      if (!prepared) {
+        throw new Error(
+          "A sufficiently fresh question set could not be generated " +
+          "after several attempts. Try another operation, question count, " +
+          "or wait before retrying.\n\n" +
+          lastDetail
+        );
+      }
+
+      state.questions = prepared.questions;
+      state.attemptId = prepared.attempt.attemptId;
+      state.attemptHash = prepared.attempt.questionSetHash;
+      state.attemptExpiresAt = prepared.attempt.expiresAt;
+
+      rememberQuestionRotation(
+        state.studentId,
+        state.selectedMode,
+        state.questions
+      );
+    } catch (error) {
+      console.error("Assessment attempt error:", error);
+      alert(
+        "The secure assessment could not start.\n\n" +
+        (error?.message || "Unknown error")
+      );
+      return;
+    } finally {
+      state.assessmentStarting = false;
+      startButton.disabled = false;
+      startButton.textContent = originalText;
+    }
+
     state.index = 0;
     state.records = [];
     state.emailSending = false;
@@ -1150,11 +1645,14 @@
     $("report").classList.add("hidden");
     $("quiz").classList.remove("hidden");
     $("player").textContent = state.user;
-    $("practiceModeLabel").textContent = "";
+    $("practiceModeLabel").textContent =
+      "🔐 Secure assessment attempt active";
 
     clearInterval(state.timerId);
     state.timerId = setInterval(() => {
-      $("timer").textContent = formatTime((performance.now() - state.quizStart) / 1000);
+      $("timer").textContent = formatTime(
+        (performance.now() - state.quizStart) / 1000
+      );
     }, 250);
 
     showQuestion();
@@ -1425,6 +1923,9 @@
 
     state.sourceDiagnosis = issues.map(issue => ({ ...issue }));
     state.practiceMode = true;
+    state.attemptId = "";
+    state.attemptHash = "";
+    state.attemptExpiresAt = "";
     state.practiceRound += 1;
     state.parentSessionLabel = state.parentSessionLabel ||
       `${state.studentId}-${new Date().toISOString()}`;
@@ -1499,11 +2000,16 @@
       </p>`;
   }
 
-  function buildAnalyticsPayload() {
+    function buildAnalyticsPayload() {
     const diagnosis = getSessionDiagnosis();
     const sessionId = state.lastSessionId ||
       `${state.studentId}-${Date.now()}`;
     state.lastSessionId = sessionId;
+
+    if (!state.practiceMode && !state.parentSessionLabel) {
+      state.parentSessionLabel = sessionId;
+    }
+
     const modeLabel = state.practiceMode
       ? `Targeted Practice Set ${state.practiceRound}`
       : state.selectedMode === "mixed"
@@ -1511,14 +2017,19 @@
         : labels[state.selectedMode];
 
     return {
-      schemaVersion: 3,
+      schemaVersion: 4,
       sessionId,
+      attemptId: state.practiceMode ? "" : state.attemptId,
+      questionSetHash: state.practiceMode ? "" : state.attemptHash,
       studentId: state.studentId,
       studentName: state.user,
       completedAt: new Date().toISOString(),
       quizType: modeLabel,
       sessionType: state.practiceMode ? "Targeted Practice" : "Assessment",
       selectedMode: state.selectedMode,
+      questionSelection: state.practiceMode
+        ? "practice"
+        : state.questionSelection,
       practiceMode: state.practiceMode,
       practiceRound: state.practiceRound,
       parentSessionLabel: state.parentSessionLabel,
@@ -1536,7 +2047,8 @@
         totalXp: state.motivationAward.profile.totalXp,
         level: state.motivationAward.newLevel,
         streakDays: state.motivationAward.profile.streakDays,
-        newlyUnlockedAchievements: state.motivationAward.newlyUnlocked.map(item => item.id)
+        newlyUnlockedAchievements:
+          state.motivationAward.newlyUnlocked.map(item => item.id)
       } : null,
       responses: state.records.map((record, index) => ({
         questionNumber: index + 1,
@@ -1978,6 +2490,9 @@
     $("answer").value = "";
     $("targetedPracticeBtn").classList.add("hidden");
     $("practiceModeLabel").textContent = "";
+    state.attemptId = "";
+    state.attemptHash = "";
+    state.attemptExpiresAt = "";
     refreshProfileFromInputs();
     updateCoverageNote();
   }
