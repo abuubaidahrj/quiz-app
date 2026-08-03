@@ -1,92 +1,53 @@
-# Math Master v7.0 — Read-Only Parent Dashboard
+# Math Master v7.0.1 — Parent Dashboard Performance Fix
 
-This is Step 1 of the Parent Control Center.
+## Cause of the timeout
 
-## Included files
+The v7.0 read request ran `setupSheets()` more than once.
 
-- `index.html` — the existing quiz with a Parent Dashboard link.
-- `dashboard.html` — the new read-only parent analytics page.
-- `Code.gs` — the v7.0 Apps Script backend.
-- `SETUP.md` — this guide.
+That setup function formats every tab and runs `autoResizeColumns()`. It is
+appropriate during installation, but too expensive to run before every
+dashboard read. The browser stopped waiting after 15 seconds.
 
-## What the dashboard shows
+## Fixes
 
-- Student selector
-- Lifetime XP and level
-- Current and longest streak
-- Assessment count
-- Fair-play eligible Targeted Practice count
-- Assessment accuracy and response time
-- A 14-day trend with visible dates
-- Strongest and weakest operations
-- Questions needing attention
-- Active weekly mission progress
-- Recent sessions
-- Achievements
+- Removed `setupSheets()` from read-only GET requests.
+- Avoided a second StudentProfiles read.
+- Reused loaded XP and response data for mission calculations.
+- Increased the browser's initial wait from 15 to 45 seconds.
+- Added server processing time to the dashboard status line.
 
-The performance calculations use normal assessments. Repeated Targeted Practice
-cannot distort the weak-question list or assessment accuracy trend.
+## Install
 
-## Step 1 — Replace Code.gs
-
-1. Open the existing Math Master Google Spreadsheet.
-2. Select `Extensions → Apps Script`.
-3. Replace the current `Code.gs` with the supplied v7.0 file.
+1. Open the Math Master spreadsheet.
+2. Go to `Extensions → Apps Script`.
+3. Replace the current `Code.gs` with the supplied v7.0.1 file.
 4. Save.
-5. Run `setupSheets()` once.
-
-Do not run `rebuildProfilesFromHistory()` for this normal upgrade.
-
-## Step 2 — Configure the Parent PIN
-
-1. In the function dropdown, choose:
-   `configureParentDashboardPin`
-2. Click `Run`.
-3. Enter a 4 to 8 digit PIN.
-4. Approve permissions if Google asks.
-
-The PIN is stored as a SHA-256 hash in Apps Script Properties, not as plain text.
-
-## Step 3 — Update the existing Web App deployment
-
-Use the existing deployment:
-
-`Deploy → Manage deployments → Edit → New version → Deploy`
-
-Keep:
-
-- Execute as: Me
-- Who has access: Anyone
-
-Updating the existing deployment keeps the current `/exec` URL.
-
-## Step 4 — Upload to GitHub
-
-Upload both files to the root of the `quiz-app` repository:
-
-- `index.html`
-- `dashboard.html`
-
-Commit the changes.
+5. Do not run `setupSheets()` for this patch.
+6. Update the existing Web App:
+   `Deploy → Manage deployments → Edit → New version → Deploy`
+7. Replace GitHub files:
+   - `index.html`
+   - `dashboard.html`
+8. Commit the changes.
 
 ## Test
 
-Student quiz:
+Quiz:
 
-https://abuubaidahrj.github.io/quiz-app/?version=v7-0
+https://abuubaidahrj.github.io/quiz-app/?version=v7-0-1
 
-Parent dashboard:
+Dashboard:
 
-https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-0
+https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-0-1
 
-Enter the PIN configured in Apps Script.
+A successful dashboard load displays:
 
-## Security note
+`Server processing: X.Xs`
 
-This PIN is suitable for a private family dashboard, but it is not equivalent
-to full Google-account authentication. Do not publish or share the PIN.
+## If it still times out
 
-## Next phase after verification
+Open Apps Script → Executions and inspect the latest `doGet`:
 
-v7.1 will add a Mission Builder so missions can be created and edited from the
-dashboard instead of typing directly into Google Sheets.
+- Completed: browser or deployment/cache issue
+- Failed: open the execution to see the exact error
+- Running: spreadsheet reads are still taking too long
