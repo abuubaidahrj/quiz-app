@@ -473,7 +473,7 @@
       another set before the quiz starts when a candidate is too similar.
       A few repeated questions are normal and will not reject the assessment.
       Eligible assessments earn <strong>1 credit per 10 questions</strong>,
-      up to 5 credits per session.
+      up to 5 credits per session, with no daily credit cap.
     </div>
 
     <details id="qualificationRules" class="qualification-panel">
@@ -496,7 +496,7 @@
         ✅ Achieve at least 60% first-try accuracy.<br>
         ✅ Average at least 1 second per question.<br>
         ✅ Use the server-issued one-time attempt.<br>
-        ✅ Stay within the daily limit of 8 rewarded credits.<br>
+        ✅ Pass all fair-play checks; there is no daily assessment-credit limit.<br>
         ✅ Complete the assessment after the current mission activates.<br>
         ✅ Use a sufficiently fresh set. The system regenerates sets with
         80% or more overlap before the quiz starts.<br><br>
@@ -1312,9 +1312,10 @@
           container.innerHTML = `
             <div class="note ok" style="padding:12px;border-radius:12px;background:#ecfdf5;border:2px solid #22c55e;">
               🛡️ <strong>Fair-play check passed.</strong>
-              +${response.sessionXp} XP confirmed and this practice counts toward the current mission.
-              Rewarded practice today:
-              ${response.rewardedPracticeCountToday}/${response.dailyPracticeLimit}.
+              +${response.sessionXp} XP confirmed.
+              Eligible practice completed today:
+              ${response.eligiblePracticeCountToday}.
+              There is no daily rewarded-practice limit.
             </div>`;
         } else {
           container.innerHTML = `
@@ -1330,8 +1331,9 @@
             🔐 <strong>Secure assessment verified.</strong><br>
             <strong>+${response.assessmentCredits} assessment credit${response.assessmentCredits===1?"":"s"}</strong>
             and <strong>+${response.sessionXp} XP</strong> confirmed.<br>
-            Daily credits:
-            ${response.rewardedAssessmentCreditsToday}/${response.dailyAssessmentCreditLimit}.
+            Assessment credits earned today:
+            ${response.assessmentCreditsToday}.
+            There is no daily assessment-credit limit.
           </div>`;
       } else {
         const overlapText = response.questionOverlap > 0
@@ -1370,6 +1372,23 @@
       behavior: "smooth",
       block: "center"
     });
+  }
+
+
+  function wait(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+  }
+
+  async function waitForSessionRewardStatus(sessionId) {
+    for (let attempt = 1; attempt <= 12; attempt++) {
+      const response = await loadSessionRewardStatus(sessionId);
+
+      if (response) return response;
+
+      await wait(Math.min(2000, 500 + attempt * 150));
+    }
+
+    return null;
   }
 
   function refreshProfileFromInputs() {
@@ -2098,22 +2117,27 @@
       status.className = "note ok";
 
       setTimeout(async () => {
+        const rewardResult = await waitForSessionRewardStatus(
+          state.lastSessionId
+        );
         const profile = await loadCloudProfile(
           state.studentId,
           state.user,
           true
         );
         await loadActiveMission(state.studentId, true);
-        await loadSessionRewardStatus(state.lastSessionId);
 
-        if (profile) {
+        if (rewardResult && profile) {
           status.textContent =
-            "✅ Results saved and student progress synced from Google Sheets.";
+            "✅ Results saved, eligibility confirmed and mission progress refreshed.";
+        } else if (profile) {
+          status.textContent =
+            "✅ Results saved and profile synced. Eligibility may take another refresh.";
         } else {
           status.textContent =
-            "✅ Results submitted. Cloud profile will refresh on the next screen.";
+            "✅ Results submitted. Cloud progress will refresh shortly.";
         }
-      }, 1500);
+      }, 500);
     } catch (error) {
       console.error("Analytics save error:", error);
       status.textContent =

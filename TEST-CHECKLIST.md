@@ -1,57 +1,36 @@
-# Math Master v7.2.1 — Test Checklist
+# Math Master v7.2.2 — Test Checklist
 
-## A. Version and setup
+## Assessment unlimited progress
 
-- [ ] `setupSheets()` completes successfully.
-- [ ] `AssessmentAttempts` contains the new `Selection` column.
-- [ ] Existing sessions, profiles, XP and missions remain intact.
-- [ ] Existing Parent PIN still works.
-- [ ] Student page shows `v7.2.1`.
-- [ ] Parent Dashboard shows `v7.2.1`.
+- [ ] Complete enough valid assessments to exceed 8 credits in one day.
+- [ ] Credits after 8 continue to be awarded.
+- [ ] Notification says there is no daily assessment-credit limit.
+- [ ] Duplicate/fresh-set checks still work.
 
-## B. Qualification rules
+## Targeted Practice
 
-- [ ] Student page shows `How to earn mission assessment credits`.
-- [ ] Parent Dashboard shows `Mission credit qualification`.
-- [ ] Credit values show 10=1, 20=2, 30=3, 40=4, 50+=5.
-- [ ] The rule panel explains 60% accuracy, speed and daily limit.
+- [ ] Complete Assessment A.
+- [ ] Complete its first Targeted Practice.
+- [ ] It earns 30 XP and one eligible practice count.
+- [ ] Repeat practice from Assessment A.
+- [ ] It earns 0 XP and does not add mission practice count.
+- [ ] Complete Assessment B.
+- [ ] Complete its first Targeted Practice.
+- [ ] It earns 30 XP and another mission practice count.
+- [ ] Repeat with more distinct assessments on the same day.
+- [ ] There is no daily practice cap.
 
-## C. Fair rotation
+## Cloud timing
 
-- [ ] Complete a 10-question multiplication assessment.
-- [ ] Start another 10-question multiplication assessment.
-- [ ] The second set is not exactly the same.
-- [ ] One or two repeated questions do not cause rejection.
-- [ ] The app may briefly show `Rotating questions` when a candidate is too similar.
+- [ ] After a session, the page waits for cloud eligibility.
+- [ ] The final message says eligibility was confirmed.
+- [ ] Parent Dashboard shows the updated practice count without requiring a
+  long manual wait.
 
-## D. Fair overlap calculation
+## Existing protection
 
-Example test using history:
-
-- [ ] A previous 10-question set exists.
-- [ ] Start a 50-question assessment.
-- [ ] Repeated questions are divided by 50, not by 10.
-- [ ] Eight repeated questions show 16%, not 80%.
-
-## E. Credits and notification
-
-- [ ] Eligible 10-question assessment earns 1 credit.
-- [ ] Eligible 20-question assessment earns 2 credits.
-- [ ] Accuracy below 60% earns 0 credits.
-- [ ] An ineligible result displays the exact reason.
-- [ ] `View qualification rules` opens the rule panel.
-- [ ] `Start a fresh assessment` returns to setup.
-
-## F. All Questions mode
-
-- [ ] First recent full-pool assessment can earn credits.
-- [ ] A repeated full-pool assessment is saved for learning.
-- [ ] The repeated full-pool assessment displays 0 credit and a clear reason.
-
-## G. Existing v7.2 controls
-
-- [ ] Sequential mission queue still works.
-- [ ] Multiple missions can use the same date.
-- [ ] Activity from Mission 1 is not reused by Mission 2.
-- [ ] Weekly reward minutes are summed correctly.
-- [ ] Targeted Practice fair-play remains active.
+- [ ] Duplicate session still gets no extra reward.
+- [ ] Low accuracy still gets no assessment credits.
+- [ ] Unrealistic speed still gets no credits.
+- [ ] Highly duplicated question sets are regenerated or rejected.
+- [ ] Mission 1 activity is not reused by Mission 2.

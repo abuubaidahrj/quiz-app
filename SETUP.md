@@ -1,105 +1,85 @@
-# Math Master v7.2.1 — Fair Question Rotation
+# Math Master v7.2.2 — Unlimited Fair Progress
 
-## Which version should be installed?
+## Why this patch exists
 
-Install **v7.2.1**.
+v7.2.1 contained two arbitrary daily caps:
 
-Do not install the earlier v7.2 package. v7.2.1 contains all v7.2 features plus
-the fairness corrections described below.
+- maximum 8 rewarded assessment credits per day;
+- maximum 2 rewarded Targeted Practice sets per day.
 
-## Main fairness corrections
+Those limits could stop a motivated student even when the work was genuine.
+They have been removed.
 
-### 1. Repeated questions are not automatically a failure
+## New policy
 
-A small number of repeated questions is allowed.
+### Assessments
 
-Overlap is now calculated against the size of the **new assessment**:
+There is no daily assessment-credit limit.
 
-- Previous quiz: 10 questions
-- New quiz: 50 questions
-- Repeated questions: 8
-- New-set overlap: 8 / 50 = 16%
-- Result: allowed
+Every assessment can earn credits when it passes:
 
-### 2. Fresh sets are checked before the quiz starts
+- server-issued one-time attempt;
+- at least 10 completed questions;
+- at least 60% first-try accuracy;
+- reasonable completion time;
+- valid Math Master questions;
+- fresh-enough question set;
+- no duplicate session;
+- current-mission activation window.
 
-For 10, 20 and 50-question assessments:
+Credits remain:
 
-1. The browser prefers concepts that the student has not seen recently.
-2. It sends the proposed fingerprint and question keys to Apps Script.
-3. If overlap is 80% or more within the recent window, Apps Script asks the
-   browser to generate another set.
-4. Up to eight candidate sets are tried before the quiz begins.
+- 10 questions = 1 credit
+- 20 questions = 2 credits
+- 30 questions = 3 credits
+- 40 questions = 4 credits
+- 50+ questions = maximum 5 credits per session
 
-The child is not expected to finish a knowingly duplicated random set and then
-discover that it was rejected.
+### Targeted Practice
 
-### 3. Reversed facts inside a set
+There is no daily rewarded-practice limit.
 
-For short assessments, the selector avoids placing both `7 × 8` and `8 × 7`
-in the same set.
+The first Targeted Practice linked to each different source assessment can earn
+30 XP and mission credit.
 
-For All Questions mode, ordered questions remain available. The backend no
-longer rejects two different ordered questions as an internal duplicate.
+Repeating Targeted Practice from the same source assessment remains saved for
+learning, but earns 0 XP and 0 mission credit. This prevents spam without
+blocking genuine additional study.
 
-### 4. All Questions mode
+## Eligible-practice counting fix
 
-All Questions necessarily reuses the full pool. Only the first recent
-full-pool completion earns credits. A repeat remains saved for learning and
-diagnosis but earns no XP or mission credit.
+The patch also:
 
-### 5. Qualification rules are visible
+- validates that the source assessment exists in cloud history;
+- counts older eligible rows where Reward Eligible was blank but Session XP
+  was positive;
+- polls Google Apps Script until the session reward result exists instead of
+  assuming the POST completes within 1.5 seconds;
+- refreshes the profile and mission only after the eligibility result is
+  available.
 
-The student page now contains:
+## Installation
 
-`How to earn mission assessment credits`
-
-The Parent Dashboard contains:
-
-`Mission credit qualification`
-
-An ineligible result displays:
-
-- the exact reason;
-- a button to view the rules;
-- a button to start a fresh assessment.
-
-## Installation — Apps Script
-
-1. Open the existing Math Master spreadsheet.
-2. Select `Extensions → Apps Script`.
-3. Replace the current `Code.gs` with the supplied v7.2.1 file.
+1. Open the Math Master spreadsheet.
+2. Go to `Extensions → Apps Script`.
+3. Replace the current `Code.gs` with v7.2.2.
 4. Save.
 5. Run `setupSheets()` once.
 6. Update the existing Web App deployment:
    `Deploy → Manage deployments → Edit → New version → Deploy`
-
-Keep:
-
-- Execute as: Me
-- Who has access: Anyone
+7. Replace GitHub root files:
+   - `index.html`
+   - `dashboard.html`
+8. Commit changes.
 
 The existing Parent PIN remains valid.
 
-## Installation — GitHub
-
-Replace both files in the root of the repository:
-
-- `index.html`
-- `dashboard.html`
-
-Commit the changes.
-
 ## Test URLs
 
-Student quiz:
+Student:
 
-https://abuubaidahrj.github.io/quiz-app/?version=v7-2-1
+https://abuubaidahrj.github.io/quiz-app/?version=v7-2-2
 
-Parent dashboard:
+Parent Dashboard:
 
-https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-2-1
-
-## Important
-
-Do not run `rebuildProfilesFromHistory()` for a normal upgrade.
+https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-2-2
