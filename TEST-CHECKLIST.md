@@ -1,37 +1,33 @@
-# Math Master v7.3.3 — Connection Test Checklist
+# Math Master v7.4 — Test Checklist
 
-## Core dashboard
+## Student selector
 
-- [ ] Unlock the Parent Dashboard.
-- [ ] Student profile, mission and Weekly Reward Bank appear first.
-- [ ] The message says detailed analytics is loading.
-- [ ] Mission Builder can be opened before analytics finishes.
-- [ ] Apps Script Executions shows `getParentDashboardCore` completing quickly.
+- [ ] Student page has one dropdown only.
+- [ ] No editable Student ID field is present.
+- [ ] No editable Student Name field is present.
+- [ ] Dropdown options are Abu, Aisyah and Maryam.
+- [ ] Start Quiz is disabled until a student is selected.
+- [ ] Selecting Abu loads profile ABU.
+- [ ] Selecting Aisyah loads profile AISYAH.
+- [ ] Selecting Maryam loads profile MARYAM.
+- [ ] Reloading the page restores the last selected student.
+- [ ] Submitted sessions use the correct ID and normalized name.
 
-## Detailed analytics
+## Recent Family Activity
 
-- [ ] Metrics, graph, operations, weak questions and sessions appear afterward.
-- [ ] Apps Script Executions shows a separate analytics request.
-- [ ] Refresh within two minutes uses `Server cache used`.
-- [ ] Retry now forces a fresh analytics calculation.
+- [ ] All three students appear in the activity panel.
+- [ ] The latest session type is displayed.
+- [ ] Targeted Practice is shown correctly.
+- [ ] Exact date/time and relative time are shown.
+- [ ] Students without history display `No saved activity yet`.
+- [ ] Manual refresh button works.
+- [ ] Completing a quiz refreshes the activity panel.
+- [ ] Activity failure does not prevent Start Quiz.
 
-## Failure isolation
+## Performance
 
-- [ ] If analytics fails, mission and reward panels remain visible.
-- [ ] The connection banner says the main dashboard remains usable.
-- [ ] A heavy analytics timeout does not start several overlapping executions.
-- [ ] The page does not become blank.
-
-## Read-only behavior
-
-- [ ] Refresh Parent Dashboard several times.
-- [ ] Missions `Updated At` does not change merely from dashboard reads.
-- [ ] MissionProgress is not rewritten by dashboard reads.
-- [ ] Completing a quiz still updates mission progress and handoff normally.
-
-## iPhone and desktop
-
-- [ ] No horizontal page overflow on iPhone.
-- [ ] Weekly Reward Bank fits correctly.
-- [ ] Long wording wraps.
-- [ ] Analytics panels update independently without shifting outside the page.
+- [ ] Quiz controls are usable before activity finishes loading.
+- [ ] A second load within 90 seconds uses the server cache.
+- [ ] Browser-cached activity appears immediately on reload.
+- [ ] Apps Script only reads the recent XPHistory tail for this endpoint.
+- [ ] Parent Dashboard split loading still works.

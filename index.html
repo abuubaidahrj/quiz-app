@@ -285,6 +285,131 @@
     button:disabled { opacity:.65; cursor:not-allowed; transform:none; }
     button.secondary { background:#475569; box-shadow:0 6px 0 #1e293b; }
     button.success { background:#16a34a; box-shadow:0 6px 0 #166534; }
+
+    .student-selector-card {
+      margin:16px 0 14px;
+      padding:16px;
+      border:2px solid #60a5fa;
+      border-radius:16px;
+      background:linear-gradient(135deg,#eff6ff,#eef2ff);
+      box-shadow:0 5px 0 #bfdbfe;
+    }
+    .student-selector-card label {
+      display:block;
+      margin-bottom:7px;
+      color:#1e3a8a;
+      font-size:16px;
+      font-weight:900;
+    }
+    .student-selector-card select {
+      width:100%;
+      min-height:52px;
+      border:2px solid #93c5fd;
+      border-radius:12px;
+      background:#fff;
+      color:#172554;
+      font-size:17px;
+      font-weight:900;
+    }
+    .student-selector-note {
+      margin:8px 0 0;
+      color:#475569;
+      font-size:12px;
+      line-height:1.4;
+    }
+    .family-activity-card {
+      margin:14px 0 18px;
+      padding:15px;
+      border:2px solid #c4b5fd;
+      border-radius:16px;
+      background:linear-gradient(135deg,#faf5ff,#eef2ff);
+      box-shadow:0 5px 0 #ddd6fe;
+    }
+    .family-activity-head {
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:11px;
+    }
+    .family-activity-head h3 {
+      margin:0;
+      font-size:18px;
+      color:#4c1d95;
+    }
+    .family-activity-head p {
+      margin:4px 0 0;
+      color:#64748b;
+      font-size:12px;
+      line-height:1.4;
+    }
+    .family-activity-refresh {
+      width:auto;
+      min-width:44px;
+      min-height:40px;
+      margin:0;
+      padding:8px 11px;
+      border-radius:10px;
+      background:#ede9fe;
+      color:#5b21b6;
+      box-shadow:0 3px 0 #c4b5fd;
+      font-size:15px;
+    }
+    .family-activity-list {
+      display:grid;
+      gap:8px;
+    }
+    .family-activity-row {
+      display:grid;
+      grid-template-columns:42px minmax(0,1fr);
+      gap:10px;
+      align-items:center;
+      min-width:0;
+      padding:10px;
+      border:1px solid #ddd6fe;
+      border-radius:12px;
+      background:rgba(255,255,255,.92);
+    }
+    .family-activity-avatar {
+      display:grid;
+      place-items:center;
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      background:#4f46e5;
+      color:#fff;
+      font-size:16px;
+      font-weight:1000;
+      box-shadow:0 3px 0 #312e81;
+    }
+    .family-activity-main {
+      min-width:0;
+    }
+    .family-activity-name {
+      color:#312e81;
+      font-size:14px;
+      font-weight:1000;
+    }
+    .family-activity-detail {
+      margin-top:3px;
+      color:#334155;
+      font-size:12px;
+      line-height:1.45;
+      overflow-wrap:anywhere;
+    }
+    .family-activity-time {
+      color:#64748b;
+    }
+    .family-activity-status {
+      margin-top:9px;
+      color:#64748b;
+      font-size:11px;
+      line-height:1.4;
+    }
+    .family-activity-status.error {
+      color:#b45309;
+    }
+
     .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
     .status { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color:#475569; margin-bottom:12px; }
     .progress {
@@ -387,6 +512,8 @@
       .hero-art{max-width:190px;justify-self:center}
       .operation-ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}
       .grid,.summary-grid,.profile-grid{grid-template-columns:1fr}
+      .family-activity-head{align-items:stretch}
+      .family-activity-refresh{flex:0 0 auto}
       .question{font-size:clamp(44px,16vw,70px);padding:20px 8px}
     }
   </style>
@@ -401,7 +528,7 @@
         <p class="subtitle" style="color:#e0f2fe;">
           Solve equations, earn fair XP, complete missions and unlock achievements.
         </p>
-        <span class="hero-version">Version v7.3.3 — Split Dashboard Loading</span>
+        <span class="hero-version">Version v7.4 — Family Student Selector</span>
       </div>
 
       <svg class="hero-art" viewBox="0 0 300 230" role="img"
@@ -451,16 +578,60 @@
       <div class="op-token"><span>−</span>Subtract</div>
     </div>
 
-    <div class="grid">
-      <div>
-        <label for="studentId">Student ID</label>
-        <input id="studentId" type="text" placeholder="Example: ADAM01" autocomplete="off" />
-      </div>
-      <div>
-        <label for="username">Student name</label>
-        <input id="username" type="text" placeholder="Enter student name" autocomplete="name" />
-      </div>
+    <div class="student-selector-card">
+      <label for="studentSelect">👤 Choose student</label>
+      <select id="studentSelect" autocomplete="off">
+        <option value="">Select a student…</option>
+        <option value="ABU" data-student-name="Abu">
+          Abu · ABU
+        </option>
+        <option value="AISYAH" data-student-name="Aisyah">
+          Aisyah · AISYAH
+        </option>
+        <option value="MARYAM" data-student-name="Maryam">
+          Maryam · MARYAM
+        </option>
+      </select>
+      <p class="student-selector-note">
+        Only these three approved family profiles can submit quiz results.
+        The last selected student is remembered on this device.
+      </p>
     </div>
+
+    <section class="family-activity-card"
+      aria-labelledby="familyActivityTitle">
+      <div class="family-activity-head">
+        <div>
+          <h3 id="familyActivityTitle">👨‍👩‍👧 Recent family activity</h3>
+          <p>
+            The latest Assessment or Targeted Practice for each student.
+            This loads separately so it does not delay the quiz.
+          </p>
+        </div>
+        <button id="familyActivityRefresh"
+          class="family-activity-refresh"
+          type="button"
+          aria-label="Refresh recent family activity">
+          ↻
+        </button>
+      </div>
+      <div id="familyActivityList"
+        class="family-activity-list">
+        <div class="family-activity-row">
+          <div class="family-activity-avatar">…</div>
+          <div class="family-activity-main">
+            <div class="family-activity-name">
+              Loading recent activity quietly…
+            </div>
+            <div class="family-activity-detail">
+              You can choose a student and start using the page now.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="familyActivityStatus"
+        class="family-activity-status"></div>
+    </section>
 
     <div class="grid">
       <div>
@@ -552,7 +723,7 @@
       </div>
     </div>
 
-    <button id="startBtn" type="button">Start Quiz</button>
+    <button id="startBtn" type="button" disabled>Start Quiz</button>
     <a class="parent-dashboard-link" href="dashboard.html">
       👨‍👩‍👧 Open Parent Dashboard
     </a>
@@ -749,6 +920,298 @@
 
 
   const MOTIVATION_STORAGE_PREFIX = "mathMasterProfile:";
+  const LAST_SELECTED_STUDENT_KEY =
+    "mathMasterLastSelectedStudent:v74";
+  const FAMILY_ACTIVITY_CACHE_KEY =
+    "mathMasterFamilyActivity:v74";
+  const FAMILY_ACTIVITY_CACHE_MAX_AGE_MS =
+    24 * 60 * 60 * 1000;
+
+  const FAMILY_STUDENTS = [
+    { studentId:"ABU", studentName:"Abu" },
+    { studentId:"AISYAH", studentName:"Aisyah" },
+    { studentId:"MARYAM", studentName:"Maryam" }
+  ];
+
+
+  function selectedStudentDetails() {
+    const select = $("studentSelect");
+    const option = select.options[select.selectedIndex];
+
+    return {
+      studentId: String(select.value || "")
+        .trim()
+        .toUpperCase(),
+      studentName: String(
+        option?.dataset?.studentName || ""
+      ).trim()
+    };
+  }
+
+  function isApprovedFamilyStudent(studentId) {
+    const wanted = String(studentId || "")
+      .trim()
+      .toUpperCase();
+
+    return FAMILY_STUDENTS.some(student =>
+      student.studentId === wanted
+    );
+  }
+
+  function handleStudentSelection(options={}) {
+    const selected = selectedStudentDetails();
+    const startButton = $("startBtn");
+    const quiet = options.quiet === true;
+
+    startButton.disabled = !selected.studentId;
+
+    if (!selected.studentId) {
+      renderStudentProfile("", "");
+      return;
+    }
+
+    localStorage.setItem(
+      LAST_SELECTED_STUDENT_KEY,
+      selected.studentId
+    );
+
+    renderStudentProfile(
+      selected.studentId,
+      selected.studentName
+    );
+
+    if (!quiet) {
+      loadCloudProfile(
+        selected.studentId,
+        selected.studentName
+      );
+    }
+  }
+
+  function initializeStudentSelector() {
+    const saved = String(
+      localStorage.getItem(
+        LAST_SELECTED_STUDENT_KEY
+      ) || ""
+    ).toUpperCase();
+
+    if (isApprovedFamilyStudent(saved)) {
+      $("studentSelect").value = saved;
+    }
+
+    handleStudentSelection();
+  }
+
+  function familyActivityInitials(name) {
+    return String(name || "?")
+      .trim()
+      .slice(0, 1)
+      .toUpperCase();
+  }
+
+  function familyActivityIcon(type) {
+    return String(type || "").toLowerCase() ===
+      "targeted practice"
+        ? "🎯"
+        : "🧠";
+  }
+
+  function familyActivityRelativeTime(dateText) {
+    const time = new Date(dateText).getTime();
+
+    if (!Number.isFinite(time)) return "";
+
+    const difference = Date.now() - time;
+    const minutes = Math.max(
+      0,
+      Math.floor(difference / 60000)
+    );
+
+    if (minutes < 1) return "just now";
+    if (minutes < 60) {
+      return `${minutes} min ago`;
+    }
+
+    const hours = Math.floor(minutes / 60);
+
+    if (hours < 24) {
+      return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+    }
+
+    const days = Math.floor(hours / 24);
+    return `${days} day${days === 1 ? "" : "s"} ago`;
+  }
+
+  function familyActivityDate(dateText) {
+    const date = new Date(dateText);
+
+    if (isNaN(date.getTime())) return "";
+
+    return date.toLocaleString("en-MY", {
+      day:"numeric",
+      month:"short",
+      year:"numeric",
+      hour:"numeric",
+      minute:"2-digit"
+    });
+  }
+
+  function renderFamilyActivity(response, options={}) {
+    const activities = Array.isArray(response?.activities)
+      ? response.activities
+      : [];
+
+    if (!activities.length) {
+      $("familyActivityList").innerHTML = `
+        <div class="family-activity-row">
+          <div class="family-activity-avatar">–</div>
+          <div class="family-activity-main">
+            <div class="family-activity-name">
+              No family activity is available yet
+            </div>
+          </div>
+        </div>`;
+      return;
+    }
+
+    $("familyActivityList").innerHTML =
+      activities.map(activity => {
+        const detail = activity.found
+          ? `${familyActivityIcon(activity.activityType)}
+             <strong>${escapeHtml(activity.activityType)}</strong>
+             ${activity.questions
+               ? `· ${Number(activity.questions)} questions`
+               : ""}`
+          : "No saved activity yet";
+
+        const time = activity.found
+          ? `${familyActivityRelativeTime(activity.completedAt)}
+             · ${familyActivityDate(activity.completedAt)}`
+          : "";
+
+        return `
+          <div class="family-activity-row">
+            <div class="family-activity-avatar">
+              ${escapeHtml(
+                familyActivityInitials(activity.studentName)
+              )}
+            </div>
+            <div class="family-activity-main">
+              <div class="family-activity-name">
+                ${escapeHtml(activity.studentName)}
+                <span style="font-weight:700;color:#64748b;">
+                  · ${escapeHtml(activity.studentId)}
+                </span>
+              </div>
+              <div class="family-activity-detail">
+                ${detail}
+                ${time
+                  ? `<br><span class="family-activity-time">
+                       ${escapeHtml(time)}
+                     </span>`
+                  : ""}
+              </div>
+            </div>
+          </div>`;
+      }).join("");
+
+    const sourceText = options.cached
+      ? "Showing saved activity while refreshing quietly."
+      : response.cacheHit
+        ? "Updated from the fast server cache."
+        : "Updated from Google Sheets.";
+
+    $("familyActivityStatus").textContent =
+      `${sourceText} Last checked: ` +
+      `${new Date().toLocaleTimeString("en-MY", {
+        hour:"numeric",
+        minute:"2-digit"
+      })}`;
+    $("familyActivityStatus").className =
+      "family-activity-status";
+  }
+
+  function readFamilyActivityCache() {
+    try {
+      const record = JSON.parse(
+        localStorage.getItem(
+          FAMILY_ACTIVITY_CACHE_KEY
+        ) || "null"
+      );
+
+      if (
+        !record?.response ||
+        Date.now() - Number(record.savedAt || 0) >
+          FAMILY_ACTIVITY_CACHE_MAX_AGE_MS
+      ) {
+        return null;
+      }
+
+      return record.response;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function saveFamilyActivityCache(response) {
+    try {
+      localStorage.setItem(
+        FAMILY_ACTIVITY_CACHE_KEY,
+        JSON.stringify({
+          savedAt:Date.now(),
+          response
+        })
+      );
+    } catch (_) {}
+  }
+
+  async function refreshFamilyActivity(force=false) {
+    const refreshButton = $("familyActivityRefresh");
+    const cached = readFamilyActivityCache();
+
+    if (cached && !force) {
+      renderFamilyActivity(cached, {cached:true});
+    }
+
+    refreshButton.disabled = true;
+    refreshButton.textContent = "…";
+
+    try {
+      const response = await jsonpRequest(
+        {
+          action:"getFamilyRecentActivity",
+          force:force ? "1" : "0"
+        },
+        10000
+      );
+
+      if (!response || response.ok !== true) {
+        throw new Error(
+          response?.error ||
+          "Recent family activity is unavailable."
+        );
+      }
+
+      saveFamilyActivityCache(response);
+      renderFamilyActivity(response);
+    } catch (error) {
+      console.warn(
+        "Recent family activity load failed:",
+        error
+      );
+
+      if (!cached) {
+        $("familyActivityStatus").textContent =
+          "Recent activity could not be refreshed. " +
+          "This does not affect quizzes, profiles or missions.";
+        $("familyActivityStatus").className =
+          "family-activity-status error";
+      }
+    } finally {
+      refreshButton.disabled = false;
+      refreshButton.textContent = "↻";
+    }
+  }
 
   function defaultStudentProfile(studentId, studentName) {
     return {
@@ -1103,12 +1566,15 @@
   function scheduleCloudProfileLoad() {
     clearTimeout(profileSyncTimer);
     profileSyncTimer = setTimeout(() => {
-      const studentId = $("studentId").value.trim().toUpperCase();
-      const studentName = $("username").value.trim();
-      if (studentId.length >= 3) {
-        loadCloudProfile(studentId, studentName);
+      const selected = selectedStudentDetails();
+
+      if (selected.studentId) {
+        loadCloudProfile(
+          selected.studentId,
+          selected.studentName
+        );
       }
-    }, 700);
+    }, 120);
   }
 
 
@@ -1468,7 +1934,12 @@
   }
 
   function refreshProfileFromInputs() {
-    renderStudentProfile($("studentId").value.trim().toUpperCase(), $("username").value.trim());
+    const selected = selectedStudentDetails();
+
+    renderStudentProfile(
+      selected.studentId,
+      selected.studentName
+    );
   }
 
   function updateCoverageNote() {
@@ -1627,9 +2098,21 @@
     async function startQuiz() {
     if (state.assessmentStarting) return;
 
-    state.studentId = $("studentId").value.trim().toUpperCase() ||
-      `STUDENT-${Date.now().toString().slice(-6)}`;
-    state.user = $("username").value.trim() || state.studentId;
+    const selectedStudent = selectedStudentDetails();
+
+    if (
+      !selectedStudent.studentId ||
+      !isApprovedFamilyStudent(
+        selectedStudent.studentId
+      )
+    ) {
+      alert("Please choose Abu, Aisyah or Maryam first.");
+      $("studentSelect").focus();
+      return;
+    }
+
+    state.studentId = selectedStudent.studentId;
+    state.user = selectedStudent.studentName;
     state.selectedMode = $("mode").value;
     state.questionSelection = $("questionCount").value;
     state.practiceMode = false;
@@ -2225,6 +2708,7 @@
         if (rewardResult && profile) {
           status.textContent =
             "✅ Results saved, eligibility confirmed and mission progress refreshed.";
+          refreshFamilyActivity(true);
         } else if (profile) {
           status.textContent =
             "✅ Results saved and profile synced. Eligibility may take another refresh.";
@@ -2622,12 +3106,14 @@
     })[char]);
   }
 
-  $("studentId").addEventListener("input", () => {
-    refreshProfileFromInputs();
+  $("studentSelect").addEventListener("change", () => {
+    handleStudentSelection({quiet:true});
     scheduleCloudProfileLoad();
   });
-  $("studentId").addEventListener("change", scheduleCloudProfileLoad);
-  $("username").addEventListener("input", refreshProfileFromInputs);
+  $("familyActivityRefresh").addEventListener(
+    "click",
+    () => refreshFamilyActivity(true)
+  );
   $("mode").addEventListener("change", updateCoverageNote);
   $("startBtn").addEventListener("click", startQuiz);
   $("submitBtn").addEventListener("click", submitAnswer);
@@ -2638,7 +3124,19 @@
   });
 
   updateCoverageNote();
-  refreshProfileFromInputs();
+  initializeStudentSelector();
+
+  const startFamilyActivityLoad = () =>
+    refreshFamilyActivity(false);
+
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(
+      startFamilyActivityLoad,
+      {timeout:1200}
+    );
+  } else {
+    setTimeout(startFamilyActivityLoad, 180);
+  }
 </script>
 </body>
 </html>

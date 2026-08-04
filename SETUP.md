@@ -1,109 +1,74 @@
-# Math Master v7.3.3 — Split Dashboard Loading
+# Math Master v7.4 — Family Student Selector
 
-## Why v7.3.2 could still fail
+## Main student-page changes
 
-The earlier Parent Dashboard still used one large request for everything:
+### One approved-student dropdown
 
-- student profile;
-- mission queue;
-- mission progress;
-- Weekly Reward Bank;
-- all analytics;
-- graphs;
-- weak questions;
-- recent sessions;
-- achievements.
+The two editable fields for Student ID and Student Name have been removed.
 
-That request also refreshed and wrote Mission/MissionProgress rows during a
-read-only dashboard load. Concurrent quiz saves or mission changes could make
-the dashboard request slower and more fragile.
+The only available profiles are:
 
-## v7.3.3 architecture
+- Abu · ABU
+- Aisyah · AISYAH
+- Maryam · MARYAM
 
-### Stage 1 — Core dashboard
+The page remembers the last selected student on that device.
 
-`getParentDashboardCore`
+A quiz cannot start until one of these approved profiles is selected.
 
-Loads only:
+### Recent Family Activity
 
-- student list and cloud profile;
-- mission queue view;
-- cached MissionProgress rows;
-- Weekly Reward Bank;
-- mission history and reward status.
+The student page displays the latest activity for each student:
 
-It does not read the full Responses or XPHistory sheets and does not write to
-any sheet.
+- student name and ID;
+- Assessment or Targeted Practice;
+- question count;
+- relative time;
+- exact date and time.
 
-The dashboard becomes usable as soon as Stage 1 completes.
+Example:
 
-### Stage 2 — Detailed analytics
+`Maryam · MARYAM — Targeted Practice — 4 Aug 2026, 3:30 PM`
 
-`getParentDashboardAnalytics`
+## Performance design
 
-Loads separately:
+Recent Family Activity does not block the quiz page.
 
-- verified assessment summary;
-- 14-day trend;
-- operation performance;
-- weak questions;
-- recent sessions;
-- achievements.
+1. The setup page renders immediately.
+2. A saved browser copy is shown first when available.
+3. The live request starts during browser idle time.
+4. Apps Script reads only the latest 600 XPHistory rows.
+5. The server response is cached for 90 seconds.
+6. The activity panel has a separate 10-second timeout.
+7. A failure only affects the activity panel—not profile, mission or quiz use.
+8. After a successful quiz save, the activity panel refreshes with `force=1`.
 
-If this stage fails, Mission Builder, mission queue and Weekly Reward Bank stay
-visible and usable.
-
-### Server analytics cache
-
-Detailed analytics is cached for 120 seconds using Apps Script CacheService.
-
-The cache key changes automatically when Responses, XPHistory, Achievements or
-the student profile changes.
-
-`Retry now` bypasses the cache.
-
-### Retry policy
-
-- The lightweight core request retries network errors and timeouts once.
-- The heavy analytics request retries only a network load error.
-- A timed-out heavy request is not immediately duplicated, avoiding concurrent
-  long-running Apps Script executions.
-- Write actions are never automatically replayed.
-
-### Read-only dashboard
-
-Parent Dashboard GET calls no longer write Mission or MissionProgress data.
-Queue persistence still occurs during:
-
-- quiz submission;
-- mission creation or editing;
-- mission archive;
-- reward approval and redemption.
+No new Google Sheets are required.
 
 ## Installation
 
-Install v7.3.3 only.
+Install v7.4 over v7.3.3.
 
 1. Open the Math Master spreadsheet.
-2. Select `Extensions → Apps Script`.
-3. Replace the existing `Code.gs` with v7.3.3.
+2. Go to `Extensions → Apps Script`.
+3. Replace the existing `Code.gs` with v7.4.
 4. Save.
 5. Run `setupSheets()` once.
 6. Update the existing web-app deployment:
    `Deploy → Manage deployments → Edit → New version → Deploy`
-7. Replace the GitHub root files:
+7. Replace these GitHub root files:
    - `index.html`
    - `dashboard.html`
-8. Commit the files.
+8. Commit the changes.
 
-Existing PIN, students, missions, rewards, XP and history remain valid.
+Existing student profiles, missions, XP, history and Parent PIN remain valid.
 
 ## Test URLs
 
 Student:
 
-https://abuubaidahrj.github.io/quiz-app/?version=v7-3-3
+https://abuubaidahrj.github.io/quiz-app/?version=v7-4
 
 Parent Dashboard:
 
-https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-3-3
+https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-4
