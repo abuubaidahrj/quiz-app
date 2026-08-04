@@ -1632,7 +1632,7 @@
         <div class="brand-icon">∑</div>
         <div>
           <h1>Parent Control Center</h1>
-          <p>Math Master v7.6 · Weekly Mission Planner & Templates</p>
+          <p>Math Master v7.6.1 · Weekly Draft Activation Fix</p>
         </div>
       </div>
       <div class="top-actions">
@@ -3466,6 +3466,43 @@
       return parts.join(" · ") || "No requirement set";
     }
 
+
+    function plannerSavedDrafts() {
+      return weeklyPlannerState.currentWeekMissions.filter(
+        item => item?.mission?.status === "Draft"
+      );
+    }
+
+    function updateWeeklyPlannerActionButtons() {
+      const newCount = weeklyPlannerState.items.length;
+      const draftCount = plannerSavedDrafts().length;
+      const saveButton = $("plannerSaveDraftBtn");
+      const activateButton = $("plannerActivateBtn");
+
+      saveButton.disabled = newCount === 0;
+
+      if (newCount > 0) {
+        activateButton.disabled = false;
+        activateButton.textContent =
+          draftCount > 0
+            ? `🚀 Activate new + ${draftCount} saved Draft` +
+              `${draftCount === 1 ? "" : "s"}`
+            : "🚀 Activate all missions";
+        return;
+      }
+
+      if (draftCount > 0) {
+        activateButton.disabled = false;
+        activateButton.textContent =
+          `🚀 Activate saved Drafts (${draftCount})`;
+        return;
+      }
+
+      activateButton.disabled = true;
+      activateButton.textContent =
+        "🚀 No Draft missions to activate";
+    }
+
     function renderPlannerSummary() {
       const items = weeklyPlannerState.items;
       const potential = items.reduce((sum,item) =>
@@ -3474,10 +3511,13 @@
         sum + Number(item.assessmentCredits || 0), 0);
       const questions = items.reduce((sum,item) =>
         sum + Number(item.questions || 0), 0);
-      const existing = weeklyPlannerState.currentWeekMissions.length;
+      const existing =
+        weeklyPlannerState.currentWeekMissions.length;
+      const savedDrafts = plannerSavedDrafts().length;
       const cards = [
         ["New missions",items.length],
         ["Already saved",existing],
+        ["Drafts ready",savedDrafts],
         ["Potential reward",`${potential} min`],
         ["Assessment credits",credits],
         ["Questions planned",questions]
@@ -3493,7 +3533,16 @@
     function renderPlannerItems() {
       const container = $("plannerItemList");
       if (!weeklyPlannerState.items.length) {
-        container.innerHTML = `<div class="empty">Add a template, copy last week or create a blank mission.</div>`;
+        const draftCount = plannerSavedDrafts().length;
+        container.innerHTML = draftCount
+          ? `<div class="empty">
+               ${draftCount} mission${draftCount === 1 ? "" : "s"}
+               already saved as Draft below. Use
+               <strong>Activate saved Drafts</strong> when ready.
+             </div>`
+          : `<div class="empty">
+               Add a template, copy last week or create a blank mission.
+             </div>`;
         return;
       }
 
@@ -3564,6 +3613,7 @@
       renderPlannerSummary();
       renderPlannerItems();
       renderPlannerExisting();
+      updateWeeklyPlannerActionButtons();
     }
 
     function addPlannerItem(item) {
@@ -3650,6 +3700,117 @@
       } catch (error) {
         $("plannerMessage").textContent = error.message;
       }
+    }
+
+
+    async function activateSavedWeeklyDrafts() {
+      const drafts = plannerSavedDrafts();
+
+      if (!drafts.length) {
+        $("plannerMessage").textContent =
+          "No saved Draft missions are available to activate.";
+        updateWeeklyPlannerActionButtons();
+        return;
+      }
+
+      const preview = drafts
+        .map(item =>
+          `Sequence #${Number(item.mission.queueOrder || 0)} — ` +
+          `${item.mission.name}`
+        )
+        .join("\n");
+
+      const totalMinutes = drafts.reduce(
+        (sum, item) =>
+          sum + Number(item.mission.rewardMinutes || 0),
+        0
+      );
+
+      const confirmed = window.confirm(
+        `Activate ${drafts.length} saved Draft mission` +
+        `${drafts.length === 1 ? "" : "s"}?\n\n` +
+        `${preview}\n\n` +
+        `Potential reward: ${totalMinutes} minutes\n` +
+        `Week: ${weeklyPlannerState.weekStart} to ` +
+        `${weeklyPlannerState.weekEnd}`
+      );
+
+      if (!confirmed) return;
+
+      setLoading(
+        true,
+        "🚀 Activating saved Draft missions…"
+      );
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"activateWeeklyDraftMissions",
+            pin:activePin,
+            studentId:activeStudentId,
+            weekStart:weeklyPlannerState.weekStart
+          },
+          60000
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Saved Draft missions could not be activated."
+          );
+        }
+
+        await loadDashboard(activeStudentId);
+        $("weeklyPlannerPanel").classList.remove("hidden");
+
+        await loadWeeklyPlanner(
+          weeklyPlannerState.weekStart ||
+          $("plannerWeekStart").value
+        );
+
+        const currentName =
+          response.currentMission?.name || "";
+        const nextName =
+          response.nextMission?.name || "";
+
+        $("plannerMessage").textContent =
+          `✅ ${response.message}` +
+          (currentName
+            ? ` Current mission: ${currentName}.`
+            : "") +
+          (nextName
+            ? ` Next: ${nextName}.`
+            : "");
+      } catch (error) {
+        console.error(error);
+        $("plannerMessage").textContent =
+          error.message;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function activateWeeklyPlanner() {
+      const newItems = weeklyPlannerState.items.length;
+      const savedDrafts = plannerSavedDrafts().length;
+
+      if (newItems > 0) {
+        await saveWeeklyPlan("Queued");
+
+        // The normal flow saves and activates the new items.
+        // Any older saved Drafts remain visible for a deliberate
+        // second activation rather than being changed silently.
+        return;
+      }
+
+      if (savedDrafts > 0) {
+        await activateSavedWeeklyDrafts();
+        return;
+      }
+
+      $("plannerMessage").textContent =
+        "No new missions or saved Draft missions are available to activate.";
+      updateWeeklyPlannerActionButtons();
     }
 
     async function saveWeeklyPlan(mode, confirmDuplicates=false) {
@@ -4395,7 +4556,7 @@
     );
     $("plannerActivateBtn").addEventListener(
       "click",
-      () => saveWeeklyPlan("Queued")
+      activateWeeklyPlanner
     );
     $("plannerItemList").addEventListener("input", event => {
       if (event.target.matches("[data-plan-field]")) {
