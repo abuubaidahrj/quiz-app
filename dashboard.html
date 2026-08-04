@@ -200,7 +200,7 @@
 
     .controls {
       display:grid;
-      grid-template-columns:minmax(220px,1fr) auto auto auto;
+      grid-template-columns:minmax(220px,1fr) auto auto auto auto;
       gap:10px;
       align-items:end;
       margin:26px 0 18px;
@@ -296,6 +296,141 @@
       background:#f97316;
       box-shadow:0 4px 0 #c2410c;
     }
+
+    .profile-control-panel {
+      margin:0 0 20px;
+      padding:18px;
+      border:3px solid #14b8a6;
+      border-radius:20px;
+      background:linear-gradient(145deg,#ecfeff,#f0fdfa);
+      box-shadow:0 7px 0 #99f6e4;
+    }
+    .profile-control-head {
+      display:flex;
+      justify-content:space-between;
+      gap:15px;
+      align-items:flex-start;
+      margin-bottom:15px;
+    }
+    .profile-control-head h2 {
+      margin:0;
+      color:#134e4a;
+      font-size:26px;
+    }
+    .profile-control-summary {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:9px;
+      margin:13px 0;
+    }
+    .profile-control-stat {
+      padding:10px;
+      border:1px solid #5eead4;
+      border-radius:12px;
+      background:#fff;
+      color:#115e59;
+    }
+    .profile-control-stat strong {
+      display:block;
+      margin-top:4px;
+      font-size:22px;
+    }
+    .canonical-profile-grid {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:9px;
+      margin:13px 0 17px;
+    }
+    .canonical-profile-card {
+      padding:11px;
+      border:1px solid #a5b4fc;
+      border-radius:12px;
+      background:#fff;
+    }
+    .legacy-profile-list {
+      display:grid;
+      gap:10px;
+    }
+    .legacy-profile-card {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(220px,.75fr);
+      gap:13px;
+      padding:13px;
+      border:1px solid #99f6e4;
+      border-radius:14px;
+      background:rgba(255,255,255,.95);
+    }
+    .legacy-profile-card.archived {
+      opacity:.7;
+      background:#f8fafc;
+    }
+    .legacy-profile-title {
+      color:#134e4a;
+      font-size:16px;
+      font-weight:1000;
+      overflow-wrap:anywhere;
+    }
+    .legacy-profile-meta {
+      margin-top:5px;
+      color:#64748b;
+      font-size:12px;
+      line-height:1.5;
+    }
+    .legacy-profile-preview {
+      margin-top:9px;
+      padding:9px;
+      border-radius:10px;
+      background:#f0fdfa;
+      color:#115e59;
+      font-size:12px;
+      line-height:1.45;
+    }
+    .legacy-profile-actions {
+      display:grid;
+      gap:8px;
+      align-content:start;
+    }
+    .legacy-profile-actions select,
+    .legacy-profile-actions button {
+      width:100%;
+      margin:0;
+    }
+    .legacy-profile-actions button {
+      padding:10px;
+      border:0;
+      border-radius:10px;
+      color:#fff;
+      font-weight:900;
+    }
+    .link-history-btn {
+      background:#0f766e;
+      box-shadow:0 3px 0 #134e4a;
+    }
+    .archive-profile-btn {
+      background:#475569;
+      box-shadow:0 3px 0 #1e293b;
+    }
+    .review-profile-btn {
+      background:#7c3aed;
+      box-shadow:0 3px 0 #4c1d95;
+    }
+    .profile-decision-chip {
+      display:inline-block;
+      margin-top:7px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#ccfbf1;
+      color:#115e59;
+      font-size:11px;
+      font-weight:1000;
+    }
+    .profile-control-message {
+      min-height:21px;
+      margin-top:12px;
+      color:#0f766e;
+      font-weight:900;
+    }
+
     .builder-panel {
       margin:0 0 20px;
       padding:20px;
@@ -1088,6 +1223,23 @@
       .connection-banner button {
         width:100%;
       }
+      .profile-control-panel{
+        margin:0 0 18px;
+        padding:14px;
+        border-radius:17px;
+      }
+      .profile-control-head{
+        flex-direction:column;
+      }
+      .profile-control-summary{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .canonical-profile-grid{
+        grid-template-columns:1fr;
+      }
+      .legacy-profile-card{
+        grid-template-columns:1fr;
+      }
       .builder-panel {
         margin:0 0 18px;
         padding:14px;
@@ -1292,7 +1444,7 @@
         <div class="brand-icon">∑</div>
         <div>
           <h1>Parent Control Center</h1>
-          <p>Math Master v7.4 · Family Student Selector</p>
+          <p>Math Master v7.5 · Family Profile Control</p>
         </div>
       </div>
       <div class="top-actions">
@@ -1333,6 +1485,11 @@
         <button id="missionBuilderBtn"
           class="control-btn builder" type="button">
           🎯 Mission Builder
+        </button>
+        <button id="profileControlBtn"
+          class="control-btn" type="button"
+          style="background:#0f766e;box-shadow:0 4px 0 #134e4a;">
+          🧹 Profile Control
         </button>
         <button id="changePinBtn" class="control-btn secondary" type="button">
           Change PIN
@@ -1489,6 +1646,58 @@
           </div>
           <div id="missionHistoryList" class="mission-history-grid"></div>
         </div>
+      </section>
+
+      <section id="profileControlPanel"
+        class="profile-control-panel hidden">
+        <div class="profile-control-head">
+          <div>
+            <h2>🧹 Family Profile Control</h2>
+            <div class="panel-note">
+              The live dashboard shows only Abu, Aisyah and Maryam.
+              Old profile rows are never deleted.
+            </div>
+          </div>
+          <button id="profileControlCloseBtn"
+            class="control-btn secondary"
+            type="button" style="width:auto;">
+            ✕ Close
+          </button>
+        </div>
+
+        <div class="family-security">
+          <strong>Non-destructive cleanup:</strong>
+          Linking groups old analytics under an official child.
+          It does not complete current missions and does not add reward minutes.
+        </div>
+
+        <div id="profileControlSummary"
+          class="profile-control-summary"></div>
+
+        <h3>Official family profiles</h3>
+        <div id="canonicalProfileGrid"
+          class="canonical-profile-grid"></div>
+
+        <div class="panel-head" style="margin-top:18px;">
+          <div>
+            <h3>Legacy and duplicate profile rows</h3>
+            <div class="panel-note">
+              Review the preview before applying a decision.
+            </div>
+          </div>
+          <button id="profileControlRefreshBtn"
+            class="control-btn" type="button"
+            style="width:auto;">
+            ↻ Refresh list
+          </button>
+        </div>
+
+        <div id="legacyProfileList"
+          class="legacy-profile-list">
+          <div class="empty">Open Profile Control to load the list.</div>
+        </div>
+        <div id="profileControlMessage"
+          class="profile-control-message"></div>
       </section>
 
       <section class="student-banner">
@@ -1660,6 +1869,7 @@
     let currentDashboardData = null;
     let currentMissions = [];
     let lastCoreResponse = null;
+    let currentLegacyProfiles = [];
 
     const $ = id => document.getElementById(id);
 
@@ -2801,6 +3011,7 @@
     }
 
     function openMissionBuilder(missionId="") {
+      closeProfileControl();
       $("missionBuilder").classList.remove("hidden");
 
       if (missionId) {
@@ -2814,6 +3025,260 @@
         behavior:"smooth",
         block:"start"
       });
+    }
+
+
+    function closeProfileControl() {
+      $("profileControlPanel").classList.add("hidden");
+      $("profileControlMessage").textContent = "";
+    }
+
+    async function openProfileControl() {
+      closeMissionBuilder();
+      $("profileControlPanel").classList.remove("hidden");
+      $("profileControlPanel").scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+      await loadLegacyProfileControl();
+    }
+
+    function profileDecisionLabel(profile) {
+      if (profile.decision === "Linked") {
+        return `Linked to ${profile.canonicalStudentId}`;
+      }
+
+      if (profile.decision === "Archived") {
+        return "Archived from review";
+      }
+
+      return "Needs review";
+    }
+
+    function renderLegacyProfileControl(response) {
+      currentLegacyProfiles = response.legacyProfiles || [];
+      const counts = response.counts || {};
+
+      $("profileControlSummary").innerHTML = [
+        ["Legacy rows", counts.total || 0],
+        ["Needs review", counts.review || 0],
+        ["Linked history", counts.linked || 0],
+        ["Archived", counts.archived || 0]
+      ].map(item => `
+        <div class="profile-control-stat">
+          ${escapeHtml(item[0])}
+          <strong>${Number(item[1] || 0)}</strong>
+        </div>
+      `).join("");
+
+      $("canonicalProfileGrid").innerHTML =
+        (response.canonicalProfiles || []).map(profile => `
+          <div class="canonical-profile-card">
+            <strong>
+              ${escapeHtml(profile.studentName)} ·
+              ${escapeHtml(profile.studentId)}
+            </strong>
+            <div class="panel-note" style="margin-top:5px;">
+              Level ${Number(profile.level || 1)} ·
+              ${Number(profile.totalXp || 0)} lifetime XP
+            </div>
+            <div class="panel-note">
+              Linked legacy IDs:
+              ${profile.linkedHistoryIds?.length
+                ? escapeHtml(profile.linkedHistoryIds.join(", "))
+                : "None"}
+            </div>
+          </div>
+        `).join("");
+
+      if (!currentLegacyProfiles.length) {
+        $("legacyProfileList").innerHTML = `
+          <div class="empty">
+            🎉 No legacy or duplicate profile rows need review.
+          </div>`;
+        return;
+      }
+
+      $("legacyProfileList").innerHTML =
+        currentLegacyProfiles.map(profile => {
+          const options = [
+            ["ABU","Abu"],
+            ["AISYAH","Aisyah"],
+            ["MARYAM","Maryam"]
+          ].map(([id,name]) => `
+            <option value="${id}"
+              ${profile.canonicalStudentId===id?"selected":""}>
+              ${name} · ${id}
+            </option>
+          `).join("");
+
+          const archived = profile.decision === "Archived";
+          const linkControls = profile.canLinkHistory
+            ? `
+              <select data-profile-target="${escapeHtml(profile.recordKey)}">
+                ${options}
+              </select>
+              <button class="link-history-btn"
+                type="button"
+                data-link-profile="${escapeHtml(profile.recordKey)}">
+                🔗 Link historical activity
+              </button>`
+            : `
+              <div class="panel-note">
+                This row already uses an official Student ID.
+                Archive this duplicate from review.
+              </div>`;
+
+          return `
+            <article class="legacy-profile-card
+              ${archived ? "archived" : ""}">
+              <div>
+                <div class="legacy-profile-title">
+                  ${escapeHtml(profile.studentName)} ·
+                  ${escapeHtml(profile.studentId)}
+                </div>
+                <div class="legacy-profile-meta">
+                  ${escapeHtml(profile.kind)} ·
+                  Sheet row ${Number(profile.rowNumber || 0)}<br>
+                  Level ${Number(profile.level || 1)} ·
+                  ${Number(profile.totalXp || 0)} XP ·
+                  ${Number(profile.totalQuestions || 0)} questions ·
+                  ${Number(profile.assessments || 0)} assessments ·
+                  ${Number(profile.practiceSets || 0)} practice sets<br>
+                  Last update:
+                  ${formatDateTime(profile.updatedAt)}
+                </div>
+                <span class="profile-decision-chip">
+                  ${escapeHtml(profileDecisionLabel(profile))}
+                </span>
+                <div class="legacy-profile-preview">
+                  <strong>Preview:</strong>
+                  ${profile.canLinkHistory
+                    ? "Old analytics and lifetime totals will appear under the selected official child. Current missions and rewards stay unchanged."
+                    : "This duplicate will only be hidden from the review list. No learning data is deleted."}
+                </div>
+              </div>
+              <div class="legacy-profile-actions">
+                ${linkControls}
+                ${archived
+                  ? `<button class="review-profile-btn"
+                       type="button"
+                       data-review-profile="${escapeHtml(profile.recordKey)}">
+                       ↩ Return to review
+                     </button>`
+                  : `<button class="archive-profile-btn"
+                       type="button"
+                       data-archive-profile="${escapeHtml(profile.recordKey)}">
+                       🗄 Archive from review
+                     </button>`}
+              </div>
+            </article>`;
+        }).join("");
+    }
+
+    async function loadLegacyProfileControl() {
+      $("profileControlMessage").textContent =
+        "Loading cleanup preview…";
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"getLegacyProfileControl",
+            pin:activePin
+          },
+          30000,
+          {
+            retrySafe:true,
+            maxAttempts:2,
+            retryableCodes:[
+              "NETWORK_ERROR",
+              "TIMEOUT"
+            ]
+          }
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Profile Control could not be loaded."
+          );
+        }
+
+        renderLegacyProfileControl(response);
+        $("profileControlMessage").textContent =
+          `Preview refreshed: ${formatDateTime(response.generatedAt)}`;
+      } catch (error) {
+        console.error(error);
+        $("profileControlMessage").textContent =
+          error.message;
+      }
+    }
+
+    async function saveLegacyProfileDecision(
+      recordKey,
+      decision
+    ) {
+      const profile = currentLegacyProfiles.find(item =>
+        item.recordKey === recordKey
+      );
+
+      if (!profile) return;
+
+      const targetSelect = document.querySelector(
+        `[data-profile-target="${CSS.escape(recordKey)}"]`
+      );
+      const canonicalStudentId =
+        targetSelect?.value || "";
+
+      const confirmation = decision === "Linked"
+        ? `Link "${profile.studentName} · ${profile.studentId}" to ` +
+          `${canonicalStudentId}?\n\nNo history will be deleted or rewritten. ` +
+          `Old analytics will be grouped under the official profile. ` +
+          `Current missions and rewards will not change.`
+        : decision === "Archived"
+          ? `Archive "${profile.studentName} · ${profile.studentId}" from ` +
+            `the review list?\n\nNo Google Sheets data will be deleted.`
+          : `Return "${profile.studentName} · ${profile.studentId}" to review?`;
+
+      if (!window.confirm(confirmation)) return;
+
+      $("profileControlMessage").textContent =
+        "Saving profile decision…";
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"saveLegacyProfileDecision",
+            pin:activePin,
+            recordKey,
+            decision,
+            canonicalStudentId
+          },
+          30000
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Profile decision could not be saved."
+          );
+        }
+
+        renderLegacyProfileControl(response);
+        $("profileControlMessage").textContent =
+          "✅ Saved. Refreshing official profile analytics…";
+
+        await loadDashboard(activeStudentId, {
+          forceAnalytics:true
+        });
+
+        $("profileControlMessage").textContent =
+          "✅ Saved. No historical rows were deleted.";
+      } catch (error) {
+        console.error(error);
+        $("profileControlMessage").textContent =
+          error.message;
+      }
     }
 
     function closeMissionBuilder() {
@@ -3186,6 +3651,8 @@
       activePin = "";
       activeStudentId = "";
       dashboardLoadSequence++;
+      closeMissionBuilder();
+      closeProfileControl();
       hideConnectionBanner();
       showUnlock();
     }
@@ -3204,10 +3671,58 @@
     );
     $("studentSelect").addEventListener("change", async event => {
       closeMissionBuilder();
+      closeProfileControl();
       await loadDashboard(event.target.value);
     });
     $("missionBuilderBtn").addEventListener("click", () =>
       openMissionBuilder()
+    );
+    $("profileControlBtn").addEventListener(
+      "click",
+      openProfileControl
+    );
+    $("profileControlCloseBtn").addEventListener(
+      "click",
+      closeProfileControl
+    );
+    $("profileControlRefreshBtn").addEventListener(
+      "click",
+      loadLegacyProfileControl
+    );
+    $("legacyProfileList").addEventListener(
+      "click",
+      event => {
+        const linkButton = event.target.closest(
+          "[data-link-profile]"
+        );
+        const archiveButton = event.target.closest(
+          "[data-archive-profile]"
+        );
+        const reviewButton = event.target.closest(
+          "[data-review-profile]"
+        );
+
+        if (linkButton) {
+          saveLegacyProfileDecision(
+            linkButton.dataset.linkProfile,
+            "Linked"
+          );
+        }
+
+        if (archiveButton) {
+          saveLegacyProfileDecision(
+            archiveButton.dataset.archiveProfile,
+            "Archived"
+          );
+        }
+
+        if (reviewButton) {
+          saveLegacyProfileDecision(
+            reviewButton.dataset.reviewProfile,
+            "Review"
+          );
+        }
+      }
     );
     $("saveMissionBtn").addEventListener("click", saveMission);
     $("newMissionBtn").addEventListener("click", resetMissionForm);

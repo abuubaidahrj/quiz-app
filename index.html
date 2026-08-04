@@ -226,6 +226,24 @@
     }
 
 
+
+    .setup-action-row {
+      display:grid;
+      grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
+      gap:12px;
+      margin:15px 0 17px;
+      align-items:stretch;
+    }
+    .setup-action-row #startBtn,
+    .setup-action-row .parent-dashboard-link {
+      min-height:55px;
+      margin:0;
+    }
+    .setup-action-row .parent-dashboard-link {
+      padding:12px 14px;
+      line-height:1.25;
+    }
+
     .parent-dashboard-link {
       display:flex;
       align-items:center;
@@ -512,6 +530,16 @@
       .hero-art{max-width:190px;justify-self:center}
       .operation-ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}
       .grid,.summary-grid,.profile-grid{grid-template-columns:1fr}
+      .setup-action-row{
+        grid-template-columns:1fr 1fr;
+        gap:9px;
+      }
+      .setup-action-row #startBtn,
+      .setup-action-row .parent-dashboard-link{
+        min-height:52px;
+        padding:11px 8px;
+        font-size:15px;
+      }
       .family-activity-head{align-items:stretch}
       .family-activity-refresh{flex:0 0 auto}
       .question{font-size:clamp(44px,16vw,70px);padding:20px 8px}
@@ -528,7 +556,7 @@
         <p class="subtitle" style="color:#e0f2fe;">
           Solve equations, earn fair XP, complete missions and unlock achievements.
         </p>
-        <span class="hero-version">Version v7.4 — Family Student Selector</span>
+        <span class="hero-version">Version v7.5 — Family Profile Control</span>
       </div>
 
       <svg class="hero-art" viewBox="0 0 300 230" role="img"
@@ -598,6 +626,38 @@
       </p>
     </div>
 
+
+    <div class="grid">
+      <div>
+        <label for="mode">Quiz type</label>
+        <select id="mode">
+          <option value="multiply">Multiplication — 1 to 12</option>
+          <option value="divide">Division — exact answers only</option>
+          <option value="add">Addition — 1 to 12</option>
+          <option value="subtract">Subtraction — no negative answers</option>
+          <option value="mixed">Mixed random</option>
+        </select>
+      </div>
+      <div>
+        <label for="questionCount">Number of questions</label>
+        <select id="questionCount">
+          <option value="10">10 unique questions</option>
+          <option value="20">20 unique questions</option>
+          <option value="50">50 unique questions</option>
+          <option value="all" selected>All questions</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="setup-action-row">
+      <button id="startBtn" type="button" disabled>
+        🚀 Start Quiz
+      </button>
+      <a class="parent-dashboard-link" href="dashboard.html">
+        👨‍👩‍👧 Parent Dashboard
+      </a>
+    </div>
+
     <section class="family-activity-card"
       aria-labelledby="familyActivityTitle">
       <div class="family-activity-head">
@@ -632,28 +692,6 @@
       <div id="familyActivityStatus"
         class="family-activity-status"></div>
     </section>
-
-    <div class="grid">
-      <div>
-        <label for="mode">Quiz type</label>
-        <select id="mode">
-          <option value="multiply">Multiplication — 1 to 12</option>
-          <option value="divide">Division — exact answers only</option>
-          <option value="add">Addition — 1 to 12</option>
-          <option value="subtract">Subtraction — no negative answers</option>
-          <option value="mixed">Mixed random</option>
-        </select>
-      </div>
-      <div>
-        <label for="questionCount">Number of questions</label>
-        <select id="questionCount">
-          <option value="10">10 unique questions</option>
-          <option value="20">20 unique questions</option>
-          <option value="50">50 unique questions</option>
-          <option value="all" selected>All questions</option>
-        </select>
-      </div>
-    </div>
 
     <p id="coverageNote" class="note"></p>
     <p class="note">
@@ -723,10 +761,7 @@
       </div>
     </div>
 
-    <button id="startBtn" type="button" disabled>Start Quiz</button>
-    <a class="parent-dashboard-link" href="dashboard.html">
-      👨‍👩‍👧 Open Parent Dashboard
-    </a>
+
   </section>
 
   <section id="quiz" class="hidden">

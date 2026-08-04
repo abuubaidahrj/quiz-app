@@ -1,33 +1,32 @@
-# Math Master v7.4 — Test Checklist
+# Math Master v7.5 — Test Checklist
 
-## Student selector
+## Student Page
 
-- [ ] Student page has one dropdown only.
-- [ ] No editable Student ID field is present.
-- [ ] No editable Student Name field is present.
-- [ ] Dropdown options are Abu, Aisyah and Maryam.
-- [ ] Start Quiz is disabled until a student is selected.
-- [ ] Selecting Abu loads profile ABU.
-- [ ] Selecting Aisyah loads profile AISYAH.
-- [ ] Selecting Maryam loads profile MARYAM.
-- [ ] Reloading the page restores the last selected student.
-- [ ] Submitted sessions use the correct ID and normalized name.
+- [ ] Only Abu, Aisyah and Maryam are selectable.
+- [ ] Start Quiz and Parent Dashboard are directly below quiz options.
+- [ ] Recent Family Activity is below the buttons.
+- [ ] New sessions use the official Student ID and name.
 
-## Recent Family Activity
+## Parent Dashboard
 
-- [ ] All three students appear in the activity panel.
-- [ ] The latest session type is displayed.
-- [ ] Targeted Practice is shown correctly.
-- [ ] Exact date/time and relative time are shown.
-- [ ] Students without history display `No saved activity yet`.
-- [ ] Manual refresh button works.
-- [ ] Completing a quiz refreshes the activity panel.
-- [ ] Activity failure does not prevent Start Quiz.
+- [ ] Student dropdown contains only ABU, AISYAH and MARYAM.
+- [ ] Legacy profiles are absent from the main dropdown.
+- [ ] Profile Control loads after Parent PIN unlock.
+- [ ] Legacy rows show a safe preview.
 
-## Performance
+## Cleanup safety
 
-- [ ] Quiz controls are usable before activity finishes loading.
-- [ ] A second load within 90 seconds uses the server cache.
-- [ ] Browser-cached activity appears immediately on reload.
-- [ ] Apps Script only reads the recent XPHistory tail for this endpoint.
-- [ ] Parent Dashboard split loading still works.
+- [ ] Link one clearly identified legacy profile.
+- [ ] Linked history appears in detailed analytics.
+- [ ] Current mission and reward minutes do not change.
+- [ ] Archive a duplicate row.
+- [ ] The original StudentProfiles row remains.
+- [ ] Return the row to Review.
+- [ ] No Sessions, Responses or XPHistory rows are deleted.
+
+## Backend protection
+
+- [ ] Official assessment submission succeeds.
+- [ ] Altered Student ID is rejected.
+- [ ] Unknown Assessment Attempt Student ID is rejected.
+- [ ] Split dashboard loading still works.

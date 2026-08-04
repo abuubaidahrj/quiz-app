@@ -1,74 +1,62 @@
-# Math Master v7.4 — Family Student Selector
+# Math Master v7.5 — Family Profile Control
 
-## Main student-page changes
+## Official profiles
 
-### One approved-student dropdown
-
-The two editable fields for Student ID and Student Name have been removed.
-
-The only available profiles are:
+New activity is accepted only for:
 
 - Abu · ABU
 - Aisyah · AISYAH
 - Maryam · MARYAM
 
-The page remembers the last selected student on that device.
+The Student Page and Parent Dashboard show only these three profiles.
+Apps Script rejects altered or legacy Student IDs.
 
-A quiz cannot start until one of these approved profiles is selected.
+## Non-destructive Profile Control
 
-### Recent Family Activity
+The Parent Dashboard identifies legacy and duplicate StudentProfiles rows.
 
-The student page displays the latest activity for each student:
+The parent may:
 
-- student name and ID;
-- Assessment or Targeted Practice;
-- question count;
-- relative time;
-- exact date and time.
+- link old history to an official child;
+- archive a row from the cleanup review;
+- return an archived row to review.
 
-Example:
+No Sessions, Responses, XPHistory or StudentProfiles rows are deleted or
+rewritten.
 
-`Maryam · MARYAM — Targeted Practice — 4 Aug 2026, 3:30 PM`
+Linked history appears in lifetime profile display, detailed analytics and
+Recent Family Activity. It does not count toward active missions or reward
+minutes.
 
-## Performance design
+Running `setupSheets()` creates a new sheet named `ProfileControl`. It stores
+only cleanup decisions. The upgrade no longer clears the existing
+`MissionProgress` cache.
 
-Recent Family Activity does not block the quiz page.
+## Student Page improvement
 
-1. The setup page renders immediately.
-2. A saved browser copy is shown first when available.
-3. The live request starts during browser idle time.
-4. Apps Script reads only the latest 600 XPHistory rows.
-5. The server response is cached for 90 seconds.
-6. The activity panel has a separate 10-second timeout.
-7. A failure only affects the activity panel—not profile, mission or quiz use.
-8. After a successful quiz save, the activity panel refreshes with `force=1`.
-
-No new Google Sheets are required.
+`Start Quiz` and `Parent Dashboard` now appear directly under Quiz Type and
+Number of Questions. Recent Family Activity is below these buttons.
 
 ## Installation
 
-Install v7.4 over v7.3.3.
-
 1. Open the Math Master spreadsheet.
-2. Go to `Extensions → Apps Script`.
-3. Replace the existing `Code.gs` with v7.4.
+2. Select `Extensions → Apps Script`.
+3. Replace `Code.gs` with v7.5.
 4. Save.
 5. Run `setupSheets()` once.
-6. Update the existing web-app deployment:
+6. Update the same deployment:
    `Deploy → Manage deployments → Edit → New version → Deploy`
-7. Replace these GitHub root files:
+7. Replace GitHub root files:
    - `index.html`
    - `dashboard.html`
 8. Commit the changes.
 
-Existing student profiles, missions, XP, history and Parent PIN remain valid.
+Do not run `rebuildProfilesFromHistory()` for this upgrade.
 
 ## Test URLs
 
 Student:
-
-https://abuubaidahrj.github.io/quiz-app/?version=v7-4
+https://abuubaidahrj.github.io/quiz-app/?version=v7-5
 
 Parent Dashboard:
-
-https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-4
+https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-5
