@@ -1,48 +1,37 @@
-# Math Master v7.3.2 — Test Checklist
+# Math Master v7.3.3 — Connection Test Checklist
 
-## Basic analytics
+## Core dashboard
 
-- [ ] Unlock the dashboard.
-- [ ] Analytics loads and the synchronization timestamp appears.
-- [ ] Server processing time is displayed.
-- [ ] Changing students loads the correct student.
-- [ ] Repeated fast student changes do not show stale data.
+- [ ] Unlock the Parent Dashboard.
+- [ ] Student profile, mission and Weekly Reward Bank appear first.
+- [ ] The message says detailed analytics is loading.
+- [ ] Mission Builder can be opened before analytics finishes.
+- [ ] Apps Script Executions shows `getParentDashboardCore` completing quickly.
 
-## Retry and snapshot
+## Detailed analytics
 
-- [ ] Load the dashboard successfully once.
-- [ ] Temporarily disconnect the device from the internet.
-- [ ] Tap Refresh.
-- [ ] The last successful dashboard remains visible.
-- [ ] A connection banner explains that a snapshot is being shown.
-- [ ] Reconnect the internet and tap Retry now.
-- [ ] Live analytics replaces the snapshot.
-- [ ] The banner disappears after success.
+- [ ] Metrics, graph, operations, weak questions and sessions appear afterward.
+- [ ] Apps Script Executions shows a separate analytics request.
+- [ ] Refresh within two minutes uses `Server cache used`.
+- [ ] Retry now forces a fresh analytics calculation.
 
-## Safe writes
+## Failure isolation
 
-- [ ] Save one new mission.
-- [ ] Only one mission row is created.
-- [ ] Archive, approve and redeem actions are not duplicated.
-- [ ] Read-only retries do not replay write operations.
+- [ ] If analytics fails, mission and reward panels remain visible.
+- [ ] The connection banner says the main dashboard remains usable.
+- [ ] A heavy analytics timeout does not start several overlapping executions.
+- [ ] The page does not become blank.
 
-## Performance
+## Read-only behavior
 
-- [ ] Open Apps Script → Executions.
-- [ ] Check `getParentDashboard` duration before and after the patch.
-- [ ] Confirm a normal refresh has only one execution.
-- [ ] Confirm there is no repeated full-sheet read caused by the frontend.
+- [ ] Refresh Parent Dashboard several times.
+- [ ] Missions `Updated At` does not change merely from dashboard reads.
+- [ ] MissionProgress is not rewritten by dashboard reads.
+- [ ] Completing a quiz still updates mission progress and handoff normally.
 
-## Responsive dashboard
+## iPhone and desktop
 
-- [ ] iPhone portrait has no horizontal page scrolling.
-- [ ] Weekly Reward Bank wording and cards fit correctly.
-- [ ] Long mission and reward names wrap.
-- [ ] Tables scroll inside their own panels.
-
-## Existing functions
-
-- [ ] Mission 2 activates immediately after Mission 1.
-- [ ] Unlimited valid assessment credits remain active.
-- [ ] Unlimited legitimate Targeted Practice remains active.
-- [ ] Fair question rotation still works.
+- [ ] No horizontal page overflow on iPhone.
+- [ ] Weekly Reward Bank fits correctly.
+- [ ] Long wording wraps.
+- [ ] Analytics panels update independently without shifting outside the page.

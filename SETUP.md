@@ -1,89 +1,109 @@
-# Math Master v7.3.2 — Resilient Responsive Dashboard
+# Math Master v7.3.3 — Split Dashboard Loading
 
-## Which version to install
+## Why v7.3.2 could still fail
 
-Install v7.3.2 only.
+The earlier Parent Dashboard still used one large request for everything:
 
-It replaces both v7.3 and v7.3.1. It contains:
+- student profile;
+- mission queue;
+- mission progress;
+- Weekly Reward Bank;
+- all analytics;
+- graphs;
+- weak questions;
+- recent sessions;
+- achievements.
 
-- instant mission handoff;
-- responsive iPhone/iOS Parent Dashboard;
-- improved Weekly Reward Bank;
-- unlimited legitimate progress;
-- fair question rotation;
-- analytics connection resilience.
+That request also refreshed and wrote Mission/MissionProgress rows during a
+read-only dashboard load. Concurrent quiz saves or mission changes could make
+the dashboard request slower and more fragile.
 
-## Analytics reliability improvements
+## v7.3.3 architecture
 
-### Safe automatic retries
+### Stage 1 — Core dashboard
 
-Read-only Parent Dashboard requests retry up to three times when the browser
-cannot load the Apps Script JSONP response.
+`getParentDashboardCore`
 
-Mission creation, archive, approval and redemption requests are never replayed
-automatically, avoiding duplicate write operations.
+Loads only:
 
-### Last successful snapshot
+- student list and cloud profile;
+- mission queue view;
+- cached MissionProgress rows;
+- Weekly Reward Bank;
+- mission history and reward status.
 
-The last successful dashboard response is kept in `sessionStorage` for up to
-24 hours.
+It does not read the full Responses or XPHistory sheets and does not write to
+any sheet.
 
-If live analytics temporarily fails:
+The dashboard becomes usable as soon as Stage 1 completes.
 
-- the dashboard does not become blank;
-- the last successful data remains visible;
-- a banner clearly says it is a saved snapshot;
-- `Retry now` attempts live synchronization again.
+### Stage 2 — Detailed analytics
 
-The snapshot remains confined to the current browser tab session.
+`getParentDashboardAnalytics`
 
-### Health check
+Loads separately:
 
-When the full analytics request fails, the dashboard performs a small health
-check:
+- verified assessment summary;
+- 14-day trend;
+- operation performance;
+- weak questions;
+- recent sessions;
+- achievements.
 
-- if health succeeds, Apps Script is online and the issue occurred during the
-  heavier analytics request;
-- if health fails, the message points to internet, deployment or Apps Script
-  execution availability.
+If this stage fails, Mission Builder, mission queue and Weekly Reward Bank stay
+visible and usable.
 
-### Faster server processing
+### Server analytics cache
 
-The earlier dashboard request read the complete `Responses` and `XPHistory`
-sheets twice:
+Detailed analytics is cached for 120 seconds using Apps Script CacheService.
 
-1. during mission queue refresh;
-2. during analytics construction.
+The cache key changes automatically when Responses, XPHistory, Achievements or
+the student profile changes.
 
-v7.3.2 reads each sheet once and reuses those rows for the queue calculation.
+`Retry now` bypasses the cache.
 
-### Stale-response protection
+### Retry policy
 
-When two dashboard requests overlap, only the latest request is allowed to
-update the screen. A slower old response cannot replace newer student data.
+- The lightweight core request retries network errors and timeouts once.
+- The heavy analytics request retries only a network load error.
+- A timed-out heavy request is not immediately duplicated, avoiding concurrent
+  long-running Apps Script executions.
+- Write actions are never automatically replayed.
+
+### Read-only dashboard
+
+Parent Dashboard GET calls no longer write Mission or MissionProgress data.
+Queue persistence still occurs during:
+
+- quiz submission;
+- mission creation or editing;
+- mission archive;
+- reward approval and redemption.
 
 ## Installation
 
+Install v7.3.3 only.
+
 1. Open the Math Master spreadsheet.
-2. Go to `Extensions → Apps Script`.
-3. Replace the current `Code.gs` with v7.3.2.
+2. Select `Extensions → Apps Script`.
+3. Replace the existing `Code.gs` with v7.3.3.
 4. Save.
 5. Run `setupSheets()` once.
-6. Update the same web-app deployment:
+6. Update the existing web-app deployment:
    `Deploy → Manage deployments → Edit → New version → Deploy`
-7. Replace these files in the GitHub repository root:
+7. Replace the GitHub root files:
    - `index.html`
    - `dashboard.html`
-8. Commit the changes.
+8. Commit the files.
 
-Existing PIN, students, missions, XP, rewards and history remain valid.
+Existing PIN, students, missions, rewards, XP and history remain valid.
 
 ## Test URLs
 
 Student:
 
-https://abuubaidahrj.github.io/quiz-app/?version=v7-3-2
+https://abuubaidahrj.github.io/quiz-app/?version=v7-3-3
 
 Parent Dashboard:
 
-https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-3-2
+https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-3-3

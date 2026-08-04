@@ -1292,7 +1292,7 @@
         <div class="brand-icon">∑</div>
         <div>
           <h1>Parent Control Center</h1>
-          <p>Math Master v7.3.2 · Resilient Responsive Dashboard</p>
+          <p>Math Master v7.3.3 · Split Dashboard Loading</p>
         </div>
       </div>
       <div class="top-actions">
@@ -1648,7 +1648,7 @@
     const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgsLdSvTidRNDXpZ3PgoMBwwrEofRnwHYRawyMKq9D4edbbrIBaSYIcHES8TZTMWXd/exec";
     const PIN_SESSION_KEY = "mathMasterParentDashboardPin";
     const DASHBOARD_SNAPSHOT_PREFIX =
-      "mathMasterParentDashboardSnapshot:v732";
+      "mathMasterParentDashboardSnapshot:v733";
     const DASHBOARD_SNAPSHOT_MAX_AGE_MS =
       24 * 60 * 60 * 1000;
 
@@ -1656,8 +1656,10 @@
     let activeStudentId = "";
     let callbackCounter = 0;
     let dashboardLoadSequence = 0;
+    let analyticsLoadSequence = 0;
     let currentDashboardData = null;
     let currentMissions = [];
+    let lastCoreResponse = null;
 
     const $ = id => document.getElementById(id);
 
@@ -1781,9 +1783,15 @@
         } catch (error) {
           lastError = error;
 
+          const retryableCodes = Array.isArray(
+            options.retryableCodes
+          )
+            ? options.retryableCodes
+            : ["NETWORK_ERROR"];
+
           const mayRetry =
             retrySafe &&
-            error?.code === "NETWORK_ERROR" &&
+            retryableCodes.includes(error?.code) &&
             attempt < maximumAttempts;
 
           if (!mayRetry) throw error;
@@ -1922,16 +1930,175 @@
       }
     }
 
+
+    function renderAnalyticsLoading() {
+      $("metricGrid").innerHTML = `
+        <article class="metric">
+          <div class="metric-icon">⭐</div>
+          <div class="metric-label">Lifetime XP</div>
+          <div class="metric-value">
+            ${escapeHtml(currentDashboardData?.summary?.totalXp || 0)}
+          </div>
+          <div class="metric-sub">Profile connected</div>
+        </article>
+        <article class="metric">
+          <div class="metric-icon">☁️</div>
+          <div class="metric-label">Detailed analytics</div>
+          <div class="metric-value">Loading…</div>
+          <div class="metric-sub">
+            Mission and rewards are already available
+          </div>
+        </article>`;
+
+      $("trendChart").innerHTML =
+        '<div class="empty">☁️ Loading 14-day analytics…</div>';
+      $("operationStats").innerHTML =
+        '<div class="empty">☁️ Loading operation performance…</div>';
+      $("weakQuestions").innerHTML =
+        '<div class="empty">☁️ Loading weak-question analysis…</div>';
+      $("recentSessions").innerHTML =
+        '<div class="empty">☁️ Loading recent sessions…</div>';
+      $("achievements").innerHTML =
+        '<div class="empty">☁️ Loading achievements…</div>';
+    }
+
+    function mergeAnalyticsIntoDashboard(analytics) {
+      if (!currentDashboardData || !analytics) return;
+
+      currentDashboardData = {
+        ...currentDashboardData,
+        ...analytics,
+        analyticsPending:false
+      };
+
+      renderMetrics(currentDashboardData.summary);
+      renderTrend(currentDashboardData.trend || []);
+      renderOperations(
+        currentDashboardData.operationStats || []
+      );
+      renderWeakQuestions(
+        currentDashboardData.weakQuestions || []
+      );
+      renderRecentSessions(
+        currentDashboardData.recentSessions || []
+      );
+      renderAchievements(
+        currentDashboardData.achievements || []
+      );
+    }
+
+    async function loadDashboardAnalytics(
+      studentId,
+      parentLoadId,
+      options={}
+    ) {
+      const analyticsId = ++analyticsLoadSequence;
+      const force = options.force === true;
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"getParentDashboardAnalytics",
+            pin:activePin,
+            studentId,
+            force:force ? "1" : "0"
+          },
+          60000,
+          {
+            retrySafe:true,
+            maxAttempts:2,
+            retryableCodes:["NETWORK_ERROR"]
+          }
+        );
+
+        if (
+          parentLoadId !== dashboardLoadSequence ||
+          analyticsId !== analyticsLoadSequence ||
+          studentId !== activeStudentId
+        ) {
+          return;
+        }
+
+        if (
+          !response ||
+          response.ok !== true ||
+          !response.analytics
+        ) {
+          const error = new Error(
+            response?.error ||
+            "Detailed analytics could not be loaded."
+          );
+          error.code =
+            response?.code || "ANALYTICS_RESPONSE";
+          throw error;
+        }
+
+        mergeAnalyticsIntoDashboard(
+          response.analytics
+        );
+
+        const cacheText = response.cacheHit
+          ? " · Server cache used"
+          : "";
+        $("syncLine").textContent =
+          `Dashboard refreshed: ` +
+          `${formatDateTime(response.generatedAt)}` +
+          ` · Analytics: ` +
+          `${(Number(response.performanceMs || 0)/1000).toFixed(1)}s` +
+          cacheText;
+
+        hideConnectionBanner();
+
+        if (lastCoreResponse) {
+          const mergedSnapshot = {
+            ...lastCoreResponse,
+            generatedAt:response.generatedAt,
+            performanceMs:
+              Number(lastCoreResponse.performanceMs || 0) +
+              Number(response.performanceMs || 0),
+            dashboard:currentDashboardData
+          };
+          saveDashboardSnapshot(mergedSnapshot);
+        }
+      } catch (error) {
+        if (
+          parentLoadId !== dashboardLoadSequence ||
+          analyticsId !== analyticsLoadSequence
+        ) {
+          return;
+        }
+
+        console.error("Analytics load failed:", error);
+
+        showConnectionBanner({
+          kind:"warning",
+          title:"Mission and Reward Bank are connected",
+          detail:
+            `Detailed analytics could not finish: ${error.message} ` +
+            `The main Parent Dashboard remains usable. Tap Retry now ` +
+            `to try analytics again.`,
+          retry:true
+        });
+
+        $("syncLine").textContent =
+          "Core dashboard connected · Detailed analytics temporarily unavailable";
+      }
+    }
+
     async function loadDashboard(studentId="", options={}) {
       if (!activePin) return;
 
       const loadId = ++dashboardLoadSequence;
+      analyticsLoadSequence++;
+
       const requestedStudent =
         studentId || activeStudentId || "";
       const quiet = options.quiet === true;
+      const forceAnalytics =
+        options.forceAnalytics === true;
 
       if (!quiet) {
-        setLoading(true, "☁️ Loading family analytics...");
+        setLoading(true, "☁️ Connecting Parent Dashboard...");
       }
 
       $("unlockMessage").textContent = "";
@@ -1939,20 +2106,24 @@
       try {
         const response = await jsonpRequest(
           {
-            action:"getParentDashboard",
+            action:"getParentDashboardCore",
             pin:activePin,
             studentId:requestedStudent
           },
-          45000,
+          30000,
           {
             retrySafe:true,
-            maxAttempts:3,
+            maxAttempts:2,
+            retryableCodes:[
+              "NETWORK_ERROR",
+              "TIMEOUT"
+            ],
             onAttempt:(attempt,total) => {
-              if (!quiet && total > 1) {
-                const wording = attempt === 1
-                  ? "☁️ Loading family analytics..."
-                  : `☁️ Reconnecting to analytics (${attempt}/${total})...`;
-                setLoading(true, wording);
+              if (!quiet && attempt > 1) {
+                setLoading(
+                  true,
+                  `☁️ Reconnecting core dashboard (${attempt}/${total})...`
+                );
               }
             }
           }
@@ -1962,9 +2133,11 @@
 
         if (!response || response.ok !== true) {
           const error = new Error(
-            response?.error || "Unable to load dashboard."
+            response?.error ||
+            "Unable to load the core dashboard."
           );
-          error.code = response?.code || "SERVER_RESPONSE";
+          error.code =
+            response?.code || "CORE_RESPONSE";
           throw error;
         }
 
@@ -1979,9 +2152,26 @@
         }
 
         sessionStorage.setItem(PIN_SESSION_KEY, activePin);
+        lastCoreResponse = response;
         saveDashboardSnapshot(response);
         applyDashboardResponse(response);
+        renderAnalyticsLoading();
         hideConnectionBanner();
+
+        $("syncLine").textContent =
+          `Mission and Reward Bank connected: ` +
+          `${formatDateTime(response.generatedAt)}` +
+          ` · Loading detailed analytics…`;
+
+        if (!quiet) setLoading(false);
+
+        loadDashboardAnalytics(
+          response.selectedStudentId,
+          loadId,
+          {force:forceAnalytics}
+        );
+
+        return;
       } catch (error) {
         if (loadId !== dashboardLoadSequence) return;
 
@@ -1998,9 +2188,12 @@
           return;
         }
 
-        const cached = readDashboardSnapshot(requestedStudent);
+        const cached = readDashboardSnapshot(
+          requestedStudent
+        );
 
         if (cached?.response?.dashboard) {
+          lastCoreResponse = cached.response;
           applyDashboardResponse(
             cached.response,
             cached.savedAt
@@ -2010,24 +2203,9 @@
             kind:"warning",
             title:"Showing the last successful dashboard snapshot",
             detail:
-              `${error.message} Your saved analytics remain visible while ` +
-              `the live connection is retried.`,
+              `${error.message} The previous dashboard remains visible. ` +
+              `Tap Retry now after checking the connection.`,
             retry:true
-          });
-
-          probeAppsScriptHealth().then(healthy => {
-            if (loadId !== dashboardLoadSequence) return;
-
-            showConnectionBanner({
-              kind:healthy ? "online" : "error",
-              title:healthy
-                ? "Apps Script is online, but the full analytics request failed"
-                : "Live Apps Script connection is unavailable",
-              detail:healthy
-                ? "The failure was likely during analytics processing. Tap Retry now; the last successful snapshot is still displayed."
-                : "Check the internet connection and the latest Apps Script execution. The last successful snapshot is still displayed.",
-              retry:true
-            });
           });
 
           return;
@@ -2039,21 +2217,12 @@
           : false;
 
         const detail = !online
-          ? "This device appears to be offline. Reconnect and tap Unlock Dashboard again."
+          ? "This device appears offline. Reconnect and try again."
           : healthy
-            ? "Apps Script responded to a health check, but the full analytics request failed. Check Apps Script → Executions for the latest getParentDashboard request."
-            : "The Apps Script endpoint did not answer after three connection attempts. Check the deployment and internet connection, then retry.";
+            ? "Apps Script is online, but the core Parent Dashboard request failed. Check Apps Script → Executions for getParentDashboardCore."
+            : "The Apps Script endpoint did not respond. Check the latest deployment, authorization and Apps Script executions.";
 
         $("unlockMessage").textContent = detail;
-
-        if (!$("dashboardView").classList.contains("hidden")) {
-          showConnectionBanner({
-            kind:"error",
-            title:error.message,
-            detail,
-            retry:true
-          });
-        }
       } finally {
         if (loadId === dashboardLoadSequence && !quiet) {
           setLoading(false);
@@ -2122,22 +2291,36 @@
     }
 
         function renderMetrics(summary) {
+      const analyticsReady =
+        summary?.analyticsReady !== false;
+
       const metrics = [
         ["⭐","Lifetime XP",summary.totalXp,
           `Level ${summary.level}`],
         ["🔥","Current streak",
           `${summary.currentStreak} days`,
           `Best: ${summary.longestStreak} days`],
-        ["🛡️","Assessment credits",summary.assessmentCredits,
-          `${summary.assessments} eligible sessions`],
+        ["🛡️","Assessment credits",
+          analyticsReady ? summary.assessmentCredits : "…",
+          analyticsReady
+            ? `${summary.assessments} eligible sessions`
+            : "Loading verified analytics"],
         ["🎯","Eligible practice",
-          summary.eligiblePracticeSets,
-          "Fair-play rewarded sets"],
+          analyticsReady ? summary.eligiblePracticeSets : "…",
+          analyticsReady
+            ? "Fair-play rewarded sets"
+            : "Loading verified analytics"],
         ["✅","Assessment accuracy",
-          formatPercent(summary.assessmentAccuracy),
-          `${summary.assessmentQuestions} verified questions`],
+          analyticsReady
+            ? formatPercent(summary.assessmentAccuracy)
+            : "…",
+          analyticsReady
+            ? `${summary.assessmentQuestions} verified questions`
+            : "Loading verified analytics"],
         ["⏱️","Average time",
-          formatSeconds(summary.averageAssessmentTime),
+          analyticsReady
+            ? formatSeconds(summary.averageAssessmentTime)
+            : "…",
           `Last: ${formatDateTime(summary.lastActivity)}`]
       ];
 
@@ -3015,7 +3198,9 @@
       loadDashboard(activeStudentId)
     );
     $("retryConnectionBtn").addEventListener("click", () =>
-      loadDashboard(activeStudentId)
+      loadDashboard(activeStudentId, {
+        forceAnalytics:true
+      })
     );
     $("studentSelect").addEventListener("change", async event => {
       closeMissionBuilder();
@@ -3077,7 +3262,10 @@
 
     window.addEventListener("online", () => {
       if (activePin && !$("dashboardView").classList.contains("hidden")) {
-        loadDashboard(activeStudentId, {quiet:true});
+        loadDashboard(activeStudentId, {
+          quiet:true,
+          forceAnalytics:true
+        });
       }
     });
 
