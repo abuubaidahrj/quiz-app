@@ -318,6 +318,211 @@
       color:#1e3a8a;
       font-size:27px;
     }
+
+    .auto-planner-card {
+      margin:14px 0;
+      padding:15px;
+      border:2px solid #a78bfa;
+      border-radius:16px;
+      background:linear-gradient(135deg,#faf5ff,#eef2ff);
+      box-shadow:0 5px 0 #ddd6fe;
+    }
+    .auto-planner-head {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:13px;
+      align-items:start;
+    }
+    .auto-planner-head h3 {
+      margin:0;
+      color:#4c1d95;
+      font-size:21px;
+    }
+    .auto-planner-description {
+      margin-top:5px;
+      color:#64748b;
+      font-size:12px;
+      line-height:1.45;
+    }
+    .auto-planner-actions {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:8px;
+    }
+    .auto-planner-actions button {
+      width:auto;
+      min-height:42px;
+      margin:0;
+      padding:9px 11px;
+      border:0;
+      border-radius:10px;
+      color:#fff;
+      font-weight:900;
+    }
+    .auto-prepare-btn {
+      background:#7c3aed;
+      box-shadow:0 3px 0 #4c1d95;
+    }
+    .auto-configure-btn {
+      background:#4338ca;
+      box-shadow:0 3px 0 #312e81;
+    }
+    .auto-planner-stats {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:8px;
+      margin-top:12px;
+    }
+    .auto-planner-stat {
+      min-width:0;
+      padding:9px;
+      border:1px solid #c4b5fd;
+      border-radius:11px;
+      background:#fff;
+      color:#5b21b6;
+      font-size:11px;
+      line-height:1.35;
+    }
+    .auto-planner-stat strong {
+      display:block;
+      margin-top:3px;
+      color:#312e81;
+      font-size:18px;
+      overflow-wrap:anywhere;
+    }
+    .auto-planner-warning {
+      margin-top:10px;
+      padding:9px 10px;
+      border:1px solid #f59e0b;
+      border-radius:10px;
+      background:#fffbeb;
+      color:#92400e;
+      font-size:12px;
+      line-height:1.45;
+    }
+    .auto-rule-editor {
+      margin-top:14px;
+      padding-top:14px;
+      border-top:2px dashed #c4b5fd;
+    }
+    .auto-rule-list {
+      display:grid;
+      gap:9px;
+      margin-top:11px;
+    }
+    .auto-rule-row {
+      display:grid;
+      grid-template-columns:auto minmax(180px,1.2fr)
+        minmax(120px,.7fr) minmax(120px,.7fr)
+        auto auto;
+      gap:8px;
+      align-items:end;
+      padding:10px;
+      border:1px solid #c4b5fd;
+      border-radius:12px;
+      background:#fff;
+    }
+    .auto-rule-sequence {
+      display:grid;
+      place-items:center;
+      width:36px;
+      height:36px;
+      border-radius:10px;
+      background:#6d28d9;
+      color:#fff;
+      font-weight:1000;
+      box-shadow:0 3px 0 #4c1d95;
+    }
+    .auto-rule-field label {
+      display:block;
+      margin-bottom:4px;
+      color:#4c1d95;
+      font-size:11px;
+      font-weight:900;
+    }
+    .auto-rule-field select {
+      width:100%;
+    }
+    .auto-rule-enabled {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      min-height:44px;
+      color:#4c1d95;
+      font-size:12px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .auto-rule-enabled input {
+      width:20px;
+      height:20px;
+    }
+    .auto-rule-actions {
+      display:flex;
+      gap:5px;
+    }
+    .auto-rule-actions button {
+      width:auto;
+      min-width:38px;
+      min-height:38px;
+      margin:0;
+      padding:7px;
+      border:0;
+      border-radius:9px;
+      background:#475569;
+      color:#fff;
+      font-weight:1000;
+    }
+    .auto-rule-actions .auto-rule-remove {
+      background:#dc2626;
+    }
+    .auto-rule-footer {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:11px;
+    }
+    .auto-rule-footer button {
+      width:auto;
+      min-height:43px;
+      margin:0;
+      padding:9px 12px;
+      border:0;
+      border-radius:10px;
+      color:#fff;
+      font-weight:900;
+    }
+    .auto-rule-add {
+      background:#0891b2;
+      box-shadow:0 3px 0 #155e75;
+    }
+    .auto-rule-save {
+      background:#16a34a;
+      box-shadow:0 3px 0 #166534;
+    }
+    .auto-rule-cancel {
+      background:#64748b;
+      box-shadow:0 3px 0 #334155;
+    }
+    .auto-rule-message {
+      min-height:20px;
+      margin-top:9px;
+      color:#5b21b6;
+      font-size:12px;
+      font-weight:900;
+    }
+    .auto-source-chip {
+      display:inline-block;
+      margin-top:5px;
+      padding:3px 7px;
+      border-radius:999px;
+      background:#ede9fe;
+      color:#5b21b6;
+      font-size:10px;
+      font-weight:1000;
+    }
+
     .planner-toolbar {
       display:grid;
       grid-template-columns:minmax(190px,.8fr) minmax(220px,1fr) auto auto auto;
@@ -346,7 +551,7 @@
     .planner-blank-btn {background:#0891b2;box-shadow:0 3px 0 #155e75;}
     .planner-summary-grid {
       display:grid;
-      grid-template-columns:repeat(5,minmax(0,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(135px,1fr));
       gap:9px;
       margin:13px 0;
     }
@@ -1403,6 +1608,35 @@
         border-radius:17px;
       }
       .weekly-planner-head{flex-direction:column;}
+      .auto-planner-head{grid-template-columns:1fr;}
+      .auto-planner-actions{
+        display:grid;
+        grid-template-columns:1fr;
+      }
+      .auto-planner-actions button{width:100%;}
+      .auto-planner-stats{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      .auto-rule-row{
+        grid-template-columns:36px minmax(0,1fr);
+        align-items:start;
+      }
+      .auto-rule-field,
+      .auto-rule-enabled,
+      .auto-rule-actions{
+        grid-column:2;
+      }
+      .auto-rule-actions{
+        flex-wrap:wrap;
+      }
+      .auto-rule-actions button{
+        flex:1 1 44px;
+      }
+      .auto-rule-footer{
+        display:grid;
+        grid-template-columns:1fr;
+      }
+      .auto-rule-footer button{width:100%;}
       .planner-toolbar{grid-template-columns:1fr 1fr;}
       .planner-toolbar > div{grid-column:1/-1;}
       .planner-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -1632,7 +1866,7 @@
         <div class="brand-icon">∑</div>
         <div>
           <h1>Parent Control Center</h1>
-          <p>Math Master v7.6.1 · Weekly Draft Activation Fix</p>
+          <p>Math Master v7.7 · Automatic Weekly Planner</p>
         </div>
       </div>
       <div class="top-actions">
@@ -1722,6 +1956,69 @@
           <strong>Fair queue protection:</strong>
           Missions are saved in the preview order. Existing activity is not
           reused, and duplicate missions are never created silently.
+        </div>
+
+
+        <div class="auto-planner-card">
+          <div class="auto-planner-head">
+            <div>
+              <h3>✨ Automatic Weekly Planner</h3>
+              <div class="auto-planner-description">
+                Approved templates are arranged into a repeatable weekly
+                schedule for this student. Opening next week creates a
+                preview only—nothing is saved or activated until the parent
+                confirms.
+              </div>
+            </div>
+            <div class="auto-planner-actions">
+              <button id="autoPlannerPrepareBtn"
+                class="auto-prepare-btn" type="button">
+                ✨ Prepare next week
+              </button>
+              <button id="autoPlannerConfigureBtn"
+                class="auto-configure-btn" type="button">
+                ⚙️ Configure weekly rules
+              </button>
+            </div>
+          </div>
+
+          <div id="autoPlannerStats"
+            class="auto-planner-stats"></div>
+          <div id="autoPlannerWarnings"></div>
+
+          <section id="autoPlannerEditor"
+            class="auto-rule-editor hidden">
+            <div class="panel-head">
+              <div>
+                <h3>Weekly rules for selected student</h3>
+                <div class="panel-note">
+                  Choose an approved template and its usual weekday.
+                  The order below becomes the proposed mission sequence.
+                  Paused rules stay saved but are not added to previews.
+                </div>
+              </div>
+            </div>
+
+            <div id="autoPlannerRuleList"
+              class="auto-rule-list"></div>
+
+            <div class="auto-rule-footer">
+              <button id="autoPlannerAddRuleBtn"
+                class="auto-rule-add" type="button">
+                ＋ Add weekly rule
+              </button>
+              <button id="autoPlannerSaveRulesBtn"
+                class="auto-rule-save" type="button">
+                💾 Save automatic plan
+              </button>
+              <button id="autoPlannerCancelRulesBtn"
+                class="auto-rule-cancel" type="button">
+                Close rules
+              </button>
+            </div>
+            <div id="autoPlannerRuleMessage"
+              class="auto-rule-message"></div>
+          </section>
         </div>
 
         <div class="planner-toolbar">
@@ -2148,8 +2445,23 @@
       templates:[],
       previousWeekMissions:[],
       currentWeekMissions:[],
+      autoPlanner:{
+        rules:[],
+        suggestions:[],
+        warnings:[],
+        activeRuleCount:0,
+        pausedRuleCount:0,
+        unavailableRuleCount:0,
+        potentialMinutes:0,
+        nextWeekStart:"",
+        nextWeekEnd:"",
+        nextWeekSavedCount:0,
+        selectedWeekIsNext:false
+      },
+      autoRulesDraft:[],
       items:[]
     };
+    const autoPlannerPreparedWeeks = {};
 
     const $ = id => document.getElementById(id);
 
@@ -3386,8 +3698,535 @@
       };
     }
 
+
+    const AUTO_PLANNER_DAYS = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ];
+
+    function autoRuleTemporaryId() {
+      return `RULE-${Date.now()}-` +
+        `${Math.random().toString(36).slice(2,8)}`;
+    }
+
+    function defaultAutoPlannerRule() {
+      const templates = weeklyPlannerState.templates || [];
+      const existingCount =
+        weeklyPlannerState.autoRulesDraft.length;
+      const suggestedDay = Math.min(
+        6,
+        existingCount * 2
+      );
+
+      return {
+        localId:autoRuleTemporaryId(),
+        ruleId:"",
+        templateId:templates[0]?.id || "",
+        startDayOffset:suggestedDay,
+        endDayOffset:suggestedDay,
+        enabled:true
+      };
+    }
+
+    function autoSuggestionToPlannerItem(suggestion) {
+      return {
+        localId:plannerTemporaryId(),
+        templateId:suggestion.templateId || "",
+        autoRuleId:suggestion.ruleId || "",
+        sourceLabel:"Automatic weekly rule",
+        missionName:
+          suggestion.missionName ||
+          suggestion.templateName ||
+          "Automatic Math Mission",
+        startDate:suggestion.startDate,
+        endDate:suggestion.endDate,
+        assessmentCredits:Number(
+          suggestion.assessmentCredits || 0
+        ),
+        practiceSets:Number(
+          suggestion.practiceSets || 0
+        ),
+        questions:Number(
+          suggestion.questions || 0
+        ),
+        accuracyPercent:Number(
+          suggestion.accuracyPercent || 0
+        ),
+        periodXp:Number(
+          suggestion.periodXp || 0
+        ),
+        reward:
+          suggestion.reward ||
+          "Parent-selected reward",
+        rewardMinutes:Number(
+          suggestion.rewardMinutes || 0
+        ),
+        notes:
+          suggestion.notes ||
+          "Prepared automatically from an approved weekly rule."
+      };
+    }
+
+    function cloneAutoRulesForEditor() {
+      weeklyPlannerState.autoRulesDraft =
+        (weeklyPlannerState.autoPlanner.rules || [])
+          .map(rule => ({
+            localId:autoRuleTemporaryId(),
+            ruleId:rule.id || "",
+            templateId:rule.templateId || "",
+            startDayOffset:Number(
+              rule.startDayOffset || 0
+            ),
+            endDayOffset:Number(
+              rule.endDayOffset || 0
+            ),
+            enabled:rule.enabled !== false
+          }));
+    }
+
+    function openAutoPlannerEditor() {
+      cloneAutoRulesForEditor();
+      $("autoPlannerEditor").classList.remove("hidden");
+      renderAutoPlannerRuleEditor();
+      $("autoPlannerRuleMessage").textContent = "";
+    }
+
+    function closeAutoPlannerEditor() {
+      $("autoPlannerEditor").classList.add("hidden");
+      $("autoPlannerRuleMessage").textContent = "";
+    }
+
+    function renderAutoPlannerCard() {
+      const auto =
+        weeklyPlannerState.autoPlanner || {};
+      const nextWeekText = auto.nextWeekStart
+        ? `${formatDate(auto.nextWeekStart)} – ` +
+          `${formatDate(auto.nextWeekEnd)}`
+        : "Unavailable";
+      const cards = [
+        ["Active rules", auto.activeRuleCount || 0],
+        ["Paused rules", auto.pausedRuleCount || 0],
+        ["Next week", nextWeekText],
+        ["Potential reward",
+          `${Number(auto.potentialMinutes || 0)} min`]
+      ];
+
+      $("autoPlannerStats").innerHTML =
+        cards.map(card => `
+          <div class="auto-planner-stat">
+            ${escapeHtml(String(card[0]))}
+            <strong>${escapeHtml(String(card[1]))}</strong>
+          </div>
+        `).join("");
+
+      const warnings = [];
+
+      if (Number(auto.unavailableRuleCount || 0) > 0) {
+        warnings.push(
+          `${auto.unavailableRuleCount} rule uses an archived ` +
+          `or missing template.`
+        );
+      }
+
+      (auto.warnings || []).forEach(warning => {
+        warnings.push(warning);
+      });
+
+      if (Number(auto.nextWeekSavedCount || 0) > 0) {
+        warnings.push(
+          `Next week already contains ` +
+          `${auto.nextWeekSavedCount} saved mission` +
+          `${auto.nextWeekSavedCount === 1 ? "" : "s"}. ` +
+          `Opening it will not generate duplicate preview items.`
+        );
+      }
+
+      $("autoPlannerWarnings").innerHTML =
+        warnings.length
+          ? `<div class="auto-planner-warning">
+               ${warnings
+                 .map(warning => escapeHtml(warning))
+                 .join("<br>")}
+             </div>`
+          : "";
+
+      const prepareButton =
+        $("autoPlannerPrepareBtn");
+
+      if (Number(auto.activeRuleCount || 0) === 0) {
+        prepareButton.disabled = true;
+        prepareButton.textContent =
+          "✨ Configure rules first";
+      } else if (
+        Number(auto.nextWeekSavedCount || 0) > 0
+      ) {
+        prepareButton.disabled = false;
+        prepareButton.textContent =
+          `📅 Open next week ` +
+          `(${auto.nextWeekSavedCount} saved)`;
+      } else {
+        prepareButton.disabled = false;
+        prepareButton.textContent =
+          `✨ Prepare next week ` +
+          `(${auto.activeRuleCount} rules)`;
+      }
+
+      if (
+        !$("autoPlannerEditor")
+          .classList.contains("hidden")
+      ) {
+        renderAutoPlannerRuleEditor();
+      }
+    }
+
+    function autoPlannerDayOptions(selectedValue) {
+      return AUTO_PLANNER_DAYS
+        .map((day, index) => `
+          <option value="${index}"
+            ${Number(selectedValue) === index
+              ? "selected"
+              : ""}>
+            ${day}
+          </option>
+        `).join("");
+    }
+
+    function renderAutoPlannerRuleEditor() {
+      const container = $("autoPlannerRuleList");
+      const rules =
+        weeklyPlannerState.autoRulesDraft || [];
+
+      if (!weeklyPlannerState.templates.length) {
+        container.innerHTML = `
+          <div class="empty">
+            Save at least one Mission Template before configuring
+            automatic weekly rules.
+          </div>`;
+        $("autoPlannerAddRuleBtn").disabled = true;
+        $("autoPlannerSaveRulesBtn").disabled = true;
+        return;
+      }
+
+      $("autoPlannerAddRuleBtn").disabled =
+        rules.length >= 10;
+      $("autoPlannerSaveRulesBtn").disabled = false;
+
+      if (!rules.length) {
+        container.innerHTML = `
+          <div class="empty">
+            No automatic rule yet. Add a rule, or save this empty
+            list to disable automatic weekly planning for this student.
+          </div>`;
+        return;
+      }
+
+      const templateOptions = selectedId =>
+        weeklyPlannerState.templates
+          .map(template => `
+            <option value="${escapeHtml(template.id)}"
+              ${template.id === selectedId
+                ? "selected"
+                : ""}>
+              ${escapeHtml(template.templateName)} ·
+              ${Number(template.rewardMinutes || 0)} min
+            </option>
+          `).join("");
+
+      container.innerHTML = rules
+        .map((rule, index) => `
+          <article class="auto-rule-row"
+            data-auto-rule="${escapeHtml(rule.localId)}">
+            <div class="auto-rule-sequence">
+              ${index + 1}
+            </div>
+
+            <div class="auto-rule-field">
+              <label>Approved mission template</label>
+              <select data-auto-rule-field="templateId">
+                ${templateOptions(rule.templateId)}
+              </select>
+            </div>
+
+            <div class="auto-rule-field">
+              <label>Start day</label>
+              <select data-auto-rule-field="startDayOffset">
+                ${autoPlannerDayOptions(
+                  rule.startDayOffset
+                )}
+              </select>
+            </div>
+
+            <div class="auto-rule-field">
+              <label>End day</label>
+              <select data-auto-rule-field="endDayOffset">
+                ${autoPlannerDayOptions(
+                  rule.endDayOffset
+                )}
+              </select>
+            </div>
+
+            <label class="auto-rule-enabled">
+              <input type="checkbox"
+                data-auto-rule-field="enabled"
+                ${rule.enabled ? "checked" : ""}>
+              Enabled
+            </label>
+
+            <div class="auto-rule-actions">
+              <button type="button"
+                data-auto-rule-up="${escapeHtml(rule.localId)}"
+                aria-label="Move rule up">↑</button>
+              <button type="button"
+                data-auto-rule-down="${escapeHtml(rule.localId)}"
+                aria-label="Move rule down">↓</button>
+              <button type="button"
+                class="auto-rule-remove"
+                data-auto-rule-remove="${escapeHtml(rule.localId)}"
+                aria-label="Remove rule">✕</button>
+            </div>
+          </article>
+        `).join("");
+    }
+
+    function addAutoPlannerRule() {
+      if (
+        weeklyPlannerState.autoRulesDraft.length >= 10
+      ) {
+        $("autoPlannerRuleMessage").textContent =
+          "Maximum 10 automatic rules per student.";
+        return;
+      }
+
+      if (!weeklyPlannerState.templates.length) {
+        $("autoPlannerRuleMessage").textContent =
+          "Save a Mission Template first.";
+        return;
+      }
+
+      weeklyPlannerState.autoRulesDraft.push(
+        defaultAutoPlannerRule()
+      );
+      renderAutoPlannerRuleEditor();
+    }
+
+    function moveAutoPlannerRule(localId, direction) {
+      const rules =
+        weeklyPlannerState.autoRulesDraft;
+      const index = rules.findIndex(rule =>
+        rule.localId === localId
+      );
+      const target = index + direction;
+
+      if (
+        index < 0 ||
+        target < 0 ||
+        target >= rules.length
+      ) {
+        return;
+      }
+
+      const [rule] = rules.splice(index, 1);
+      rules.splice(target, 0, rule);
+      renderAutoPlannerRuleEditor();
+    }
+
+    function updateAutoPlannerRule(input) {
+      const card = input.closest("[data-auto-rule]");
+
+      if (!card) return;
+
+      const rule = weeklyPlannerState
+        .autoRulesDraft
+        .find(item =>
+          item.localId === card.dataset.autoRule
+        );
+
+      if (!rule) return;
+
+      const field = input.dataset.autoRuleField;
+
+      if (field === "enabled") {
+        rule.enabled = input.checked;
+        return;
+      }
+
+      if (
+        field === "startDayOffset" ||
+        field === "endDayOffset"
+      ) {
+        rule[field] = Number(input.value || 0);
+        return;
+      }
+
+      rule[field] = input.value;
+    }
+
+    function compactAutoPlannerRules() {
+      return weeklyPlannerState.autoRulesDraft
+        .map(rule => ({
+          i:rule.ruleId || "",
+          t:rule.templateId || "",
+          s:Number(rule.startDayOffset || 0),
+          e:Number(rule.endDayOffset || 0),
+          v:rule.enabled ? 1 : 0
+        }));
+    }
+
+    function validateAutoPlannerRules() {
+      const signatures = {};
+
+      for (
+        const [index, rule] of
+        weeklyPlannerState.autoRulesDraft.entries()
+      ) {
+        if (!rule.templateId) {
+          return `Rule ${index + 1} needs a template.`;
+        }
+
+        if (
+          Number(rule.endDayOffset) <
+          Number(rule.startDayOffset)
+        ) {
+          return `Rule ${index + 1}: end day cannot be ` +
+            `before start day.`;
+        }
+
+        const signature = [
+          rule.templateId,
+          rule.startDayOffset,
+          rule.endDayOffset
+        ].join("|");
+
+        if (signatures[signature]) {
+          return `Rule ${index + 1} duplicates another rule.`;
+        }
+
+        signatures[signature] = true;
+      }
+
+      return "";
+    }
+
+    async function saveAutoPlannerRules() {
+      const validation =
+        validateAutoPlannerRules();
+
+      if (validation) {
+        $("autoPlannerRuleMessage").textContent =
+          validation;
+        return;
+      }
+
+      const ruleCount =
+        weeklyPlannerState.autoRulesDraft.length;
+      const enabledCount =
+        weeklyPlannerState.autoRulesDraft
+          .filter(rule => rule.enabled).length;
+
+      const confirmed = window.confirm(
+        ruleCount
+          ? `Save ${ruleCount} automatic weekly rule` +
+            `${ruleCount === 1 ? "" : "s"} for ` +
+            `${activeStudentId}?\n\n` +
+            `${enabledCount} enabled · ` +
+            `${ruleCount - enabledCount} paused\n\n` +
+            `This saves scheduling rules only. No mission ` +
+            `will be created or activated now.`
+          : `Disable automatic weekly planning for ` +
+            `${activeStudentId}?\n\nExisting missions and ` +
+            `templates will remain unchanged.`
+      );
+
+      if (!confirmed) return;
+
+      $("autoPlannerRuleMessage").textContent =
+        "Saving automatic weekly rules…";
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"saveWeeklyAutoPlannerRules",
+            pin:activePin,
+            studentId:activeStudentId,
+            rulesJson:JSON.stringify(
+              compactAutoPlannerRules()
+            )
+          },
+          45000
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Automatic weekly rules could not be saved."
+          );
+        }
+
+        await loadWeeklyPlanner(
+          weeklyPlannerState.weekStart ||
+          $("plannerWeekStart").value
+        );
+        $("autoPlannerEditor").classList.remove(
+          "hidden"
+        );
+        cloneAutoRulesForEditor();
+        renderAutoPlannerRuleEditor();
+        $("autoPlannerRuleMessage").textContent =
+          `✅ ${response.message}`;
+      } catch (error) {
+        console.error(error);
+        $("autoPlannerRuleMessage").textContent =
+          error.message;
+      }
+    }
+
+    async function prepareNextWeekFromAutoPlanner() {
+      const auto =
+        weeklyPlannerState.autoPlanner || {};
+
+      if (Number(auto.activeRuleCount || 0) === 0) {
+        openAutoPlannerEditor();
+        $("autoPlannerRuleMessage").textContent =
+          "Add and save at least one enabled weekly rule.";
+        return;
+      }
+
+      const nextWeek =
+        auto.nextWeekStart ||
+        addLocalDays(mondayForDate(), 7);
+
+      if (
+        weeklyPlannerState.items.length &&
+        weeklyPlannerState.weekStart !== nextWeek
+      ) {
+        const confirmed = window.confirm(
+          "Switching to next week will clear the current unsaved " +
+          "preview from this browser. Continue?"
+        );
+
+        if (!confirmed) return;
+      }
+
+      autoPlannerPreparedWeeks[nextWeek] = false;
+      await loadWeeklyPlanner(
+        nextWeek,
+        {forceAutoPreview:true}
+      );
+
+      $("plannerItemList").scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }
+
     function closeWeeklyPlanner() {
       $("weeklyPlannerPanel").classList.add("hidden");
+      closeAutoPlannerEditor();
       $("plannerMessage").textContent = "";
     }
 
@@ -3404,44 +4243,133 @@
       await loadWeeklyPlanner(selectedWeek);
     }
 
-    async function loadWeeklyPlanner(dateValue) {
-      const weekStart = mondayForDate(dateValue || mondayForDate());
+    async function loadWeeklyPlanner(
+      dateValue,
+      options={}
+    ) {
+      const weekStart = mondayForDate(
+        dateValue || mondayForDate()
+      );
       $("plannerWeekStart").value = weekStart;
-      $("plannerMessage").textContent = "Loading weekly planner…";
+      $("plannerMessage").textContent =
+        "Loading weekly planner…";
 
       try {
-        const response = await jsonpRequest({
-          action:"getWeeklyMissionPlannerData",
-          pin:activePin,
-          studentId:activeStudentId,
-          weekStart
-        }, 30000, {
-          retrySafe:true,
-          maxAttempts:2,
-          retryableCodes:["NETWORK_ERROR","TIMEOUT"]
-        });
+        const response = await jsonpRequest(
+          {
+            action:"getWeeklyMissionPlannerData",
+            pin:activePin,
+            studentId:activeStudentId,
+            weekStart
+          },
+          30000,
+          {
+            retrySafe:true,
+            maxAttempts:2,
+            retryableCodes:[
+              "NETWORK_ERROR",
+              "TIMEOUT"
+            ]
+          }
+        );
 
         if (!response || response.ok !== true) {
-          throw new Error(response?.error || "Weekly planner could not load.");
+          throw new Error(
+            response?.error ||
+            "Weekly planner could not load."
+          );
         }
+
+        const sameWeek =
+          weeklyPlannerState.weekStart ===
+          response.weekStart;
+        const existingItems = sameWeek
+          ? weeklyPlannerState.items
+          : [];
 
         weeklyPlannerState = {
           weekStart:response.weekStart,
           weekEnd:response.weekEnd,
           templates:response.templates || [],
-          previousWeekMissions:response.previousWeekMissions || [],
-          currentWeekMissions:response.currentWeekMissions || [],
-          items:weeklyPlannerState.weekStart === response.weekStart
-            ? weeklyPlannerState.items
-            : []
+          previousWeekMissions:
+            response.previousWeekMissions || [],
+          currentWeekMissions:
+            response.currentWeekMissions || [],
+          autoPlanner:response.autoPlanner || {
+            rules:[],
+            suggestions:[],
+            warnings:[],
+            activeRuleCount:0,
+            pausedRuleCount:0,
+            unavailableRuleCount:0,
+            potentialMinutes:0,
+            nextWeekStart:"",
+            nextWeekEnd:"",
+            nextWeekSavedCount:0,
+            selectedWeekIsNext:false
+          },
+          autoRulesDraft:sameWeek
+            ? weeklyPlannerState.autoRulesDraft
+            : [],
+          items:existingItems
         };
-        $("plannerWeekStart").value = response.weekStart;
+
+        const auto = weeklyPlannerState.autoPlanner;
+        const shouldPrepare =
+          weeklyPlannerState.items.length === 0 &&
+          weeklyPlannerState.currentWeekMissions.length === 0 &&
+          Array.isArray(auto.suggestions) &&
+          auto.suggestions.length > 0 &&
+          (
+            options.forceAutoPreview === true ||
+            (
+              auto.selectedWeekIsNext &&
+              !autoPlannerPreparedWeeks[
+                response.weekStart
+              ]
+            )
+          );
+
+        if (shouldPrepare) {
+          weeklyPlannerState.items =
+            auto.suggestions
+              .slice(0, 10)
+              .map(autoSuggestionToPlannerItem);
+          autoPlannerPreparedWeeks[
+            response.weekStart
+          ] = true;
+        }
+
+        $("plannerWeekStart").value =
+          response.weekStart;
         renderWeeklyPlanner();
-        $("plannerMessage").textContent =
-          `${formatDate(response.weekStart)} – ${formatDate(response.weekEnd)} ready.`;
+
+        if (shouldPrepare) {
+          $("plannerMessage").textContent =
+            `✨ Automatic preview prepared for ` +
+            `${formatDate(response.weekStart)} – ` +
+            `${formatDate(response.weekEnd)}. ` +
+            `Review every mission before saving or activating.`;
+        } else if (
+          auto.selectedWeekIsNext &&
+          weeklyPlannerState.currentWeekMissions.length > 0
+        ) {
+          $("plannerMessage").textContent =
+            `Next week already has ` +
+            `${weeklyPlannerState.currentWeekMissions.length} ` +
+            `saved mission` +
+            `${weeklyPlannerState.currentWeekMissions.length === 1
+              ? ""
+              : "s"}. No automatic duplicates were added.`;
+        } else {
+          $("plannerMessage").textContent =
+            `${formatDate(response.weekStart)} – ` +
+            `${formatDate(response.weekEnd)} ready.`;
+        }
       } catch (error) {
         console.error(error);
-        $("plannerMessage").textContent = error.message;
+        $("plannerMessage").textContent =
+          error.message;
       }
     }
 
@@ -3558,6 +4486,11 @@
                 <div class="panel-note">
                   ${escapeHtml(plannerRequirementText(item))}
                 </div>
+                ${item.sourceLabel
+                  ? `<span class="auto-source-chip">
+                       ${escapeHtml(item.sourceLabel)}
+                     </span>`
+                  : ""}
               </div>
             </div>
             <div class="planner-item-actions">
@@ -3609,6 +4542,7 @@
     }
 
     function renderWeeklyPlanner() {
+      renderAutoPlannerCard();
       renderPlannerTemplateSelect();
       renderPlannerSummary();
       renderPlannerItems();
@@ -3641,8 +4575,11 @@
       if (!item) return;
       const field = input.dataset.planField;
       const numeric = ["assessmentCredits","practiceSets","questions","accuracyPercent","periodXp","rewardMinutes"].includes(field);
-      item[field] = numeric ? Number(input.value || 0) : input.value;
+      item[field] = numeric
+        ? Number(input.value || 0)
+        : input.value;
       renderPlannerSummary();
+      updateWeeklyPlannerActionButtons();
     }
 
     function compactWeeklyPlan() {
@@ -4521,6 +5458,88 @@
     $("plannerWeekStart").addEventListener(
       "change",
       event => loadWeeklyPlanner(event.target.value)
+    );
+    $("autoPlannerPrepareBtn").addEventListener(
+      "click",
+      prepareNextWeekFromAutoPlanner
+    );
+    $("autoPlannerConfigureBtn").addEventListener(
+      "click",
+      openAutoPlannerEditor
+    );
+    $("autoPlannerAddRuleBtn").addEventListener(
+      "click",
+      addAutoPlannerRule
+    );
+    $("autoPlannerSaveRulesBtn").addEventListener(
+      "click",
+      saveAutoPlannerRules
+    );
+    $("autoPlannerCancelRulesBtn").addEventListener(
+      "click",
+      closeAutoPlannerEditor
+    );
+    $("autoPlannerRuleList").addEventListener(
+      "input",
+      event => {
+        if (
+          event.target.matches(
+            "[data-auto-rule-field]"
+          )
+        ) {
+          updateAutoPlannerRule(event.target);
+        }
+      }
+    );
+    $("autoPlannerRuleList").addEventListener(
+      "change",
+      event => {
+        if (
+          event.target.matches(
+            "[data-auto-rule-field]"
+          )
+        ) {
+          updateAutoPlannerRule(event.target);
+        }
+      }
+    );
+    $("autoPlannerRuleList").addEventListener(
+      "click",
+      event => {
+        const up = event.target.closest(
+          "[data-auto-rule-up]"
+        );
+        const down = event.target.closest(
+          "[data-auto-rule-down]"
+        );
+        const remove = event.target.closest(
+          "[data-auto-rule-remove]"
+        );
+
+        if (up) {
+          moveAutoPlannerRule(
+            up.dataset.autoRuleUp,
+            -1
+          );
+        }
+
+        if (down) {
+          moveAutoPlannerRule(
+            down.dataset.autoRuleDown,
+            1
+          );
+        }
+
+        if (remove) {
+          weeklyPlannerState.autoRulesDraft =
+            weeklyPlannerState.autoRulesDraft
+              .filter(rule =>
+                rule.localId !==
+                remove.dataset.autoRuleRemove
+              );
+          renderAutoPlannerRuleEditor();
+        }
+      }
     );
     $("plannerAddTemplateBtn").addEventListener(
       "click",
