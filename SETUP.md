@@ -1,62 +1,73 @@
-# Math Master v7.5 — Family Profile Control
+# Math Master v7.6 — Weekly Mission Planner & Templates
 
-## Official profiles
+## New Weekly Planner
 
-New activity is accepted only for:
+The Parent Dashboard now includes `Weekly Planner`.
 
-- Abu · ABU
-- Aisyah · AISYAH
-- Maryam · MARYAM
+Parents can:
 
-The Student Page and Parent Dashboard show only these three profiles.
-Apps Script rejects altered or legacy Student IDs.
+- choose a Monday–Sunday week;
+- add blank missions;
+- add saved mission templates;
+- copy the previous week and shift every date forward seven days;
+- reorder missions using up/down controls;
+- preview planned credits, questions and potential reward minutes;
+- save the entire week as Draft;
+- activate the entire week with one confirmation;
+- open an existing uncompleted mission in Mission Builder to pause,
+  reschedule or edit it.
 
-## Non-destructive Profile Control
+A weekly plan supports up to 10 missions.
 
-The Parent Dashboard identifies legacy and duplicate StudentProfiles rows.
+## Mission templates
 
-The parent may:
+Running `setupSheets()` creates `MissionTemplates`.
 
-- link old history to an official child;
-- archive a row from the cleanup review;
-- return an archived row to review.
+Each planner mission can be saved as a reusable template. Templates store the
+requirements, reward and notes, but not fixed dates or student data.
 
-No Sessions, Responses, XPHistory or StudentProfiles rows are deleted or
-rewritten.
+## Duplicate protection
 
-Linked history appears in lifetime profile display, detailed analytics and
-Recent Family Activity. It does not count toward active missions or reward
-minutes.
+The backend compares the complete mission signature:
 
-Running `setupSheets()` creates a new sheet named `ProfileControl`. It stores
-only cleanup decisions. The upgrade no longer clears the existing
-`MissionProgress` cache.
+- mission name;
+- dates;
+- requirements;
+- reward;
+- reward minutes.
 
-## Student Page improvement
+Duplicates are reported before saving. The parent can confirm creation of only
+the new items; an existing mission is never duplicated silently.
 
-`Start Quiz` and `Parent Dashboard` now appear directly under Quiz Type and
-Number of Questions. Recent Family Activity is below these buttons.
+## Fair queue behavior
+
+- missions use the visible preview order;
+- old activity is not reused;
+- only the Current mission collects progress;
+- later missions remain Locked;
+- templates do not create activity or rewards by themselves;
+- Draft missions are not activated until edited or activated.
 
 ## Installation
 
 1. Open the Math Master spreadsheet.
-2. Select `Extensions → Apps Script`.
-3. Replace `Code.gs` with v7.5.
+2. Go to `Extensions → Apps Script`.
+3. Replace `Code.gs` with v7.6.
 4. Save.
 5. Run `setupSheets()` once.
-6. Update the same deployment:
+6. Update the existing deployment:
    `Deploy → Manage deployments → Edit → New version → Deploy`
 7. Replace GitHub root files:
    - `index.html`
    - `dashboard.html`
-8. Commit the changes.
+8. Commit.
 
-Do not run `rebuildProfilesFromHistory()` for this upgrade.
+Do not run `rebuildProfilesFromHistory()`.
 
 ## Test URLs
 
 Student:
-https://abuubaidahrj.github.io/quiz-app/?version=v7-5
+https://abuubaidahrj.github.io/quiz-app/?version=v7-6
 
 Parent Dashboard:
-https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-5
+https://abuubaidahrj.github.io/quiz-app/dashboard.html?version=v7-6

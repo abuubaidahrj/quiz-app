@@ -200,7 +200,7 @@
 
     .controls {
       display:grid;
-      grid-template-columns:minmax(220px,1fr) auto auto auto auto;
+      grid-template-columns:minmax(220px,1fr) auto auto auto auto auto;
       gap:10px;
       align-items:end;
       margin:26px 0 18px;
@@ -295,6 +295,180 @@
     .control-btn.builder {
       background:#f97316;
       box-shadow:0 4px 0 #c2410c;
+    }
+
+
+    .weekly-planner-panel {
+      margin:0 0 20px;
+      padding:18px;
+      border:3px solid #60a5fa;
+      border-radius:20px;
+      background:linear-gradient(145deg,#eff6ff,#eef2ff);
+      box-shadow:0 7px 0 #bfdbfe;
+    }
+    .weekly-planner-head {
+      display:flex;
+      justify-content:space-between;
+      gap:15px;
+      align-items:flex-start;
+      margin-bottom:15px;
+    }
+    .weekly-planner-head h2 {
+      margin:0;
+      color:#1e3a8a;
+      font-size:27px;
+    }
+    .planner-toolbar {
+      display:grid;
+      grid-template-columns:minmax(190px,.8fr) minmax(220px,1fr) auto auto auto;
+      gap:9px;
+      align-items:end;
+      margin:13px 0;
+    }
+    .planner-toolbar label {
+      display:block;
+      margin-bottom:5px;
+      color:#1e3a8a;
+      font-size:12px;
+      font-weight:900;
+    }
+    .planner-toolbar button {
+      min-height:46px;
+      margin:0;
+      padding:9px 11px;
+      border:0;
+      border-radius:11px;
+      color:#fff;
+      font-weight:900;
+    }
+    .planner-add-btn {background:#2563eb;box-shadow:0 3px 0 #1e40af;}
+    .planner-copy-btn {background:#7c3aed;box-shadow:0 3px 0 #4c1d95;}
+    .planner-blank-btn {background:#0891b2;box-shadow:0 3px 0 #155e75;}
+    .planner-summary-grid {
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:9px;
+      margin:13px 0;
+    }
+    .planner-summary-card {
+      padding:10px;
+      border:1px solid #93c5fd;
+      border-radius:12px;
+      background:#fff;
+      color:#1e3a8a;
+    }
+    .planner-summary-card strong {
+      display:block;
+      margin-top:4px;
+      font-size:22px;
+    }
+    .planner-list {
+      display:grid;
+      gap:11px;
+      margin-top:13px;
+    }
+    .planner-item {
+      padding:13px;
+      border:2px solid #bfdbfe;
+      border-radius:15px;
+      background:#fff;
+    }
+    .planner-item-head {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom:11px;
+    }
+    .planner-sequence {
+      display:inline-grid;
+      place-items:center;
+      min-width:38px;
+      height:38px;
+      border-radius:11px;
+      background:#1d4ed8;
+      color:#fff;
+      font-weight:1000;
+      box-shadow:0 3px 0 #1e3a8a;
+    }
+    .planner-item-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .planner-item-actions button {
+      width:auto;
+      min-height:36px;
+      margin:0;
+      padding:7px 9px;
+      border:0;
+      border-radius:9px;
+      color:#fff;
+      font-weight:900;
+    }
+    .planner-up,.planner-down {background:#475569;}
+    .planner-save-template {background:#0f766e;}
+    .planner-remove {background:#dc2626;}
+    .planner-grid {
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:9px;
+    }
+    .planner-field.wide {grid-column:span 2;}
+    .planner-field.full {grid-column:1/-1;}
+    .planner-field label {
+      display:block;
+      margin-bottom:4px;
+      color:#334155;
+      font-size:11px;
+      font-weight:900;
+    }
+    .planner-field input,
+    .planner-field textarea {
+      width:100%;
+    }
+    .planner-footer {
+      display:grid;
+      grid-template-columns:1fr 1fr auto;
+      gap:9px;
+      margin-top:15px;
+    }
+    .planner-footer button {
+      min-height:50px;
+      margin:0;
+      border:0;
+      border-radius:12px;
+      color:#fff;
+      font-weight:1000;
+    }
+    .planner-draft-btn {background:#64748b;box-shadow:0 4px 0 #334155;}
+    .planner-activate-btn {background:#16a34a;box-shadow:0 4px 0 #166534;}
+    .planner-close-btn {background:#ede9fe!important;color:#4c1d95!important;}
+    .planner-existing-list {
+      display:grid;
+      gap:8px;
+      margin-top:10px;
+    }
+    .planner-existing-item {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:10px;
+      align-items:center;
+      padding:10px;
+      border:1px solid #c7d2fe;
+      border-radius:11px;
+      background:#fff;
+    }
+    .planner-existing-item button {
+      width:auto;
+      margin:0;
+      padding:8px 10px;
+    }
+    .planner-message {
+      min-height:22px;
+      margin-top:11px;
+      color:#1e40af;
+      font-weight:900;
     }
 
     .profile-control-panel {
@@ -1223,6 +1397,20 @@
       .connection-banner button {
         width:100%;
       }
+      .weekly-planner-panel{
+        margin:0 0 18px;
+        padding:14px;
+        border-radius:17px;
+      }
+      .weekly-planner-head{flex-direction:column;}
+      .planner-toolbar{grid-template-columns:1fr 1fr;}
+      .planner-toolbar > div{grid-column:1/-1;}
+      .planner-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .planner-grid{grid-template-columns:1fr 1fr;}
+      .planner-field.wide,.planner-field.full{grid-column:1/-1;}
+      .planner-footer{grid-template-columns:1fr;}
+      .planner-existing-item{grid-template-columns:1fr;}
+      .planner-existing-item button{width:100%;}
       .profile-control-panel{
         margin:0 0 18px;
         padding:14px;
@@ -1444,7 +1632,7 @@
         <div class="brand-icon">∑</div>
         <div>
           <h1>Parent Control Center</h1>
-          <p>Math Master v7.5 · Family Profile Control</p>
+          <p>Math Master v7.6 · Weekly Mission Planner & Templates</p>
         </div>
       </div>
       <div class="top-actions">
@@ -1486,6 +1674,11 @@
           class="control-btn builder" type="button">
           🎯 Mission Builder
         </button>
+        <button id="weeklyPlannerBtn"
+          class="control-btn" type="button"
+          style="background:#2563eb;box-shadow:0 4px 0 #1e3a8a;">
+          📅 Weekly Planner
+        </button>
         <button id="profileControlBtn"
           class="control-btn" type="button"
           style="background:#0f766e;box-shadow:0 4px 0 #134e4a;">
@@ -1509,6 +1702,85 @@
           ↻ Retry now
         </button>
       </div>
+
+      <section id="weeklyPlannerPanel"
+        class="weekly-planner-panel hidden">
+        <div class="weekly-planner-head">
+          <div>
+            <h2>📅 Weekly Mission Planner</h2>
+            <div class="panel-note">
+              Build the whole week, reuse templates, copy last week and
+              confirm everything before saving. Maximum 10 missions per week.
+            </div>
+          </div>
+          <button id="weeklyPlannerCloseTop"
+            class="control-btn secondary" type="button"
+            style="width:auto;">✕ Close</button>
+        </div>
+
+        <div class="family-security">
+          <strong>Fair queue protection:</strong>
+          Missions are saved in the preview order. Existing activity is not
+          reused, and duplicate missions are never created silently.
+        </div>
+
+        <div class="planner-toolbar">
+          <div>
+            <label for="plannerWeekStart">Week containing</label>
+            <input id="plannerWeekStart" type="date">
+          </div>
+          <div>
+            <label for="plannerTemplateSelect">Mission template</label>
+            <select id="plannerTemplateSelect">
+              <option value="">Choose a saved template…</option>
+            </select>
+          </div>
+          <button id="plannerAddTemplateBtn"
+            class="planner-add-btn" type="button">＋ Add template</button>
+          <button id="plannerBlankMissionBtn"
+            class="planner-blank-btn" type="button">＋ Blank mission</button>
+          <button id="plannerCopyPreviousBtn"
+            class="planner-copy-btn" type="button">⧉ Copy last week</button>
+        </div>
+
+        <div id="plannerSummary" class="planner-summary-grid"></div>
+
+        <div class="panel-head">
+          <div>
+            <h3>Weekly preview</h3>
+            <div class="panel-note">
+              Use ↑ and ↓ to set the queue sequence. All dates must remain
+              inside the selected Monday–Sunday week.
+            </div>
+          </div>
+        </div>
+        <div id="plannerItemList" class="planner-list"></div>
+
+        <div class="panel-head" style="margin-top:18px;">
+          <div>
+            <h3>Already saved for this week</h3>
+            <div class="panel-note">
+              Open an uncompleted mission in Mission Builder to pause,
+              reschedule or edit it.
+            </div>
+          </div>
+        </div>
+        <div id="plannerExistingList" class="planner-existing-list"></div>
+
+        <div class="planner-footer">
+          <button id="plannerSaveDraftBtn"
+            class="planner-draft-btn" type="button">
+            💾 Save all as Draft
+          </button>
+          <button id="plannerActivateBtn"
+            class="planner-activate-btn" type="button">
+            🚀 Activate all missions
+          </button>
+          <button id="weeklyPlannerCloseBottom"
+            class="planner-close-btn" type="button">Close</button>
+        </div>
+        <div id="plannerMessage" class="planner-message"></div>
+      </section>
 
       <section id="missionBuilder" class="builder-panel hidden">
         <div class="builder-head">
@@ -1870,6 +2142,14 @@
     let currentMissions = [];
     let lastCoreResponse = null;
     let currentLegacyProfiles = [];
+    let weeklyPlannerState = {
+      weekStart:"",
+      weekEnd:"",
+      templates:[],
+      previousWeekMissions:[],
+      currentWeekMissions:[],
+      items:[]
+    };
 
     const $ = id => document.getElementById(id);
 
@@ -3011,6 +3291,7 @@
     }
 
     function openMissionBuilder(missionId="") {
+      closeWeeklyPlanner();
       closeProfileControl();
       $("missionBuilder").classList.remove("hidden");
 
@@ -3028,12 +3309,397 @@
     }
 
 
+
+    function mondayForDate(dateValue) {
+      const date = dateValue
+        ? new Date(`${dateValue}T12:00:00`)
+        : new Date();
+      const day = date.getDay();
+      const offset = day === 0 ? -6 : 1 - day;
+      date.setDate(date.getDate() + offset);
+      return localDateKey(date);
+    }
+
+    function addLocalDays(dateKey, days) {
+      const date = new Date(`${dateKey}T12:00:00`);
+      date.setDate(date.getDate() + Number(days || 0));
+      return localDateKey(date);
+    }
+
+    function plannerTemporaryId() {
+      return `PLAN-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+    }
+
+    function defaultPlannerItem() {
+      const start = weeklyPlannerState.weekStart || mondayForDate();
+      return {
+        localId:plannerTemporaryId(),
+        templateId:"",
+        missionName:"New Math Mission",
+        startDate:start,
+        endDate:start,
+        assessmentCredits:4,
+        practiceSets:0,
+        questions:0,
+        accuracyPercent:0,
+        periodXp:0,
+        reward:"Nintendo this weekend",
+        rewardMinutes:15,
+        notes:"Parent approval required before reward use."
+      };
+    }
+
+    function templateToPlannerItem(template) {
+      const item = defaultPlannerItem();
+      return {
+        ...item,
+        templateId:template.id || "",
+        missionName:template.missionName || template.templateName,
+        assessmentCredits:Number(template.assessmentCredits || 0),
+        practiceSets:Number(template.practiceSets || 0),
+        questions:Number(template.questions || 0),
+        accuracyPercent:Math.round(Number(template.accuracy || 0) * 100),
+        periodXp:Number(template.periodXp || 0),
+        reward:template.reward || "Parent-selected reward",
+        rewardMinutes:Number(template.rewardMinutes || 0),
+        notes:template.notes || ""
+      };
+    }
+
+    function previousMissionToPlannerItem(entry) {
+      const mission = entry.mission;
+      const requirements = entry.requirements || {};
+      return {
+        localId:plannerTemporaryId(),
+        templateId:"",
+        missionName:mission.name,
+        startDate:addLocalDays(mission.startDate, 7),
+        endDate:addLocalDays(mission.endDate, 7),
+        assessmentCredits:Number(requirements.assessmentCredits || 0),
+        practiceSets:Number(requirements.practiceSets || 0),
+        questions:Number(requirements.questions || 0),
+        accuracyPercent:Math.round(Number(requirements.accuracy || 0) * 100),
+        periodXp:Number(requirements.periodXp || 0),
+        reward:mission.reward || "Parent-selected reward",
+        rewardMinutes:Number(mission.rewardMinutes || 0),
+        notes:mission.notes || "Copied from previous week."
+      };
+    }
+
+    function closeWeeklyPlanner() {
+      $("weeklyPlannerPanel").classList.add("hidden");
+      $("plannerMessage").textContent = "";
+    }
+
+    async function openWeeklyPlanner() {
+      closeMissionBuilder();
+      closeProfileControl();
+      $("weeklyPlannerPanel").classList.remove("hidden");
+      $("weeklyPlannerPanel").scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+      const selectedWeek = $("plannerWeekStart").value || mondayForDate();
+      $("plannerWeekStart").value = selectedWeek;
+      await loadWeeklyPlanner(selectedWeek);
+    }
+
+    async function loadWeeklyPlanner(dateValue) {
+      const weekStart = mondayForDate(dateValue || mondayForDate());
+      $("plannerWeekStart").value = weekStart;
+      $("plannerMessage").textContent = "Loading weekly planner…";
+
+      try {
+        const response = await jsonpRequest({
+          action:"getWeeklyMissionPlannerData",
+          pin:activePin,
+          studentId:activeStudentId,
+          weekStart
+        }, 30000, {
+          retrySafe:true,
+          maxAttempts:2,
+          retryableCodes:["NETWORK_ERROR","TIMEOUT"]
+        });
+
+        if (!response || response.ok !== true) {
+          throw new Error(response?.error || "Weekly planner could not load.");
+        }
+
+        weeklyPlannerState = {
+          weekStart:response.weekStart,
+          weekEnd:response.weekEnd,
+          templates:response.templates || [],
+          previousWeekMissions:response.previousWeekMissions || [],
+          currentWeekMissions:response.currentWeekMissions || [],
+          items:weeklyPlannerState.weekStart === response.weekStart
+            ? weeklyPlannerState.items
+            : []
+        };
+        $("plannerWeekStart").value = response.weekStart;
+        renderWeeklyPlanner();
+        $("plannerMessage").textContent =
+          `${formatDate(response.weekStart)} – ${formatDate(response.weekEnd)} ready.`;
+      } catch (error) {
+        console.error(error);
+        $("plannerMessage").textContent = error.message;
+      }
+    }
+
+    function renderPlannerTemplateSelect() {
+      const select = $("plannerTemplateSelect");
+      select.innerHTML = `<option value="">Choose a saved template…</option>` +
+        weeklyPlannerState.templates.map(template => `
+          <option value="${escapeHtml(template.id)}">
+            ${escapeHtml(template.templateName)} ·
+            ${Number(template.rewardMinutes || 0)} min
+          </option>
+        `).join("");
+    }
+
+    function plannerRequirementText(item) {
+      const parts = [];
+      if (Number(item.assessmentCredits) > 0) parts.push(`${item.assessmentCredits} credits`);
+      if (Number(item.practiceSets) > 0) parts.push(`${item.practiceSets} practice`);
+      if (Number(item.questions) > 0) parts.push(`${item.questions} questions`);
+      if (Number(item.accuracyPercent) > 0) parts.push(`${item.accuracyPercent}% accuracy`);
+      if (Number(item.periodXp) > 0) parts.push(`${item.periodXp} XP`);
+      return parts.join(" · ") || "No requirement set";
+    }
+
+    function renderPlannerSummary() {
+      const items = weeklyPlannerState.items;
+      const potential = items.reduce((sum,item) =>
+        sum + Number(item.rewardMinutes || 0), 0);
+      const credits = items.reduce((sum,item) =>
+        sum + Number(item.assessmentCredits || 0), 0);
+      const questions = items.reduce((sum,item) =>
+        sum + Number(item.questions || 0), 0);
+      const existing = weeklyPlannerState.currentWeekMissions.length;
+      const cards = [
+        ["New missions",items.length],
+        ["Already saved",existing],
+        ["Potential reward",`${potential} min`],
+        ["Assessment credits",credits],
+        ["Questions planned",questions]
+      ];
+      $("plannerSummary").innerHTML = cards.map(card => `
+        <div class="planner-summary-card">
+          ${escapeHtml(String(card[0]))}
+          <strong>${escapeHtml(String(card[1]))}</strong>
+        </div>
+      `).join("");
+    }
+
+    function renderPlannerItems() {
+      const container = $("plannerItemList");
+      if (!weeklyPlannerState.items.length) {
+        container.innerHTML = `<div class="empty">Add a template, copy last week or create a blank mission.</div>`;
+        return;
+      }
+
+      container.innerHTML = weeklyPlannerState.items.map((item,index) => `
+        <article class="planner-item" data-planner-item="${escapeHtml(item.localId)}">
+          <div class="planner-item-head">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+              <span class="planner-sequence">${index + 1}</span>
+              <div style="min-width:0;">
+                <strong style="color:#1e3a8a;overflow-wrap:anywhere;">
+                  ${escapeHtml(item.missionName || "Unnamed mission")}
+                </strong>
+                <div class="panel-note">
+                  ${escapeHtml(plannerRequirementText(item))}
+                </div>
+              </div>
+            </div>
+            <div class="planner-item-actions">
+              <button class="planner-up" data-planner-up="${escapeHtml(item.localId)}" type="button">↑</button>
+              <button class="planner-down" data-planner-down="${escapeHtml(item.localId)}" type="button">↓</button>
+              <button class="planner-save-template" data-planner-template="${escapeHtml(item.localId)}" type="button">Save template</button>
+              <button class="planner-remove" data-planner-remove="${escapeHtml(item.localId)}" type="button">Remove</button>
+            </div>
+          </div>
+          <div class="planner-grid">
+            <div class="planner-field wide"><label>Mission name</label><input data-plan-field="missionName" value="${escapeHtml(item.missionName)}" maxlength="100"></div>
+            <div class="planner-field"><label>Start date</label><input data-plan-field="startDate" type="date" value="${escapeHtml(item.startDate)}"></div>
+            <div class="planner-field"><label>End date</label><input data-plan-field="endDate" type="date" value="${escapeHtml(item.endDate)}"></div>
+            <div class="planner-field"><label>Assessment credits</label><input data-plan-field="assessmentCredits" type="number" min="0" max="100" value="${Number(item.assessmentCredits || 0)}"></div>
+            <div class="planner-field"><label>Eligible practice</label><input data-plan-field="practiceSets" type="number" min="0" max="14" value="${Number(item.practiceSets || 0)}"></div>
+            <div class="planner-field"><label>Questions</label><input data-plan-field="questions" type="number" min="0" max="5000" value="${Number(item.questions || 0)}"></div>
+            <div class="planner-field"><label>Accuracy (%)</label><input data-plan-field="accuracyPercent" type="number" min="0" max="100" value="${Number(item.accuracyPercent || 0)}"></div>
+            <div class="planner-field"><label>Mission XP</label><input data-plan-field="periodXp" type="number" min="0" max="100000" value="${Number(item.periodXp || 0)}"></div>
+            <div class="planner-field wide"><label>Reward</label><input data-plan-field="reward" value="${escapeHtml(item.reward)}" maxlength="150"></div>
+            <div class="planner-field"><label>Reward minutes</label><input data-plan-field="rewardMinutes" type="number" min="0" max="1440" step="5" value="${Number(item.rewardMinutes || 0)}"></div>
+            <div class="planner-field full"><label>Parent notes</label><textarea data-plan-field="notes" maxlength="300">${escapeHtml(item.notes || "")}</textarea></div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderPlannerExisting() {
+      const container = $("plannerExistingList");
+      const items = weeklyPlannerState.currentWeekMissions;
+      if (!items.length) {
+        container.innerHTML = `<div class="empty">No mission has been saved for this week.</div>`;
+        return;
+      }
+      container.innerHTML = items.map(item => {
+        const mission = item.mission;
+        const editable = !["Completed","Expired","Archived"].includes(mission.status);
+        return `<div class="planner-existing-item">
+          <div>
+            <strong>${escapeHtml(mission.name)}</strong>
+            <div class="panel-note">
+              Sequence #${Number(mission.queueOrder || 0)} ·
+              ${formatDate(mission.startDate)} – ${formatDate(mission.endDate)} ·
+              ${escapeHtml(mission.status)} · ${Number(mission.rewardMinutes || 0)} min
+            </div>
+          </div>
+          ${editable ? `<button type="button" data-planner-edit-existing="${escapeHtml(mission.id)}">Edit / Pause / Reschedule</button>` : `<span class="panel-note">${escapeHtml(mission.status)}</span>`}
+        </div>`;
+      }).join("");
+    }
+
+    function renderWeeklyPlanner() {
+      renderPlannerTemplateSelect();
+      renderPlannerSummary();
+      renderPlannerItems();
+      renderPlannerExisting();
+    }
+
+    function addPlannerItem(item) {
+      if (weeklyPlannerState.items.length >= 10) {
+        $("plannerMessage").textContent = "Maximum 10 missions per weekly plan.";
+        return;
+      }
+      weeklyPlannerState.items.push(item || defaultPlannerItem());
+      renderWeeklyPlanner();
+    }
+
+    function movePlannerItem(localId, direction) {
+      const index = weeklyPlannerState.items.findIndex(item => item.localId === localId);
+      const target = index + direction;
+      if (index < 0 || target < 0 || target >= weeklyPlannerState.items.length) return;
+      const [item] = weeklyPlannerState.items.splice(index,1);
+      weeklyPlannerState.items.splice(target,0,item);
+      renderWeeklyPlanner();
+    }
+
+    function updatePlannerItemFromInput(input) {
+      const card = input.closest("[data-planner-item]");
+      if (!card) return;
+      const item = weeklyPlannerState.items.find(entry => entry.localId === card.dataset.plannerItem);
+      if (!item) return;
+      const field = input.dataset.planField;
+      const numeric = ["assessmentCredits","practiceSets","questions","accuracyPercent","periodXp","rewardMinutes"].includes(field);
+      item[field] = numeric ? Number(input.value || 0) : input.value;
+      renderPlannerSummary();
+    }
+
+    function compactWeeklyPlan() {
+      return weeklyPlannerState.items.map(item => ({
+        n:item.missionName,
+        s:item.startDate,
+        e:item.endDate,
+        a:Number(item.assessmentCredits || 0),
+        p:Number(item.practiceSets || 0),
+        q:Number(item.questions || 0),
+        c:Number(item.accuracyPercent || 0),
+        x:Number(item.periodXp || 0),
+        r:item.reward,
+        m:Number(item.rewardMinutes || 0),
+        o:item.notes || "",
+        t:item.templateId || ""
+      }));
+    }
+
+    function validatePlannerItems() {
+      if (!weeklyPlannerState.items.length) return "Add at least one mission.";
+      for (const [index,item] of weeklyPlannerState.items.entries()) {
+        if (!item.missionName?.trim()) return `Mission ${index + 1} needs a name.`;
+        if (!item.startDate || !item.endDate) return `Mission ${index + 1} needs dates.`;
+        if (item.startDate < weeklyPlannerState.weekStart || item.endDate > weeklyPlannerState.weekEnd || item.startDate > item.endDate) return `Mission ${index + 1} must stay inside the selected week.`;
+        if (![item.assessmentCredits,item.practiceSets,item.questions,item.accuracyPercent,item.periodXp].some(value => Number(value) > 0)) return `Mission ${index + 1} needs at least one requirement.`;
+      }
+      return "";
+    }
+
+    async function savePlannerItemAsTemplate(localId) {
+      const item = weeklyPlannerState.items.find(entry => entry.localId === localId);
+      if (!item) return;
+      const templateName = prompt("Template name", item.missionName);
+      if (!templateName) return;
+      try {
+        const response = await jsonpRequest({
+          action:"saveMissionTemplate",
+          pin:activePin,
+          templateName,
+          missionName:item.missionName,
+          assessmentCredits:item.assessmentCredits,
+          practiceSets:item.practiceSets,
+          questions:item.questions,
+          accuracyPercent:item.accuracyPercent,
+          periodXp:item.periodXp,
+          reward:item.reward,
+          rewardMinutes:item.rewardMinutes,
+          notes:item.notes
+        },30000);
+        if (!response || response.ok !== true) throw new Error(response?.error || "Template could not be saved.");
+        weeklyPlannerState.templates = (response.templates || []).filter(template => template.status === "Active");
+        renderPlannerTemplateSelect();
+        $("plannerMessage").textContent = response.message;
+      } catch (error) {
+        $("plannerMessage").textContent = error.message;
+      }
+    }
+
+    async function saveWeeklyPlan(mode, confirmDuplicates=false) {
+      const validation = validatePlannerItems();
+      if (validation) {
+        $("plannerMessage").textContent = validation;
+        return;
+      }
+      const potential = weeklyPlannerState.items.reduce((sum,item) => sum + Number(item.rewardMinutes || 0),0);
+      const verb = mode === "Draft" ? "save as Draft" : "activate";
+      if (!confirm(`Confirm ${verb} for ${weeklyPlannerState.items.length} missions?\n\nPotential reward: ${potential} minutes\nWeek: ${weeklyPlannerState.weekStart} to ${weeklyPlannerState.weekEnd}`)) return;
+      setLoading(true, mode === "Draft" ? "💾 Saving weekly Draft plan…" : "🚀 Activating weekly mission plan…");
+      try {
+        const response = await jsonpRequest({
+          action:"saveWeeklyMissionPlan",
+          pin:activePin,
+          studentId:activeStudentId,
+          weekStart:weeklyPlannerState.weekStart,
+          mode,
+          confirmDuplicates:confirmDuplicates ? "1" : "0",
+          planJson:JSON.stringify(compactWeeklyPlan())
+        },60000);
+        if (response?.code === "DUPLICATE_WEEKLY_PLAN" && !confirmDuplicates) {
+          const names = (response.duplicates || []).map(item => `${item.missionName} (${item.startDate})`).join("\n");
+          if (confirm(`Duplicate warning:\n\n${names}\n\nCreate only the missions that do not already exist?`)) {
+            await saveWeeklyPlan(mode,true);
+          }
+          return;
+        }
+        if (!response || response.ok !== true) throw new Error(response?.error || "Weekly plan could not be saved.");
+        weeklyPlannerState.items = [];
+        $("plannerMessage").textContent = response.message;
+        await loadDashboard(activeStudentId);
+        $("weeklyPlannerPanel").classList.remove("hidden");
+        await loadWeeklyPlanner(weeklyPlannerState.weekStart || $("plannerWeekStart").value);
+      } catch (error) {
+        console.error(error);
+        $("plannerMessage").textContent = error.message;
+      } finally {
+        setLoading(false);
+      }
+    }
+
     function closeProfileControl() {
       $("profileControlPanel").classList.add("hidden");
       $("profileControlMessage").textContent = "";
     }
 
     async function openProfileControl() {
+      closeWeeklyPlanner();
       closeMissionBuilder();
       $("profileControlPanel").classList.remove("hidden");
       $("profileControlPanel").scrollIntoView({
@@ -3651,6 +4317,7 @@
       activePin = "";
       activeStudentId = "";
       dashboardLoadSequence++;
+      closeWeeklyPlanner();
       closeMissionBuilder();
       closeProfileControl();
       hideConnectionBanner();
@@ -3670,6 +4337,7 @@
       })
     );
     $("studentSelect").addEventListener("change", async event => {
+      closeWeeklyPlanner();
       closeMissionBuilder();
       closeProfileControl();
       await loadDashboard(event.target.value);
@@ -3677,6 +4345,87 @@
     $("missionBuilderBtn").addEventListener("click", () =>
       openMissionBuilder()
     );
+    $("weeklyPlannerBtn").addEventListener(
+      "click",
+      openWeeklyPlanner
+    );
+    $("weeklyPlannerCloseTop").addEventListener(
+      "click",
+      closeWeeklyPlanner
+    );
+    $("weeklyPlannerCloseBottom").addEventListener(
+      "click",
+      closeWeeklyPlanner
+    );
+    $("plannerWeekStart").addEventListener(
+      "change",
+      event => loadWeeklyPlanner(event.target.value)
+    );
+    $("plannerAddTemplateBtn").addEventListener(
+      "click",
+      () => {
+        const template = weeklyPlannerState.templates.find(item =>
+          item.id === $("plannerTemplateSelect").value
+        );
+        if (template) addPlannerItem(templateToPlannerItem(template));
+      }
+    );
+    $("plannerBlankMissionBtn").addEventListener(
+      "click",
+      () => addPlannerItem(defaultPlannerItem())
+    );
+    $("plannerCopyPreviousBtn").addEventListener(
+      "click",
+      () => {
+        if (!weeklyPlannerState.previousWeekMissions.length) {
+          $("plannerMessage").textContent = "No mission was found in the previous week.";
+          return;
+        }
+        const copied = weeklyPlannerState.previousWeekMissions
+          .filter(entry => entry.mission.status !== "Archived")
+          .map(previousMissionToPlannerItem);
+        weeklyPlannerState.items = copied.slice(0,10);
+        renderWeeklyPlanner();
+        $("plannerMessage").textContent = `${weeklyPlannerState.items.length} mission(s) copied. Review before saving.`;
+      }
+    );
+    $("plannerSaveDraftBtn").addEventListener(
+      "click",
+      () => saveWeeklyPlan("Draft")
+    );
+    $("plannerActivateBtn").addEventListener(
+      "click",
+      () => saveWeeklyPlan("Queued")
+    );
+    $("plannerItemList").addEventListener("input", event => {
+      if (event.target.matches("[data-plan-field]")) {
+        updatePlannerItemFromInput(event.target);
+      }
+    });
+    $("plannerItemList").addEventListener("change", event => {
+      if (event.target.matches("[data-plan-field]")) {
+        updatePlannerItemFromInput(event.target);
+      }
+    });
+    $("plannerItemList").addEventListener("click", event => {
+      const up = event.target.closest("[data-planner-up]");
+      const down = event.target.closest("[data-planner-down]");
+      const remove = event.target.closest("[data-planner-remove]");
+      const template = event.target.closest("[data-planner-template]");
+      if (up) movePlannerItem(up.dataset.plannerUp,-1);
+      if (down) movePlannerItem(down.dataset.plannerDown,1);
+      if (remove) {
+        weeklyPlannerState.items = weeklyPlannerState.items.filter(item => item.localId !== remove.dataset.plannerRemove);
+        renderWeeklyPlanner();
+      }
+      if (template) savePlannerItemAsTemplate(template.dataset.plannerTemplate);
+    });
+    $("plannerExistingList").addEventListener("click", event => {
+      const button = event.target.closest("[data-planner-edit-existing]");
+      if (!button) return;
+      closeWeeklyPlanner();
+      openMissionBuilder(button.dataset.plannerEditExisting);
+    });
     $("profileControlBtn").addEventListener(
       "click",
       openProfileControl
