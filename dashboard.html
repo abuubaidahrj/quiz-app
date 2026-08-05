@@ -523,6 +523,269 @@
       font-weight:1000;
     }
 
+
+    .big-mission-panel,
+    .weekly-review-panel {
+      margin:18px 0;
+      padding:18px;
+      border-radius:20px;
+      background:#eef2ff;
+      border:3px solid #8b5cf6;
+      box-shadow:0 7px 0 #c4b5fd;
+    }
+    .big-mission-head,
+    .weekly-review-head {
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+    .big-mission-head h2,
+    .weekly-review-head h2 {
+      margin:0;
+      color:#312e81;
+    }
+    .big-mission-overview {
+      display:grid;
+      grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);
+      gap:14px;
+      margin-top:12px;
+    }
+    .big-mission-card {
+      padding:16px;
+      border:2px solid #f59e0b;
+      border-radius:17px;
+      background:linear-gradient(135deg,#fff7ed,#fefce8);
+      box-shadow:0 5px 0 #fde68a;
+    }
+    .big-mission-card h3 {
+      margin:0 0 4px;
+      color:#7c2d12;
+      font-size:23px;
+    }
+    .big-mission-kicker {
+      color:#92400e;
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+    }
+    .big-mission-track {
+      height:24px;
+      margin:13px 0 7px;
+      overflow:hidden;
+      border-radius:999px;
+      background:#e2e8f0;
+      border:2px solid #cbd5e1;
+    }
+    .big-mission-track > div {
+      height:100%;
+      min-width:0;
+      border-radius:999px;
+      background:linear-gradient(90deg,#f59e0b,#ec4899,#8b5cf6);
+      transition:width .35s ease;
+    }
+    .big-mission-numbers {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:#4c1d95;
+      font-weight:1000;
+    }
+    .big-mission-contributions {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
+      margin-top:12px;
+    }
+    .big-contribution {
+      padding:10px;
+      border-radius:11px;
+      background:#fff;
+      border:1px solid #ddd6fe;
+      color:#475569;
+      font-size:12px;
+    }
+    .big-contribution strong {
+      display:block;
+      margin-top:3px;
+      color:#312e81;
+      font-size:18px;
+    }
+    .big-mission-builder {
+      padding:15px;
+      border:2px solid #a78bfa;
+      border-radius:16px;
+      background:#fff;
+    }
+    .big-mission-form {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .big-mission-field.wide {
+      grid-column:1/-1;
+    }
+    .big-mission-field label,
+    .review-toolbar label {
+      display:block;
+      margin-bottom:5px;
+      color:#312e81;
+      font-size:12px;
+      font-weight:900;
+    }
+    .big-participants {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .big-participant-option {
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 10px;
+      border:1px solid #c4b5fd;
+      border-radius:10px;
+      background:#f5f3ff;
+      color:#4c1d95;
+      font-weight:900;
+    }
+    .big-participant-option input {
+      width:19px;
+      height:19px;
+    }
+    .big-mission-actions,
+    .review-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    .big-mission-actions button,
+    .review-actions button {
+      width:auto;
+      min-height:42px;
+      margin:0;
+      padding:9px 13px;
+      border:0;
+      border-radius:10px;
+      color:#fff;
+      font-weight:900;
+    }
+    .big-save-btn {background:#2563eb;box-shadow:0 3px 0 #1e3a8a;}
+    .big-activate-btn {background:#16a34a;box-shadow:0 3px 0 #166534;}
+    .big-redeem-btn {background:#7c3aed;box-shadow:0 3px 0 #4c1d95;}
+    .big-archive-btn {background:#64748b;box-shadow:0 3px 0 #334155;}
+    .big-mission-message,
+    .weekly-review-message {
+      min-height:20px;
+      margin-top:10px;
+      color:#312e81;
+      font-size:12px;
+      font-weight:900;
+    }
+    .review-toolbar {
+      display:grid;
+      grid-template-columns:minmax(180px,240px) auto auto;
+      gap:10px;
+      align-items:end;
+      margin-bottom:13px;
+    }
+    .review-toolbar button {
+      width:auto;
+      min-height:44px;
+      margin:0;
+    }
+    .review-summary-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+      gap:9px;
+      margin:12px 0;
+    }
+    .review-summary-card {
+      padding:11px;
+      border:1px solid #c4b5fd;
+      border-radius:12px;
+      background:#fff;
+      color:#64748b;
+      font-size:11px;
+    }
+    .review-summary-card strong {
+      display:block;
+      margin-top:4px;
+      color:#312e81;
+      font-size:20px;
+    }
+    .review-list {
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    .review-item {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:12px;
+      align-items:center;
+      padding:12px;
+      border:1px solid #cbd5e1;
+      border-radius:13px;
+      background:#fff;
+    }
+    .review-item-title {
+      color:#0f172a;
+      font-weight:1000;
+    }
+    .review-item-meta {
+      margin-top:4px;
+      color:#64748b;
+      font-size:12px;
+      line-height:1.45;
+    }
+    .review-item-actions {
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:6px;
+      max-width:520px;
+    }
+    .review-item-actions button {
+      width:auto;
+      min-height:38px;
+      margin:0;
+      padding:7px 9px;
+      border:0;
+      border-radius:9px;
+      color:#fff;
+      font-size:11px;
+      font-weight:900;
+    }
+    .review-carry {background:#2563eb;}
+    .review-reschedule {background:#7c3aed;}
+    .review-learning {background:#0891b2;}
+    .review-close-no-reward {background:#64748b;}
+    .review-approve {background:#16a34a;}
+    .review-redeem {background:#9333ea;}
+    .review-decision-chip {
+      display:inline-block;
+      margin-top:5px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:#e0e7ff;
+      color:#3730a3;
+      font-size:10px;
+      font-weight:1000;
+    }
+    .review-close-week {
+      background:#0f766e;
+      box-shadow:0 3px 0 #134e4a;
+    }
+    .review-close-week:disabled {
+      opacity:.5;
+      cursor:not-allowed;
+      box-shadow:none;
+    }
+
     .planner-toolbar {
       display:grid;
       grid-template-columns:minmax(190px,.8fr) minmax(220px,1fr) auto auto auto;
@@ -1607,7 +1870,18 @@
         padding:14px;
         border-radius:17px;
       }
-      .weekly-planner-head{flex-direction:column;}
+      .weekly-planner-head,
+      .big-mission-head,
+      .weekly-review-head{flex-direction:column;}
+      .big-mission-overview{grid-template-columns:1fr;}
+      .big-mission-form{grid-template-columns:1fr;}
+      .big-mission-field.wide{grid-column:auto;}
+      .big-mission-contributions{grid-template-columns:1fr;}
+      .review-toolbar{grid-template-columns:1fr;}
+      .review-toolbar button{width:100%;}
+      .review-item{grid-template-columns:1fr;}
+      .review-item-actions{justify-content:flex-start;max-width:none;}
+      .review-item-actions button{flex:1 1 140px;}
       .auto-planner-head{grid-template-columns:1fr;}
       .auto-planner-actions{
         display:grid;
@@ -1866,7 +2140,7 @@
         <div class="brand-icon">∑</div>
         <div>
           <h1>Parent Control Center</h1>
-          <p>Math Master v7.7 · Automatic Weekly Planner</p>
+          <p>Math Master v7.8 · Family Big Mission & Weekly Review</p>
         </div>
       </div>
       <div class="top-actions">
@@ -1912,6 +2186,16 @@
           class="control-btn" type="button"
           style="background:#2563eb;box-shadow:0 4px 0 #1e3a8a;">
           📅 Weekly Planner
+        </button>
+        <button id="bigMissionBtn"
+          class="control-btn" type="button"
+          style="background:#7c3aed;box-shadow:0 4px 0 #4c1d95;">
+          🏆 Family Big Mission
+        </button>
+        <button id="weeklyReviewBtn"
+          class="control-btn" type="button"
+          style="background:#0f766e;box-shadow:0 4px 0 #134e4a;">
+          📋 Review & Close Week
         </button>
         <button id="profileControlBtn"
           class="control-btn" type="button"
@@ -2077,6 +2361,170 @@
             class="planner-close-btn" type="button">Close</button>
         </div>
         <div id="plannerMessage" class="planner-message"></div>
+      </section>
+
+
+      <section id="bigMissionPanel"
+        class="big-mission-panel hidden">
+        <div class="big-mission-head">
+          <div>
+            <h2>🏆 Family Big Mission</h2>
+            <div class="panel-note">
+              One shared long-term target. Only new verified XP earned after
+              activation counts toward the team total.
+            </div>
+          </div>
+          <button id="bigMissionCloseBtn"
+            class="control-btn secondary" type="button"
+            style="width:auto;">✕ Close</button>
+        </div>
+
+        <div class="family-security">
+          <strong>Current family target:</strong>
+          Maryam and Aisyah work together toward
+          <strong>200,000 new combined XP</strong> for
+          <strong>Kirby and the Forgotten Land</strong>.
+          Existing Lifetime XP becomes the baseline and is not counted twice.
+        </div>
+
+        <div class="big-mission-overview">
+          <div id="bigMissionStatusCard"
+            class="big-mission-card"></div>
+
+          <div class="big-mission-builder">
+            <input id="bigMissionId" type="hidden">
+
+            <div class="big-mission-form">
+              <div class="big-mission-field wide">
+                <label for="bigMissionName">Mission name</label>
+                <input id="bigMissionName" maxlength="120"
+                  value="Kirby Family Adventure">
+              </div>
+
+              <div class="big-mission-field wide">
+                <label for="bigMissionReward">Reward</label>
+                <input id="bigMissionReward" maxlength="180"
+                  value="Kirby and the Forgotten Land">
+              </div>
+
+              <div class="big-mission-field">
+                <label for="bigMissionRewardValue">Estimated value (RM)</label>
+                <input id="bigMissionRewardValue" type="number"
+                  min="0" max="100000" step="1" value="170">
+              </div>
+
+              <div class="big-mission-field">
+                <label for="bigMissionTargetXp">Combined target XP</label>
+                <input id="bigMissionTargetXp" type="number"
+                  min="1" max="10000000" step="1000" value="200000">
+              </div>
+
+              <div class="big-mission-field">
+                <label for="bigMissionStartDate">Start date</label>
+                <input id="bigMissionStartDate" type="date">
+              </div>
+
+              <div class="big-mission-field">
+                <label for="bigMissionTargetDate">Target date</label>
+                <input id="bigMissionTargetDate" type="date">
+              </div>
+
+              <div class="big-mission-field wide">
+                <label>Participants</label>
+                <div class="big-participants">
+                  <label class="big-participant-option">
+                    <input id="bigMissionMaryam" type="checkbox"
+                      value="MARYAM" checked>
+                    Maryam
+                  </label>
+                  <label class="big-participant-option">
+                    <input id="bigMissionAisyah" type="checkbox"
+                      value="AISYAH" checked>
+                    Aisyah
+                  </label>
+                  <label class="big-participant-option">
+                    <input id="bigMissionAbu" type="checkbox"
+                      value="ABU">
+                    Abu
+                  </label>
+                </div>
+              </div>
+
+              <div class="big-mission-field wide">
+                <label for="bigMissionNotes">Parent notes</label>
+                <textarea id="bigMissionNotes" maxlength="500"
+                  placeholder="Shared family goal. Keep it cooperative, not competitive."></textarea>
+              </div>
+            </div>
+
+            <div class="big-mission-actions">
+              <button id="bigMissionNewBtn"
+                class="big-archive-btn" type="button">
+                New Draft
+              </button>
+              <button id="bigMissionSaveBtn"
+                class="big-save-btn" type="button">
+                💾 Save Draft
+              </button>
+              <button id="bigMissionActivateBtn"
+                class="big-activate-btn" type="button">
+                🚀 Activate
+              </button>
+              <button id="bigMissionRedeemBtn"
+                class="big-redeem-btn hidden" type="button">
+                🎁 Mark Reward Redeemed
+              </button>
+              <button id="bigMissionArchiveBtn"
+                class="big-archive-btn hidden" type="button">
+                Archive
+              </button>
+            </div>
+            <div id="bigMissionMessage"
+              class="big-mission-message"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="weeklyReviewPanel"
+        class="weekly-review-panel hidden">
+        <div class="weekly-review-head">
+          <div>
+            <h2>📋 Weekly Review & Reward Approval</h2>
+            <div class="panel-note">
+              Review completed work, decide what happens to unfinished
+              missions, approve earned minutes and close the week without
+              deleting history.
+            </div>
+          </div>
+          <button id="weeklyReviewCloseBtn"
+            class="control-btn secondary" type="button"
+            style="width:auto;">✕ Close</button>
+        </div>
+
+        <div class="review-toolbar">
+          <div>
+            <label for="weeklyReviewDate">Week containing</label>
+            <input id="weeklyReviewDate" type="date">
+          </div>
+          <button id="weeklyReviewLoadBtn"
+            class="control-btn" type="button">
+            ↻ Load Review
+          </button>
+          <button id="weeklyReviewCloseWeekBtn"
+            class="control-btn review-close-week"
+            type="button">
+            ✅ Close reviewed week
+          </button>
+        </div>
+
+        <div id="weeklyReviewStatus"
+          class="family-security"></div>
+        <div id="weeklyReviewSummary"
+          class="review-summary-grid"></div>
+        <div id="weeklyReviewList"
+          class="review-list"></div>
+        <div id="weeklyReviewMessage"
+          class="weekly-review-message"></div>
       </section>
 
       <section id="missionBuilder" class="builder-panel hidden">
@@ -2437,6 +2885,11 @@
     let analyticsLoadSequence = 0;
     let currentDashboardData = null;
     let currentMissions = [];
+    let familyBigMissionState = {
+      missions:[],
+      activeMission:null
+    };
+    let weeklyReviewState = null;
     let lastCoreResponse = null;
     let currentLegacyProfiles = [];
     let weeklyPlannerState = {
@@ -3604,6 +4057,8 @@
 
     function openMissionBuilder(missionId="") {
       closeWeeklyPlanner();
+      closeBigMissionPanel();
+      closeWeeklyReviewPanel();
       closeProfileControl();
       $("missionBuilder").classList.remove("hidden");
 
@@ -4224,6 +4679,792 @@
       });
     }
 
+
+    function numberText(value) {
+      return Number(value || 0).toLocaleString();
+    }
+
+    function bigMissionDefaultTargetDate() {
+      return addLocalDays(localDateKey(new Date()), 61);
+    }
+
+    function resetBigMissionForm() {
+      $("bigMissionId").value = "";
+      $("bigMissionName").value =
+        "Kirby Family Adventure";
+      $("bigMissionReward").value =
+        "Kirby and the Forgotten Land";
+      $("bigMissionRewardValue").value = "170";
+      $("bigMissionTargetXp").value = "200000";
+      $("bigMissionStartDate").value =
+        localDateKey(new Date());
+      $("bigMissionTargetDate").value =
+        bigMissionDefaultTargetDate();
+      $("bigMissionMaryam").checked = true;
+      $("bigMissionAisyah").checked = true;
+      $("bigMissionAbu").checked = false;
+      $("bigMissionNotes").value =
+        "Shared family goal. Maryam and Aisyah work together.";
+      setBigMissionFormMode("Draft");
+      $("bigMissionMessage").textContent =
+        "New Draft ready. Saving does not start XP counting.";
+    }
+
+    function setBigMissionFormMode(status) {
+      const editable = status === "Draft";
+      const fields = [
+        "bigMissionName",
+        "bigMissionReward",
+        "bigMissionRewardValue",
+        "bigMissionTargetXp",
+        "bigMissionStartDate",
+        "bigMissionTargetDate",
+        "bigMissionMaryam",
+        "bigMissionAisyah",
+        "bigMissionAbu",
+        "bigMissionNotes"
+      ];
+
+      fields.forEach(id => {
+        $(id).disabled = !editable;
+      });
+
+      $("bigMissionSaveBtn").disabled = !editable;
+      $("bigMissionActivateBtn").disabled =
+        !editable || !$("bigMissionId").value;
+      $("bigMissionRedeemBtn").classList.toggle(
+        "hidden",
+        status !== "Completed"
+      );
+      $("bigMissionArchiveBtn").classList.toggle(
+        "hidden",
+        !["Draft","Active","Completed"].includes(status)
+      );
+    }
+
+    function fillBigMissionForm(mission) {
+      if (!mission) {
+        resetBigMissionForm();
+        return;
+      }
+
+      $("bigMissionId").value = mission.id || "";
+      $("bigMissionName").value = mission.name || "";
+      $("bigMissionReward").value = mission.reward || "";
+      $("bigMissionRewardValue").value =
+        Number(mission.rewardValueRm || 0);
+      $("bigMissionTargetXp").value =
+        Number(mission.targetXp || 0);
+      $("bigMissionStartDate").value =
+        mission.startDate || "";
+      $("bigMissionTargetDate").value =
+        mission.targetDate || "";
+      $("bigMissionMaryam").checked =
+        (mission.participantIds || []).includes("MARYAM");
+      $("bigMissionAisyah").checked =
+        (mission.participantIds || []).includes("AISYAH");
+      $("bigMissionAbu").checked =
+        (mission.participantIds || []).includes("ABU");
+      $("bigMissionNotes").value = mission.notes || "";
+      setBigMissionFormMode(mission.status || "Draft");
+    }
+
+    function renderBigMissionStatusCard(mission) {
+      const card = $("bigMissionStatusCard");
+
+      if (!mission) {
+        card.innerHTML = `
+          <div class="big-mission-kicker">
+            No active Family Big Mission
+          </div>
+          <h3>Kirby Family Adventure</h3>
+          <div class="panel-note">
+            The builder is prefilled with Maryam + Aisyah,
+            200,000 new combined XP and an estimated RM170 reward.
+            Save the Draft, review it, then activate it to capture the
+            Lifetime XP baseline.
+          </div>`;
+        return;
+      }
+
+      const contributions = (mission.participants || [])
+        .map(item => `
+          <div class="big-contribution">
+            ${escapeHtml(item.studentName)} helped
+            <strong>${numberText(item.contributionXp)} XP</strong>
+            Baseline: ${numberText(item.baselineXp)} XP
+          </div>
+        `).join("");
+      const statusClass = String(mission.status || "")
+        .toLowerCase()
+        .replace(/\s+/g,"-");
+
+      card.innerHTML = `
+        <div class="big-mission-kicker">
+          ${escapeHtml(mission.status)} ·
+          ${formatDate(mission.startDate)} –
+          ${formatDate(mission.targetDate)}
+        </div>
+        <h3>${escapeHtml(mission.name)}</h3>
+        <div>
+          🎮 ${escapeHtml(mission.reward)}
+          ${Number(mission.rewardValueRm || 0) > 0
+            ? ` · approximately RM${numberText(mission.rewardValueRm)}`
+            : ""}
+        </div>
+        <div class="big-mission-track">
+          <div style="width:${Math.min(100,Number(mission.percent || 0))}%"></div>
+        </div>
+        <div class="big-mission-numbers">
+          <span>
+            ${numberText(mission.earnedXp)} /
+            ${numberText(mission.targetXp)} XP
+          </span>
+          <span>${Number(mission.percent || 0).toFixed(1)}%</span>
+        </div>
+        <div class="panel-note" style="margin-top:8px;">
+          ${numberText(mission.remainingXp)} XP remaining ·
+          ${escapeHtml(mission.paceStatus)} ·
+          ${numberText(mission.weeklyPaceNeeded)} XP/week needed
+        </div>
+        <div class="big-mission-contributions">
+          ${contributions}
+        </div>
+        <div style="margin-top:10px;">
+          <span class="history-status ${statusClass}">
+            ${escapeHtml(mission.status)}
+          </span>
+          ${mission.completedAt
+            ? ` Completed ${formatDateTime(mission.completedAt)}`
+            : ""}
+          ${mission.redeemedAt
+            ? ` · Redeemed ${formatDateTime(mission.redeemedAt)}`
+            : ""}
+        </div>`;
+    }
+
+    function selectedBigMissionParticipants() {
+      return [
+        $("bigMissionMaryam").checked ? "MARYAM" : "",
+        $("bigMissionAisyah").checked ? "AISYAH" : "",
+        $("bigMissionAbu").checked ? "ABU" : ""
+      ].filter(Boolean);
+    }
+
+    async function loadBigMissionAdmin(options={}) {
+      $("bigMissionMessage").textContent =
+        "Loading Family Big Mission…";
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"getFamilyBigMissionAdmin",
+            pin:activePin
+          },
+          30000,
+          {
+            retrySafe:true,
+            maxAttempts:2,
+            retryableCodes:["NETWORK_ERROR","TIMEOUT"]
+          }
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Family Big Mission could not load."
+          );
+        }
+
+        familyBigMissionState = {
+          missions:response.missions || [],
+          activeMission:response.activeMission || null
+        };
+
+        const preferred =
+          response.activeMission ||
+          familyBigMissionState.missions.find(
+            item => item.status === "Draft"
+          ) ||
+          familyBigMissionState.missions[0] ||
+          null;
+
+        renderBigMissionStatusCard(
+          response.activeMission || preferred
+        );
+
+        if (preferred) {
+          fillBigMissionForm(preferred);
+        } else {
+          resetBigMissionForm();
+        }
+
+        $("bigMissionMessage").textContent =
+          response.activeMission
+            ? "Live progress loaded. Big Mission XP is calculated from the activation baseline."
+            : "No active Big Mission. Review the prefilled Draft settings.";
+      } catch (error) {
+        console.error(error);
+        $("bigMissionMessage").textContent =
+          error.message;
+      }
+    }
+
+    async function openBigMissionPanel() {
+      closeWeeklyPlanner();
+      closeWeeklyReviewPanel();
+      closeMissionBuilder();
+      closeProfileControl();
+      $("bigMissionPanel").classList.remove("hidden");
+      await loadBigMissionAdmin();
+      $("bigMissionPanel").scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }
+
+    function closeBigMissionPanel() {
+      $("bigMissionPanel").classList.add("hidden");
+      $("bigMissionMessage").textContent = "";
+    }
+
+    async function saveBigMissionDraft() {
+      const participants =
+        selectedBigMissionParticipants();
+
+      if (participants.length < 2) {
+        $("bigMissionMessage").textContent =
+          "Choose at least two participants.";
+        return;
+      }
+
+      if (!confirm(
+        `Save this Family Big Mission as Draft?\n\n` +
+        `${$("bigMissionName").value}\n` +
+        `${numberText($("bigMissionTargetXp").value)} new combined XP\n` +
+        `${participants.join(" + ")}\n\n` +
+        `Saving does not start XP counting.`
+      )) {
+        return;
+      }
+
+      setLoading(true, "🏆 Saving Family Big Mission Draft…");
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"saveFamilyBigMission",
+            pin:activePin,
+            bigMissionId:$("bigMissionId").value,
+            missionName:$("bigMissionName").value,
+            reward:$("bigMissionReward").value,
+            rewardValueRm:$("bigMissionRewardValue").value,
+            targetXp:$("bigMissionTargetXp").value,
+            participantIds:participants.join(","),
+            startDate:$("bigMissionStartDate").value,
+            targetDate:$("bigMissionTargetDate").value,
+            notes:$("bigMissionNotes").value
+          },
+          45000
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Family Big Mission Draft could not be saved."
+          );
+        }
+
+        await loadBigMissionAdmin();
+        $("bigMissionMessage").textContent =
+          `✅ ${response.message}`;
+      } catch (error) {
+        console.error(error);
+        $("bigMissionMessage").textContent =
+          error.message;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function activateBigMission() {
+      const missionId = $("bigMissionId").value;
+
+      if (!missionId) {
+        $("bigMissionMessage").textContent =
+          "Save the Draft before activating it.";
+        return;
+      }
+
+      if (!confirm(
+        `Activate "${$("bigMissionName").value}"?\n\n` +
+        `Target: ${numberText($("bigMissionTargetXp").value)} new combined XP\n` +
+        `Participants: ${selectedBigMissionParticipants().join(" + ")}\n\n` +
+        `The current Lifetime XP of each participant will become the fixed baseline. ` +
+        `Only new verified XP after activation will count.`
+      )) {
+        return;
+      }
+
+      setLoading(true, "🚀 Capturing Big Mission XP baseline…");
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"activateFamilyBigMission",
+            pin:activePin,
+            bigMissionId:missionId
+          },
+          45000
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Family Big Mission could not be activated."
+          );
+        }
+
+        await loadBigMissionAdmin();
+        $("bigMissionMessage").textContent =
+          `✅ ${response.message}`;
+      } catch (error) {
+        console.error(error);
+        $("bigMissionMessage").textContent =
+          error.message;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function changeBigMissionStatus(action) {
+      const missionId = $("bigMissionId").value;
+
+      if (!missionId) return;
+
+      const redeem = action === "redeemFamilyBigMission";
+      const confirmed = confirm(
+        redeem
+          ? `Mark the Kirby reward as redeemed/purchased?\n\nThis keeps the completed Big Mission in family history.`
+          : `Archive this Family Big Mission?\n\nHistory remains in Google Sheets.`
+      );
+
+      if (!confirmed) return;
+
+      setLoading(true);
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action,
+            pin:activePin,
+            bigMissionId:missionId
+          },
+          45000
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Big Mission status could not be updated."
+          );
+        }
+
+        await loadBigMissionAdmin();
+        $("bigMissionMessage").textContent =
+          `✅ ${response.message}`;
+      } catch (error) {
+        console.error(error);
+        $("bigMissionMessage").textContent =
+          error.message;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function previousReviewWeekStart() {
+      return addLocalDays(mondayForDate(), -7);
+    }
+
+    function renderWeeklyReview(review) {
+      weeklyReviewState = review;
+      $("weeklyReviewDate").value = review.weekStart;
+
+      const summary = review.summary || {};
+      const cards = [
+        ["Planned",summary.plannedMissions],
+        ["Completed",summary.completedMissions],
+        ["Incomplete",summary.incompleteMissions],
+        ["Expired",summary.expiredMissions],
+        ["Minutes earned",`${summary.earnedMinutes} min`],
+        ["Awaiting approval",`${summary.pendingMinutes} min`],
+        ["Ready to use",`${summary.approvedMinutes} min`],
+        ["Used",`${summary.redeemedMinutes} min`],
+        ["Potential missed",`${summary.potentialMinutesMissed} min`]
+      ];
+
+      $("weeklyReviewSummary").innerHTML =
+        cards.map(card => `
+          <div class="review-summary-card">
+            ${escapeHtml(String(card[0]))}
+            <strong>${escapeHtml(String(card[1] ?? 0))}</strong>
+          </div>
+        `).join("");
+
+      const weekState = review.reviewStatus === "Closed"
+        ? `Closed ${review.closedAt
+            ? formatDateTime(review.closedAt)
+            : ""}`
+        : review.weekFinished
+          ? `${summary.unresolvedDecisions} unresolved decision` +
+            `${summary.unresolvedDecisions === 1 ? "" : "s"}`
+          : "Week is still in progress";
+
+      $("weeklyReviewStatus").innerHTML = `
+        <strong>${escapeHtml(review.student.studentName)}</strong> ·
+        ${formatDate(review.weekStart)} – ${formatDate(review.weekEnd)} ·
+        ${escapeHtml(weekState)}<br>
+        Carry-forward and reschedule create a new Draft with progress 0.
+        The original mission stays in history.`;
+
+      $("weeklyReviewCloseWeekBtn").disabled =
+        !review.canClose;
+      $("weeklyReviewCloseWeekBtn").textContent =
+        review.reviewStatus === "Closed"
+          ? "✅ Week already closed"
+          : review.weekFinished
+            ? `✅ Close reviewed week`
+            : "⏳ Week not finished";
+
+      if (!review.items?.length) {
+        $("weeklyReviewList").innerHTML = `
+          <div class="empty">
+            No missions overlap this selected week.
+          </div>`;
+        return;
+      }
+
+      $("weeklyReviewList").innerHTML =
+        review.items.map(item => {
+          const mission = item.mission;
+          const decision = item.decision;
+          let actions = "";
+
+          if (
+            item.completed &&
+            item.rewardStatus === "Pending Approval"
+          ) {
+            actions = `
+              <button class="review-approve"
+                data-review-approve="${escapeHtml(mission.id)}"
+                type="button">Approve Reward</button>`;
+          } else if (
+            item.completed &&
+            item.rewardStatus === "Approved"
+          ) {
+            actions = `
+              <button class="review-redeem"
+                data-review-redeem="${escapeHtml(mission.id)}"
+                type="button">Mark Redeemed</button>`;
+          } else if (
+            review.weekFinished &&
+            !item.completed &&
+            !decision &&
+            mission.status !== "Archived"
+          ) {
+            actions = `
+              <button class="review-carry"
+                data-review-decision="Carry Forward"
+                data-review-mission="${escapeHtml(mission.id)}"
+                type="button">➡ Carry forward</button>
+              <button class="review-reschedule"
+                data-review-decision="Reschedule"
+                data-review-mission="${escapeHtml(mission.id)}"
+                type="button">📅 Reschedule</button>
+              <button class="review-learning"
+                data-review-decision="Learning Only"
+                data-review-mission="${escapeHtml(mission.id)}"
+                type="button">📚 Learning-only</button>
+              <button class="review-close-no-reward"
+                data-review-decision="Close Without Reward"
+                data-review-mission="${escapeHtml(mission.id)}"
+                type="button">🗄 Close no reward</button>`;
+          }
+
+          return `
+            <article class="review-item">
+              <div>
+                <div class="review-item-title">
+                  Sequence #${Number(mission.queueOrder || 0)} ·
+                  ${escapeHtml(mission.name)}
+                  <span class="history-status ${String(mission.status || "")
+                    .toLowerCase()
+                    .replace(/\s+/g,"-")}">
+                    ${escapeHtml(mission.status)}
+                  </span>
+                </div>
+                <div class="review-item-meta">
+                  ${formatDate(mission.startDate)} –
+                  ${formatDate(mission.endDate)} ·
+                  ${Number(mission.rewardMinutes || 0)} min ·
+                  ${escapeHtml(mission.reward || "Parent reward")}<br>
+                  ${item.completed
+                    ? `Reward: ${escapeHtml(rewardStatusLabel(item.rewardStatus))}`
+                    : `Category: ${escapeHtml(item.category)}`}
+                  ${decision
+                    ? `<br><span class="review-decision-chip">
+                        ${escapeHtml(decision.decision)}
+                        ${decision.newMissionId
+                          ? ` · New Draft ${escapeHtml(decision.newMissionId)}`
+                          : ""}
+                      </span>`
+                    : ""}
+                </div>
+              </div>
+              <div class="review-item-actions">
+                ${actions}
+              </div>
+            </article>`;
+        }).join("");
+    }
+
+    async function loadWeeklyReview() {
+      const requested =
+        $("weeklyReviewDate").value ||
+        previousReviewWeekStart();
+      $("weeklyReviewMessage").textContent =
+        "Loading weekly review…";
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"getWeeklyReviewData",
+            pin:activePin,
+            studentId:activeStudentId,
+            weekStart:requested
+          },
+          30000,
+          {
+            retrySafe:true,
+            maxAttempts:2,
+            retryableCodes:["NETWORK_ERROR","TIMEOUT"]
+          }
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Weekly review could not load."
+          );
+        }
+
+        renderWeeklyReview(response);
+        $("weeklyReviewMessage").textContent =
+          "Review loaded. No change occurs until a decision is confirmed.";
+      } catch (error) {
+        console.error(error);
+        $("weeklyReviewMessage").textContent =
+          error.message;
+      }
+    }
+
+    async function openWeeklyReview() {
+      closeWeeklyPlanner();
+      closeBigMissionPanel();
+      closeMissionBuilder();
+      closeProfileControl();
+      $("weeklyReviewPanel").classList.remove("hidden");
+      $("weeklyReviewDate").value =
+        previousReviewWeekStart();
+      await loadWeeklyReview();
+      $("weeklyReviewPanel").scrollIntoView({
+        behavior:"smooth",
+        block:"start"
+      });
+    }
+
+    function closeWeeklyReviewPanel() {
+      $("weeklyReviewPanel").classList.add("hidden");
+      $("weeklyReviewMessage").textContent = "";
+    }
+
+    async function applyReviewDecision(
+      missionId,
+      decision
+    ) {
+      if (!weeklyReviewState) return;
+
+      const item = weeklyReviewState.items.find(
+        entry => entry.mission.id === missionId
+      );
+
+      if (!item) return;
+
+      let targetStart = "";
+      let targetEnd = "";
+
+      if (decision === "Reschedule") {
+        targetStart = prompt(
+          "New start date (YYYY-MM-DD)",
+          addLocalDays(item.mission.startDate, 7)
+        ) || "";
+
+        if (!targetStart) return;
+
+        targetEnd = prompt(
+          "New end date (YYYY-MM-DD)",
+          addLocalDays(item.mission.endDate, 7)
+        ) || "";
+
+        if (!targetEnd) return;
+      }
+
+      const explanation = {
+        "Carry Forward":
+          "A new Draft will be created seven days later with progress 0.",
+        "Reschedule":
+          `A new Draft will be created for ${targetStart} to ${targetEnd} with progress 0.`,
+        "Learning Only":
+          "The mission will close without reward and remain in learning history.",
+        "Close Without Reward":
+          "The mission will close without reward and remain in history."
+      }[decision];
+
+      if (!confirm(
+        `${decision}: "${item.mission.name}"?\n\n${explanation}\n\n` +
+        `The original mission is never deleted.`
+      )) {
+        return;
+      }
+
+      setLoading(true, "📋 Saving weekly review decision…");
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"applyWeeklyReviewDecision",
+            pin:activePin,
+            studentId:activeStudentId,
+            weekStart:weeklyReviewState.weekStart,
+            missionId,
+            decision,
+            targetStart,
+            targetEnd
+          },
+          45000
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Weekly review decision could not be saved."
+          );
+        }
+
+        await loadDashboard(activeStudentId, {quiet:true});
+        await loadWeeklyReview();
+        $("weeklyReviewMessage").textContent =
+          `✅ ${response.message}`;
+      } catch (error) {
+        console.error(error);
+        $("weeklyReviewMessage").textContent =
+          error.message;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function updateReviewReward(
+      missionId,
+      action
+    ) {
+      const verb = action === "approveMissionReward"
+        ? "approve"
+        : "mark redeemed";
+
+      if (!confirm(
+        `${verb.charAt(0).toUpperCase()+verb.slice(1)} this mission reward?`
+      )) {
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action,
+            pin:activePin,
+            studentId:activeStudentId,
+            missionId
+          },
+          45000
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "Reward status could not be updated."
+          );
+        }
+
+        await loadDashboard(activeStudentId, {quiet:true});
+        await loadWeeklyReview();
+        $("weeklyReviewMessage").textContent =
+          `✅ ${response.message}`;
+      } catch (error) {
+        console.error(error);
+        $("weeklyReviewMessage").textContent =
+          error.message;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function closeReviewedWeek() {
+      if (!weeklyReviewState?.canClose) return;
+
+      if (!confirm(
+        `Close ${weeklyReviewState.student.studentName}'s week ` +
+        `${weeklyReviewState.weekStart}–${weeklyReviewState.weekEnd}?\n\n` +
+        `This stores the final weekly summary. Mission and reward history remain available.`
+      )) {
+        return;
+      }
+
+      setLoading(true, "✅ Closing reviewed week…");
+
+      try {
+        const response = await jsonpRequest(
+          {
+            action:"closeWeeklyReview",
+            pin:activePin,
+            studentId:activeStudentId,
+            weekStart:weeklyReviewState.weekStart
+          },
+          45000
+        );
+
+        if (!response || response.ok !== true) {
+          throw new Error(
+            response?.error ||
+            "The reviewed week could not be closed."
+          );
+        }
+
+        renderWeeklyReview(response.review);
+        $("weeklyReviewMessage").textContent =
+          `✅ ${response.message}`;
+      } catch (error) {
+        console.error(error);
+        $("weeklyReviewMessage").textContent =
+          error.message;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+
     function closeWeeklyPlanner() {
       $("weeklyPlannerPanel").classList.add("hidden");
       closeAutoPlannerEditor();
@@ -4231,6 +5472,8 @@
     }
 
     async function openWeeklyPlanner() {
+      closeBigMissionPanel();
+      closeWeeklyReviewPanel();
       closeMissionBuilder();
       closeProfileControl();
       $("weeklyPlannerPanel").classList.remove("hidden");
@@ -4798,6 +6041,8 @@
 
     async function openProfileControl() {
       closeWeeklyPlanner();
+      closeBigMissionPanel();
+      closeWeeklyReviewPanel();
       closeMissionBuilder();
       $("profileControlPanel").classList.remove("hidden");
       $("profileControlPanel").scrollIntoView({
@@ -5416,6 +6661,8 @@
       activeStudentId = "";
       dashboardLoadSequence++;
       closeWeeklyPlanner();
+      closeBigMissionPanel();
+      closeWeeklyReviewPanel();
       closeMissionBuilder();
       closeProfileControl();
       hideConnectionBanner();
@@ -5436,6 +6683,8 @@
     );
     $("studentSelect").addEventListener("change", async event => {
       closeWeeklyPlanner();
+      closeBigMissionPanel();
+      closeWeeklyReviewPanel();
       closeMissionBuilder();
       closeProfileControl();
       await loadDashboard(event.target.value);
@@ -5446,6 +6695,93 @@
     $("weeklyPlannerBtn").addEventListener(
       "click",
       openWeeklyPlanner
+    );
+    $("bigMissionBtn").addEventListener(
+      "click",
+      openBigMissionPanel
+    );
+    $("bigMissionCloseBtn").addEventListener(
+      "click",
+      closeBigMissionPanel
+    );
+    $("bigMissionNewBtn").addEventListener(
+      "click",
+      resetBigMissionForm
+    );
+    $("bigMissionSaveBtn").addEventListener(
+      "click",
+      saveBigMissionDraft
+    );
+    $("bigMissionActivateBtn").addEventListener(
+      "click",
+      activateBigMission
+    );
+    $("bigMissionRedeemBtn").addEventListener(
+      "click",
+      () => changeBigMissionStatus(
+        "redeemFamilyBigMission"
+      )
+    );
+    $("bigMissionArchiveBtn").addEventListener(
+      "click",
+      () => changeBigMissionStatus(
+        "archiveFamilyBigMission"
+      )
+    );
+    $("weeklyReviewBtn").addEventListener(
+      "click",
+      openWeeklyReview
+    );
+    $("weeklyReviewCloseBtn").addEventListener(
+      "click",
+      closeWeeklyReviewPanel
+    );
+    $("weeklyReviewLoadBtn").addEventListener(
+      "click",
+      loadWeeklyReview
+    );
+    $("weeklyReviewDate").addEventListener(
+      "change",
+      loadWeeklyReview
+    );
+    $("weeklyReviewCloseWeekBtn").addEventListener(
+      "click",
+      closeReviewedWeek
+    );
+    $("weeklyReviewList").addEventListener(
+      "click",
+      event => {
+        const decisionButton = event.target.closest(
+          "[data-review-decision]"
+        );
+        const approveButton = event.target.closest(
+          "[data-review-approve]"
+        );
+        const redeemButton = event.target.closest(
+          "[data-review-redeem]"
+        );
+
+        if (decisionButton) {
+          applyReviewDecision(
+            decisionButton.dataset.reviewMission,
+            decisionButton.dataset.reviewDecision
+          );
+        }
+
+        if (approveButton) {
+          updateReviewReward(
+            approveButton.dataset.reviewApprove,
+            "approveMissionReward"
+          );
+        }
+
+        if (redeemButton) {
+          updateReviewReward(
+            redeemButton.dataset.reviewRedeem,
+            "redeemMissionReward"
+          );
+        }
+      }
     );
     $("weeklyPlannerCloseTop").addEventListener(
       "click",

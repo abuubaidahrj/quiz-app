@@ -478,6 +478,90 @@
     th { background:#f1f5f9; }
     .note { font-size:14px; color:#64748b; margin-top:10px; line-height:1.45; }
     .badge { display:inline-block; padding:4px 9px; border-radius:999px; background:#e0e7ff; color:#3730a3; font-size:13px; font-weight:700; }
+
+    .family-big-mission {
+      margin:14px 0;
+      padding:16px;
+      border:3px solid #f59e0b;
+      border-radius:18px;
+      background:linear-gradient(135deg,#fff7ed,#fefce8,#f5f3ff);
+      box-shadow:0 6px 0 #fde68a;
+      overflow:hidden;
+    }
+    .family-big-mission h3 {
+      margin:0;
+      color:#7c2d12;
+      font-size:22px;
+    }
+    .family-big-mission-kicker {
+      color:#92400e;
+      font-size:12px;
+      font-weight:1000;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+    }
+    .family-big-mission-reward {
+      margin-top:5px;
+      color:#4c1d95;
+      font-weight:900;
+    }
+    .family-big-track {
+      height:26px;
+      margin:13px 0 7px;
+      overflow:hidden;
+      border-radius:999px;
+      background:#e2e8f0;
+      border:2px solid #cbd5e1;
+    }
+    .family-big-track > div {
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#f59e0b,#ec4899,#8b5cf6);
+      transition:width .35s ease;
+    }
+    .family-big-numbers {
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:#312e81;
+      font-weight:1000;
+    }
+    .family-big-meta {
+      margin-top:7px;
+      color:#64748b;
+      font-size:12px;
+      line-height:1.5;
+    }
+    .family-big-contributions {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
+      margin-top:11px;
+    }
+    .family-big-contribution {
+      padding:9px;
+      border:1px solid #ddd6fe;
+      border-radius:11px;
+      background:#fff;
+      color:#475569;
+      font-size:12px;
+    }
+    .family-big-contribution strong {
+      display:block;
+      margin-top:3px;
+      color:#312e81;
+      font-size:17px;
+    }
+    .family-big-milestones {
+      display:flex;
+      justify-content:space-between;
+      gap:5px;
+      margin-top:11px;
+      color:#6d28d9;
+      font-size:10px;
+      font-weight:1000;
+    }
+
     .profile-panel { margin:18px 0; padding:17px; border:3px solid #60a5fa; border-radius:18px; background:linear-gradient(135deg,#eff6ff,#f5f3ff); box-shadow:0 6px 0 #bfdbfe; }
     .profile-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:10px; }
     .profile-stat { background:#fff; border:2px solid #dbeafe; border-radius:13px; padding:11px; text-align:center; box-shadow:0 4px 0 #dbeafe; }
@@ -529,7 +613,8 @@
       .game-hero{grid-template-columns:1fr;padding:18px}
       .hero-art{max-width:190px;justify-self:center}
       .operation-ribbon{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .grid,.summary-grid,.profile-grid{grid-template-columns:1fr}
+      .grid,.summary-grid,.profile-grid,
+      .family-big-contributions{grid-template-columns:1fr}
       .setup-action-row{
         grid-template-columns:1fr 1fr;
         gap:9px;
@@ -556,7 +641,7 @@
         <p class="subtitle" style="color:#e0f2fe;">
           Solve equations, earn fair XP, complete missions and unlock achievements.
         </p>
-        <span class="hero-version">Version v7.7 — Automatic Weekly Planner</span>
+        <span class="hero-version">Version v7.8 — Family Big Mission & Weekly Review</span>
       </div>
 
       <svg class="hero-art" viewBox="0 0 300 230" role="img"
@@ -742,6 +827,11 @@
 
     <div id="studentProfilePanel" class="profile-panel hidden">
       <strong>🏆 Student Progress</strong>
+
+      <div id="familyBigMissionCard"
+        class="family-big-mission hidden"
+        aria-live="polite"></div>
+
       <div class="profile-grid">
         <div class="profile-stat">Level<strong id="profileLevel">1</strong></div>
         <div class="profile-stat">Total XP<strong id="profileXp">0</strong></div>
@@ -1002,6 +1092,7 @@
 
     if (!selected.studentId) {
       renderStudentProfile("", "");
+      renderFamilyBigMission(null);
       return;
     }
 
@@ -1013,6 +1104,10 @@
     renderStudentProfile(
       selected.studentId,
       selected.studentName
+    );
+    loadFamilyBigMission(
+      selected.studentId,
+      true
     );
 
     if (!quiet) {
@@ -1473,6 +1568,7 @@
 
   let profileSyncTimer = null;
   let jsonpCounter = 0;
+  let familyBigMissionRequestId = 0;
 
   function cloudApiConfigured() {
     return Boolean(
@@ -1551,6 +1647,136 @@
     };
   }
 
+
+  function bigMissionNumber(value) {
+    return Number(value || 0).toLocaleString();
+  }
+
+  function bigMissionDate(dateText) {
+    if (!dateText) return "";
+    const date = new Date(`${String(dateText).slice(0,10)}T00:00:00`);
+    return date.toLocaleDateString(undefined, {
+      day:"numeric",
+      month:"short",
+      year:"numeric"
+    });
+  }
+
+  function renderFamilyBigMission(mission) {
+    const card = $("familyBigMissionCard");
+
+    if (!mission) {
+      card.classList.add("hidden");
+      card.innerHTML = "";
+      return;
+    }
+
+    const contributions = (mission.participants || [])
+      .map(item => `
+        <div class="family-big-contribution">
+          ${escapeHtml(item.studentName)} helped
+          <strong>${bigMissionNumber(item.contributionXp)} XP</strong>
+        </div>
+      `).join("");
+
+    const milestones = (mission.milestones || [])
+      .map(item => `
+        <span>${item.percent}% · ${bigMissionNumber(item.xp)}</span>
+      `).join("");
+
+    card.innerHTML = `
+      <div class="family-big-mission-kicker">
+        🎮 Family Big Mission · ${escapeHtml(mission.status)}
+      </div>
+      <h3>${escapeHtml(mission.name)}</h3>
+      <div class="family-big-mission-reward">
+        🏆 ${escapeHtml(mission.reward)}
+        ${Number(mission.rewardValueRm || 0) > 0
+          ? ` · about RM${bigMissionNumber(mission.rewardValueRm)}`
+          : ""}
+      </div>
+      <div class="family-big-track">
+        <div style="width:${Math.min(
+          100,
+          Number(mission.percent || 0)
+        )}%"></div>
+      </div>
+      <div class="family-big-numbers">
+        <span>
+          ${bigMissionNumber(mission.earnedXp)} /
+          ${bigMissionNumber(mission.targetXp)} XP
+        </span>
+        <span>${Number(mission.percent || 0).toFixed(1)}%</span>
+      </div>
+      <div class="family-big-meta">
+        ${bigMissionNumber(mission.remainingXp)} XP remaining ·
+        ${escapeHtml(mission.paceStatus)}<br>
+        Target: ${bigMissionDate(mission.targetDate)} ·
+        Suggested team pace:
+        ${bigMissionNumber(mission.weeklyPaceNeeded)} XP/week
+      </div>
+      <div class="family-big-contributions">
+        ${contributions}
+      </div>
+      <div class="family-big-milestones">
+        ${milestones}
+      </div>`;
+
+    card.classList.remove("hidden");
+  }
+
+  async function loadFamilyBigMission(studentId, quiet=false) {
+    const id = String(studentId || "").trim().toUpperCase();
+    const requestId = ++familyBigMissionRequestId;
+
+    if (!id || !cloudApiConfigured()) {
+      renderFamilyBigMission(null);
+      return null;
+    }
+
+    try {
+      const response = await jsonpRequest({
+        action:"getFamilyBigMission",
+        studentId:id
+      }, 12000);
+
+      if (requestId !== familyBigMissionRequestId) {
+        return null;
+      }
+
+      if (!response || response.ok !== true) {
+        throw new Error(
+          response?.error ||
+          "Family Big Mission could not load."
+        );
+      }
+
+      const mission =
+        response.found && response.mission
+          ? response.mission
+          : null;
+
+      renderFamilyBigMission(mission);
+      return mission;
+    } catch (error) {
+      console.error("Family Big Mission load error:", error);
+
+      if (!quiet) {
+        const card = $("familyBigMissionCard");
+        card.innerHTML = `
+          <div class="family-big-mission-kicker">
+            Family Big Mission temporarily unavailable
+          </div>
+          <div class="family-big-meta">
+            ${escapeHtml(error.message)}
+          </div>`;
+        card.classList.remove("hidden");
+      }
+
+      return null;
+    }
+  }
+
   async function loadCloudProfile(studentId, studentName="", quiet=false) {
     const id = String(studentId || "").trim().toUpperCase();
     const status = $("profileSyncStatus");
@@ -1577,6 +1803,7 @@
           "☁️ No cloud profile yet. It will be created after the first saved session.";
         status.className = "note";
         loadActiveMission(id, true);
+        loadFamilyBigMission(id, true);
         return null;
       }
 
@@ -1584,6 +1811,7 @@
       saveStudentProfile(profile);
       renderStudentProfile(id, studentName, profile);
       loadActiveMission(id, true);
+      loadFamilyBigMission(id, true);
 
       status.textContent =
         `☁️ Cloud synced · Last updated ${new Date().toLocaleTimeString()}`;
