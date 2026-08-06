@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#6d28d9">
+  <title>Math Master — Matematik Tahun 4</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --ink:#172554;--muted:#64748b;--purple:#7c3aed;
+      --purple-dark:#4c1d95;--green:#16a34a;--red:#dc2626;
+    }
+    body{
+      margin:0;min-height:100vh;padding:18px;color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 8%,#fef3c7 0 90px,transparent 92px),
+        radial-gradient(circle at 94% 15%,#ddd6fe 0 120px,transparent 122px),
+        linear-gradient(135deg,#eef2ff,#f5f3ff 45%,#ecfeff);
+      font-family:Nunito,Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+    }
+    button,select{font:inherit}button{cursor:pointer}
+    button:disabled{cursor:not-allowed;opacity:.55}
+    .app{width:min(1080px,100%);margin:auto}
+    .hidden{display:none!important}
+    .hero{
+      display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;
+      align-items:center;padding:22px;border:3px solid #4338ca;
+      border-radius:24px;color:#fff;
+      background:linear-gradient(135deg,#2563eb,#7c3aed);
+      box-shadow:0 8px 0 #312e81;
+    }
+    .hero-kicker{font-size:12px;font-weight:1000;letter-spacing:.16em}
+    .hero h1{margin:7px 0 6px;font-size:clamp(30px,5vw,52px);line-height:1}
+    .hero p{margin:0;color:#ede9fe;line-height:1.45}
+    .hero-badge{
+      display:grid;place-items:center;width:116px;height:116px;
+      border:6px solid #fff;border-radius:26px;background:#facc15;
+      color:#713f12;box-shadow:0 7px 0 #a16207;text-align:center;
+      font-weight:1000;transform:rotate(3deg);
+    }
+    .top-actions{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}
+    .top-actions a{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-height:44px;padding:9px 13px;border-radius:11px;color:#fff;
+      text-decoration:none;font-weight:900;background:#334155;
+      box-shadow:0 4px 0 #0f172a;
+    }
+    .student-bar{
+      display:grid;grid-template-columns:minmax(0,1fr) repeat(3,minmax(120px,.45fr));
+      gap:10px;margin:17px 0;
+    }
+    .student-card,.mini-stat{
+      padding:13px;border:2px solid #bfdbfe;border-radius:15px;
+      background:#fff;box-shadow:0 4px 0 #dbeafe;
+    }
+    .student-card strong{display:block;color:#1d4ed8;font-size:21px}
+    .mini-stat{color:#64748b;font-size:11px}
+    .mini-stat strong{display:block;margin-top:4px;color:#312e81;font-size:18px}
+    .panel{
+      margin-top:17px;padding:18px;border:2px solid #bfdbfe;
+      border-radius:20px;background:rgba(255,255,255,.94);
+      box-shadow:0 6px 0 #dbeafe;
+    }
+    .panel h2,.panel h3{margin-top:0}
+    .note{color:#64748b;font-size:13px;line-height:1.5}
+    .mode-grid{
+      display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:11px;margin-top:14px;
+    }
+    .mode-card{
+      min-height:155px;padding:14px;border:2px solid #c4b5fd;
+      border-radius:16px;background:#fff;color:#312e81;text-align:left;
+      box-shadow:0 4px 0 #ddd6fe;
+    }
+    .mode-card.selected{
+      border-color:#7c3aed;background:#f5f3ff;box-shadow:0 5px 0 #7c3aed;
+    }
+    .mode-card span{display:block;font-size:28px;margin-bottom:7px}
+    .mode-card strong{display:block;font-size:16px;margin-bottom:5px}
+    .mode-card small{color:#64748b;line-height:1.35}
+    .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:15px}
+    label{display:block;margin-bottom:5px;color:#312e81;font-size:12px;font-weight:900}
+    select{
+      width:100%;min-height:48px;padding:9px 11px;border:2px solid #93c5fd;
+      border-radius:12px;background:#fff;color:#172554;font-weight:800;
+    }
+    .start-button{
+      width:100%;min-height:56px;margin-top:14px;border:0;border-radius:14px;
+      background:#16a34a;color:#fff;font-weight:1000;font-size:17px;
+      box-shadow:0 6px 0 #166534;
+    }
+    .source-box,.fair-box{
+      margin-top:13px;padding:11px;border-radius:12px;color:#475569;
+      font-size:12px;line-height:1.45;
+    }
+    .source-box{border:1px solid #cbd5e1;background:#f8fafc}
+    .fair-box{border:1px solid #22c55e;background:#f0fdf4;color:#166534}
+    .quiz-head{
+      display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;
+      margin-bottom:12px;
+    }
+    .status-chip{
+      padding:8px 10px;border-radius:999px;background:#ede9fe;
+      color:#5b21b6;font-size:12px;font-weight:900;
+    }
+    .progress{height:13px;overflow:hidden;border-radius:999px;background:#e2e8f0}
+    .progress div{
+      height:100%;width:0;border-radius:inherit;
+      background:linear-gradient(90deg,#2563eb,#8b5cf6);
+      transition:width .25s ease;
+    }
+    .question-card{
+      margin-top:15px;padding:20px;border:2px solid #c4b5fd;
+      border-radius:18px;background:#fff;
+    }
+    .section-label{
+      display:inline-block;padding:5px 9px;border-radius:999px;
+      background:#ede9fe;color:#5b21b6;font-size:11px;font-weight:1000;
+    }
+    .instruction{margin-top:10px;color:#475569;font-weight:900}
+    .prompt{
+      margin:17px 0;color:#172554;font-size:clamp(25px,5vw,40px);
+      font-weight:1000;line-height:1.25;text-align:center;
+    }
+    .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .choices.many{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .choice{
+      min-height:58px;padding:10px;border:2px solid #93c5fd;border-radius:13px;
+      background:#eff6ff;color:#1e3a8a;font-weight:900;line-height:1.3;
+    }
+    .choice:hover{background:#dbeafe}
+    .choice.wrong{border-color:#ef4444;background:#fef2f2;color:#991b1b}
+    .choice.correct{border-color:#22c55e;background:#f0fdf4;color:#166534}
+    .feedback{
+      min-height:45px;margin-top:12px;padding:10px;border-radius:11px;
+      color:#475569;font-size:13px;line-height:1.45;
+    }
+    .feedback.error{background:#fef2f2;color:#991b1b}
+    .feedback.ok{background:#f0fdf4;color:#166534}
+    .report-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .report-stat{
+      padding:12px;border:1px solid #c4b5fd;border-radius:13px;
+      background:#fff;color:#6d28d9;font-size:11px;
+    }
+    .report-stat strong{display:block;margin-top:4px;color:#312e81;font-size:22px}
+    .section-result{
+      display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;
+      padding:10px 0;border-bottom:1px solid #e2e8f0;
+    }
+    .mistake-row{
+      margin-top:9px;padding:11px;border:1px solid #fecaca;
+      border-radius:12px;background:#fff7f7;
+    }
+    .mistake-row strong{color:#991b1b}
+    .report-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}
+    .report-actions button,.report-actions a{
+      min-height:45px;padding:9px 13px;border:0;border-radius:11px;
+      color:#fff;text-decoration:none;font-weight:900;
+    }
+    .primary{background:#7c3aed}.secondary{background:#334155}
+    .practice{background:#ea580c}
+    .cloud-status{
+      margin-top:12px;padding:10px;border-radius:11px;background:#f8fafc;
+      color:#475569;font-size:12px;line-height:1.45;
+    }
+    .big-mission-mini{
+      margin-top:12px;padding:12px;border:1px solid #f59e0b;
+      border-radius:13px;background:#fffbeb;color:#92400e;font-size:12px;
+    }
+    @media(max-width:760px){
+      body{padding:10px}.hero{grid-template-columns:1fr}
+      .hero-badge{width:90px;height:90px}
+      .student-bar{grid-template-columns:1fr 1fr}
+      .student-card{grid-column:1/-1}
+      .mode-grid{grid-template-columns:1fr 1fr}
+      .choices,.choices.many{grid-template-columns:1fr}
+      .report-grid{grid-template-columns:1fr 1fr}
+      .quiz-head{grid-template-columns:1fr auto}
+      .quiz-head .status-chip:first-child{grid-column:1/-1}
+    }
+    @media(max-width:480px){
+      .mode-grid,.setup-grid,.student-bar{grid-template-columns:1fr}
+      .student-card{grid-column:auto}
+    }
+  </style>
+</head>
+<body>
+<main class="app">
+  <section id="setup">
+    <header class="hero">
+      <div>
+        <div class="hero-kicker">MATH MASTER · YEAR 4 TRACK</div>
+        <h1>📘 Matematik Tahun 4</h1>
+        <p>
+          Latihan 1 — Nombor bulat hingga 100,000.
+          Laluan ini disediakan khusus untuk Aisyah.
+        </p>
+        <p style="margin-top:8px;font-size:12px;">Version v7.9 · Phase 1</p>
+      </div>
+      <div class="hero-badge">TAHUN<br><span style="font-size:40px;">4</span></div>
+    </header>
+
+    <nav class="top-actions">
+      <a href="index.html">← Basic Math</a>
+      <a href="dashboard.html">👨‍👩‍👧 Parent Dashboard</a>
+    </nav>
+
+    <section class="student-bar">
+      <div class="student-card">
+        Student
+        <strong>Aisyah · AISYAH</strong>
+        <div class="note">Mathematics Year 4 access enabled</div>
+      </div>
+      <div class="mini-stat">Lifetime XP<strong id="profileXp">…</strong></div>
+      <div class="mini-stat">Level<strong id="profileLevel">…</strong></div>
+      <div class="mini-stat">Mistakes ready<strong id="mistakeCount">0</strong></div>
+    </section>
+
+    <div id="bigMissionMini" class="big-mission-mini hidden"></div>
+
+    <section class="panel">
+      <h2>Pilih cara belajar</h2>
+      <p class="note">
+        Kandungan Latihan A–D dikekalkan daripada lembaran Latihan 1.
+        Mode Original mengekalkan susunan soalan asal.
+      </p>
+
+      <div class="mode-grid">
+        <button class="mode-card selected" type="button" data-mode="original">
+          <span>📄</span><strong>Original Worksheet</strong>
+          <small>Semua 39 soalan mengikut urutan A → B → C → D.</small>
+        </button>
+        <button class="mode-card" type="button" data-mode="section">
+          <span>📚</span><strong>Practice by Section</strong>
+          <small>Pilih Latihan A, B, C atau D.</small>
+        </button>
+        <button class="mode-card" type="button" data-mode="random">
+          <span>🎲</span><strong>Random Practice</strong>
+          <small>Campurkan soalan dan rawakkan pilihan.</small>
+        </button>
+        <button id="mistakeModeCard" class="mode-card"
+          type="button" data-mode="mistakes">
+          <span>🔁</span><strong>Fix My Mistakes</strong>
+          <small>Ulang kesalahan terbaru dan kemahiran berkaitan.</small>
+        </button>
+      </div>
+
+      <div class="setup-grid">
+        <div id="sectionField" class="hidden">
+          <label for="sectionSelect">Bahagian latihan</label>
+          <select id="sectionSelect">
+            <option value="A">Latihan A — Perkataan kepada angka</option>
+            <option value="B">Latihan B — Angka kepada perkataan</option>
+            <option value="C">Latihan C — Nombor paling kecil</option>
+            <option value="D">Latihan D — Nombor paling besar</option>
+          </select>
+        </div>
+        <div id="countField" class="hidden">
+          <label for="questionCount">Bilangan soalan</label>
+          <select id="questionCount">
+            <option value="10">10 soalan</option>
+            <option value="20">20 soalan</option>
+            <option value="30">30 soalan</option>
+            <option value="all">Semua 39 soalan</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="startBtn" class="start-button" type="button">
+        🚀 Mulakan Original Worksheet — 39 soalan
+      </button>
+
+      <div class="fair-box">
+        🛡️ <strong>Fair Play:</strong> assessment sekurang-kurangnya 10 soalan,
+        60% ketepatan percubaan pertama dan masa munasabah boleh mendapat XP
+        serta assessment credits. Set berulang yang terlalu hampir menjadi
+        pembelajaran sahaja.
+      </div>
+
+      <div class="source-box">
+        <strong>Sumber modul:</strong> Kelas Matematik Cikgu KJ — LATIHAN 1.
+        Soalan A–D dan skema jawapan dimasukkan berdasarkan PDF yang diberikan
+        oleh parent.
+      </div>
+    </section>
+  </section>
+
+  <section id="quiz" class="panel hidden">
+    <div class="quiz-head">
+      <div id="quizModeLabel" class="status-chip">Assessment</div>
+      <div id="counter" class="status-chip">1 / 39</div>
+      <div id="timer" class="status-chip">00:00</div>
+    </div>
+    <div class="progress"><div id="progressBar"></div></div>
+    <article class="question-card">
+      <span id="sectionLabel" class="section-label">Latihan A</span>
+      <div id="instruction" class="instruction"></div>
+      <div id="prompt" class="prompt"></div>
+      <div id="choices" class="choices"></div>
+      <div id="feedback" class="feedback"></div>
+    </article>
+  </section>
+
+  <section id="report" class="panel hidden">
+    <h2>📊 Keputusan Matematik Tahun 4</h2>
+    <div id="reportSummary" class="report-grid"></div>
+    <h3 style="margin-top:22px;">Prestasi mengikut kemahiran</h3>
+    <div id="sectionResults"></div>
+    <h3 style="margin-top:22px;">Soalan yang perlu diperbaiki</h3>
+    <div id="mistakeResults"></div>
+    <div id="cloudStatus" class="cloud-status"></div>
+    <div class="report-actions">
+      <button id="againBtn" class="primary" type="button">Mulakan latihan lain</button>
+      <button id="fixBtn" class="practice" type="button">🔁 Fix My Mistakes</button>
+      <a class="secondary" href="index.html">Kembali ke Basic Math</a>
+    </div>
+  </section>
+</main>
+
+<script>
+  const APPS_SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbwgsLdSvTidRNDXpZ3PgoMBwwrEofRnwHYRawyMKq9D4edbbrIBaSYIcHES8TZTMWXd/exec";
+  const STUDENT = {studentId:"AISYAH",studentName:"Aisyah",grade:4};
+  const QUESTIONS = [{"id":"Y4-L1-A-01","section":"A","number":1,"operation":"year4-l1-a","instruction":"Bulatkan jawapan yang betul.","skill":"Perkataan kepada angka","prompt":"Tiga belas ribu tujuh ratus dua","choices":["13 702","13 207","13 270"],"correctChoice":"13 702","answerValue":13702,"sourcePage":1,"explanation":"Padankan setiap perkataan dengan nilai tempat puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-A-02","section":"A","number":2,"operation":"year4-l1-a","instruction":"Bulatkan jawapan yang betul.","skill":"Perkataan kepada angka","prompt":"Dua puluh lima ribu lima","choices":["25 500","25 005","25 050"],"correctChoice":"25 005","answerValue":25005,"sourcePage":1,"explanation":"Padankan setiap perkataan dengan nilai tempat puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-A-03","section":"A","number":3,"operation":"year4-l1-a","instruction":"Bulatkan jawapan yang betul.","skill":"Perkataan kepada angka","prompt":"Empat puluh tujuh ribu enam ratus lima","choices":["47 506","47 650","47 605"],"correctChoice":"47 605","answerValue":47605,"sourcePage":1,"explanation":"Padankan setiap perkataan dengan nilai tempat puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-A-04","section":"A","number":4,"operation":"year4-l1-a","instruction":"Bulatkan jawapan yang betul.","skill":"Perkataan kepada angka","prompt":"Lapan puluh tiga ribu sembilan belas","choices":["8319","83 019","83 190"],"correctChoice":"83 019","answerValue":83019,"sourcePage":1,"explanation":"Padankan setiap perkataan dengan nilai tempat puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-A-05","section":"A","number":5,"operation":"year4-l1-a","instruction":"Bulatkan jawapan yang betul.","skill":"Perkataan kepada angka","prompt":"Tujuh puluh dua ribu dua ratus sebelas","choices":["72 211","72 212","72 121"],"correctChoice":"72 211","answerValue":72211,"sourcePage":1,"explanation":"Padankan setiap perkataan dengan nilai tempat puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-A-06","section":"A","number":6,"operation":"year4-l1-a","instruction":"Bulatkan jawapan yang betul.","skill":"Perkataan kepada angka","prompt":"Enam puluh tiga ribu enam ratus dua puluh","choices":["63 260","62 630","63 620"],"correctChoice":"63 620","answerValue":63620,"sourcePage":1,"explanation":"Padankan setiap perkataan dengan nilai tempat puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-A-07","section":"A","number":7,"operation":"year4-l1-a","instruction":"Bulatkan jawapan yang betul.","skill":"Perkataan kepada angka","prompt":"Dua puluh enam ribu lapan ratus dua belas","choices":["26 281","26 218","26 812"],"correctChoice":"26 812","answerValue":26812,"sourcePage":1,"explanation":"Padankan setiap perkataan dengan nilai tempat puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-A-08","section":"A","number":8,"operation":"year4-l1-a","instruction":"Bulatkan jawapan yang betul.","skill":"Perkataan kepada angka","prompt":"Sepuluh ribu satu ratus tujuh puluh lima","choices":["10 175","11 075","10 715"],"correctChoice":"10 175","answerValue":10175,"sourcePage":1,"explanation":"Padankan setiap perkataan dengan nilai tempat puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-A-09","section":"A","number":9,"operation":"year4-l1-a","instruction":"Bulatkan jawapan yang betul.","skill":"Perkataan kepada angka","prompt":"Tiga puluh tujuh ribu sembilan ratus dua","choices":["37 902","37 920","37 290"],"correctChoice":"37 902","answerValue":37902,"sourcePage":1,"explanation":"Padankan setiap perkataan dengan nilai tempat puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-A-10","section":"A","number":10,"operation":"year4-l1-a","instruction":"Bulatkan jawapan yang betul.","skill":"Perkataan kepada angka","prompt":"Empat puluh lapan ribu lapan ratus sepuluh","choices":["48 880","48 180","48 810"],"correctChoice":"48 810","answerValue":48810,"sourcePage":1,"explanation":"Padankan setiap perkataan dengan nilai tempat puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-B-01","section":"B","number":1,"operation":"year4-l1-b","instruction":"Padankan nombor dengan perkataan yang betul.","skill":"Angka kepada perkataan","prompt":"10 972","choices":["Tiga puluh satu ribu empat ratus enam puluh tujuh","Lima puluh tujuh ribu enam puluh","Tujuh puluh enam ribu","Sepuluh ribu sembilan ratus tujuh puluh dua","Enam puluh sembilan ribu satu ratus sembilan puluh lapan","Sembilan puluh tiga ribu sembilan puluh empat","Dua puluh lima ribu tiga ratus lapan puluh lima","Lapan puluh satu ribu dua ratus empat","Dua puluh ribu empat ratus enam puluh enam"],"correctChoice":"Sepuluh ribu sembilan ratus tujuh puluh dua","answerValue":10972,"sourcePage":2,"explanation":"Baca nombor dari kiri mengikut nilai tempat: puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-B-02","section":"B","number":2,"operation":"year4-l1-b","instruction":"Padankan nombor dengan perkataan yang betul.","skill":"Angka kepada perkataan","prompt":"31 467","choices":["Tiga puluh satu ribu empat ratus enam puluh tujuh","Lima puluh tujuh ribu enam puluh","Tujuh puluh enam ribu","Sepuluh ribu sembilan ratus tujuh puluh dua","Enam puluh sembilan ribu satu ratus sembilan puluh lapan","Sembilan puluh tiga ribu sembilan puluh empat","Dua puluh lima ribu tiga ratus lapan puluh lima","Lapan puluh satu ribu dua ratus empat","Dua puluh ribu empat ratus enam puluh enam"],"correctChoice":"Tiga puluh satu ribu empat ratus enam puluh tujuh","answerValue":31467,"sourcePage":2,"explanation":"Baca nombor dari kiri mengikut nilai tempat: puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-B-03","section":"B","number":3,"operation":"year4-l1-b","instruction":"Padankan nombor dengan perkataan yang betul.","skill":"Angka kepada perkataan","prompt":"25 385","choices":["Tiga puluh satu ribu empat ratus enam puluh tujuh","Lima puluh tujuh ribu enam puluh","Tujuh puluh enam ribu","Sepuluh ribu sembilan ratus tujuh puluh dua","Enam puluh sembilan ribu satu ratus sembilan puluh lapan","Sembilan puluh tiga ribu sembilan puluh empat","Dua puluh lima ribu tiga ratus lapan puluh lima","Lapan puluh satu ribu dua ratus empat","Dua puluh ribu empat ratus enam puluh enam"],"correctChoice":"Dua puluh lima ribu tiga ratus lapan puluh lima","answerValue":25385,"sourcePage":2,"explanation":"Baca nombor dari kiri mengikut nilai tempat: puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-B-04","section":"B","number":4,"operation":"year4-l1-b","instruction":"Padankan nombor dengan perkataan yang betul.","skill":"Angka kepada perkataan","prompt":"20 466","choices":["Tiga puluh satu ribu empat ratus enam puluh tujuh","Lima puluh tujuh ribu enam puluh","Tujuh puluh enam ribu","Sepuluh ribu sembilan ratus tujuh puluh dua","Enam puluh sembilan ribu satu ratus sembilan puluh lapan","Sembilan puluh tiga ribu sembilan puluh empat","Dua puluh lima ribu tiga ratus lapan puluh lima","Lapan puluh satu ribu dua ratus empat","Dua puluh ribu empat ratus enam puluh enam"],"correctChoice":"Dua puluh ribu empat ratus enam puluh enam","answerValue":20466,"sourcePage":2,"explanation":"Baca nombor dari kiri mengikut nilai tempat: puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-B-05","section":"B","number":5,"operation":"year4-l1-b","instruction":"Padankan nombor dengan perkataan yang betul.","skill":"Angka kepada perkataan","prompt":"57 060","choices":["Tiga puluh satu ribu empat ratus enam puluh tujuh","Lima puluh tujuh ribu enam puluh","Tujuh puluh enam ribu","Sepuluh ribu sembilan ratus tujuh puluh dua","Enam puluh sembilan ribu satu ratus sembilan puluh lapan","Sembilan puluh tiga ribu sembilan puluh empat","Dua puluh lima ribu tiga ratus lapan puluh lima","Lapan puluh satu ribu dua ratus empat","Dua puluh ribu empat ratus enam puluh enam"],"correctChoice":"Lima puluh tujuh ribu enam puluh","answerValue":57060,"sourcePage":2,"explanation":"Baca nombor dari kiri mengikut nilai tempat: puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-B-06","section":"B","number":6,"operation":"year4-l1-b","instruction":"Padankan nombor dengan perkataan yang betul.","skill":"Angka kepada perkataan","prompt":"69 198","choices":["Tiga puluh satu ribu empat ratus enam puluh tujuh","Lima puluh tujuh ribu enam puluh","Tujuh puluh enam ribu","Sepuluh ribu sembilan ratus tujuh puluh dua","Enam puluh sembilan ribu satu ratus sembilan puluh lapan","Sembilan puluh tiga ribu sembilan puluh empat","Dua puluh lima ribu tiga ratus lapan puluh lima","Lapan puluh satu ribu dua ratus empat","Dua puluh ribu empat ratus enam puluh enam"],"correctChoice":"Enam puluh sembilan ribu satu ratus sembilan puluh lapan","answerValue":69198,"sourcePage":2,"explanation":"Baca nombor dari kiri mengikut nilai tempat: puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-B-07","section":"B","number":7,"operation":"year4-l1-b","instruction":"Padankan nombor dengan perkataan yang betul.","skill":"Angka kepada perkataan","prompt":"76 000","choices":["Tiga puluh satu ribu empat ratus enam puluh tujuh","Lima puluh tujuh ribu enam puluh","Tujuh puluh enam ribu","Sepuluh ribu sembilan ratus tujuh puluh dua","Enam puluh sembilan ribu satu ratus sembilan puluh lapan","Sembilan puluh tiga ribu sembilan puluh empat","Dua puluh lima ribu tiga ratus lapan puluh lima","Lapan puluh satu ribu dua ratus empat","Dua puluh ribu empat ratus enam puluh enam"],"correctChoice":"Tujuh puluh enam ribu","answerValue":76000,"sourcePage":2,"explanation":"Baca nombor dari kiri mengikut nilai tempat: puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-B-08","section":"B","number":8,"operation":"year4-l1-b","instruction":"Padankan nombor dengan perkataan yang betul.","skill":"Angka kepada perkataan","prompt":"81 204","choices":["Tiga puluh satu ribu empat ratus enam puluh tujuh","Lima puluh tujuh ribu enam puluh","Tujuh puluh enam ribu","Sepuluh ribu sembilan ratus tujuh puluh dua","Enam puluh sembilan ribu satu ratus sembilan puluh lapan","Sembilan puluh tiga ribu sembilan puluh empat","Dua puluh lima ribu tiga ratus lapan puluh lima","Lapan puluh satu ribu dua ratus empat","Dua puluh ribu empat ratus enam puluh enam"],"correctChoice":"Lapan puluh satu ribu dua ratus empat","answerValue":81204,"sourcePage":2,"explanation":"Baca nombor dari kiri mengikut nilai tempat: puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-B-09","section":"B","number":9,"operation":"year4-l1-b","instruction":"Padankan nombor dengan perkataan yang betul.","skill":"Angka kepada perkataan","prompt":"93 094","choices":["Tiga puluh satu ribu empat ratus enam puluh tujuh","Lima puluh tujuh ribu enam puluh","Tujuh puluh enam ribu","Sepuluh ribu sembilan ratus tujuh puluh dua","Enam puluh sembilan ribu satu ratus sembilan puluh lapan","Sembilan puluh tiga ribu sembilan puluh empat","Dua puluh lima ribu tiga ratus lapan puluh lima","Lapan puluh satu ribu dua ratus empat","Dua puluh ribu empat ratus enam puluh enam"],"correctChoice":"Sembilan puluh tiga ribu sembilan puluh empat","answerValue":93094,"sourcePage":2,"explanation":"Baca nombor dari kiri mengikut nilai tempat: puluh ribu, ribu, ratus, puluh dan sa."},{"id":"Y4-L1-C-01","section":"C","number":1,"operation":"year4-l1-c","instruction":"Bulatkan nombor paling kecil.","skill":"Nombor paling kecil","prompt":"Pilih nombor paling kecil.","choices":["12 098","12 134","12 857","12 111","12 169"],"correctChoice":"12 098","answerValue":12098,"sourcePage":3,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih kecil menentukan nombor paling kecil."},{"id":"Y4-L1-C-02","section":"C","number":2,"operation":"year4-l1-c","instruction":"Bulatkan nombor paling kecil.","skill":"Nombor paling kecil","prompt":"Pilih nombor paling kecil.","choices":["21 589","21 334","21 413","21 611","21 453"],"correctChoice":"21 334","answerValue":21334,"sourcePage":3,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih kecil menentukan nombor paling kecil."},{"id":"Y4-L1-C-03","section":"C","number":3,"operation":"year4-l1-c","instruction":"Bulatkan nombor paling kecil.","skill":"Nombor paling kecil","prompt":"Pilih nombor paling kecil.","choices":["30 099","30 176","30 199","30 191","30 309"],"correctChoice":"30 099","answerValue":30099,"sourcePage":3,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih kecil menentukan nombor paling kecil."},{"id":"Y4-L1-C-04","section":"C","number":4,"operation":"year4-l1-c","instruction":"Bulatkan nombor paling kecil.","skill":"Nombor paling kecil","prompt":"Pilih nombor paling kecil.","choices":["48 591","48 965","48 365","48 700","48 464"],"correctChoice":"48 365","answerValue":48365,"sourcePage":3,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih kecil menentukan nombor paling kecil."},{"id":"Y4-L1-C-05","section":"C","number":5,"operation":"year4-l1-c","instruction":"Bulatkan nombor paling kecil.","skill":"Nombor paling kecil","prompt":"Pilih nombor paling kecil.","choices":["53 240","53 677","53 913","53 832","53 222"],"correctChoice":"53 222","answerValue":53222,"sourcePage":3,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih kecil menentukan nombor paling kecil."},{"id":"Y4-L1-C-06","section":"C","number":6,"operation":"year4-l1-c","instruction":"Bulatkan nombor paling kecil.","skill":"Nombor paling kecil","prompt":"Pilih nombor paling kecil.","choices":["65 165","65 256","65 655","65 753","65 050"],"correctChoice":"65 050","answerValue":65050,"sourcePage":3,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih kecil menentukan nombor paling kecil."},{"id":"Y4-L1-C-07","section":"C","number":7,"operation":"year4-l1-c","instruction":"Bulatkan nombor paling kecil.","skill":"Nombor paling kecil","prompt":"Pilih nombor paling kecil.","choices":["74 132","74 144","75 175","74 140","76 200"],"correctChoice":"74 132","answerValue":74132,"sourcePage":3,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih kecil menentukan nombor paling kecil."},{"id":"Y4-L1-C-08","section":"C","number":8,"operation":"year4-l1-c","instruction":"Bulatkan nombor paling kecil.","skill":"Nombor paling kecil","prompt":"Pilih nombor paling kecil.","choices":["84 192","84 179","84 256","84 265","84 333"],"correctChoice":"84 179","answerValue":84179,"sourcePage":3,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih kecil menentukan nombor paling kecil."},{"id":"Y4-L1-C-09","section":"C","number":9,"operation":"year4-l1-c","instruction":"Bulatkan nombor paling kecil.","skill":"Nombor paling kecil","prompt":"Pilih nombor paling kecil.","choices":["96 275","95 387","95 432","98 065","95 478"],"correctChoice":"95 387","answerValue":95387,"sourcePage":3,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih kecil menentukan nombor paling kecil."},{"id":"Y4-L1-C-10","section":"C","number":10,"operation":"year4-l1-c","instruction":"Bulatkan nombor paling kecil.","skill":"Nombor paling kecil","prompt":"Pilih nombor paling kecil.","choices":["11 498","11 748","11 317","11 451","11 557"],"correctChoice":"11 317","answerValue":11317,"sourcePage":3,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih kecil menentukan nombor paling kecil."},{"id":"Y4-L1-D-01","section":"D","number":1,"operation":"year4-l1-d","instruction":"Bulatkan nombor paling besar.","skill":"Nombor paling besar","prompt":"Pilih nombor paling besar.","choices":["12 098","12 134","12 857","12 111","12 169"],"correctChoice":"12 857","answerValue":12857,"sourcePage":4,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih besar menentukan nombor paling besar."},{"id":"Y4-L1-D-02","section":"D","number":2,"operation":"year4-l1-d","instruction":"Bulatkan nombor paling besar.","skill":"Nombor paling besar","prompt":"Pilih nombor paling besar.","choices":["21 589","21 334","21 413","21 611","21 453"],"correctChoice":"21 611","answerValue":21611,"sourcePage":4,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih besar menentukan nombor paling besar."},{"id":"Y4-L1-D-03","section":"D","number":3,"operation":"year4-l1-d","instruction":"Bulatkan nombor paling besar.","skill":"Nombor paling besar","prompt":"Pilih nombor paling besar.","choices":["30 099","30 176","30 199","30 191","30 309"],"correctChoice":"30 309","answerValue":30309,"sourcePage":4,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih besar menentukan nombor paling besar."},{"id":"Y4-L1-D-04","section":"D","number":4,"operation":"year4-l1-d","instruction":"Bulatkan nombor paling besar.","skill":"Nombor paling besar","prompt":"Pilih nombor paling besar.","choices":["48 591","48 965","48 365","48 700","48 464"],"correctChoice":"48 965","answerValue":48965,"sourcePage":4,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih besar menentukan nombor paling besar."},{"id":"Y4-L1-D-05","section":"D","number":5,"operation":"year4-l1-d","instruction":"Bulatkan nombor paling besar.","skill":"Nombor paling besar","prompt":"Pilih nombor paling besar.","choices":["53 240","53 677","53 913","53 832","53 222"],"correctChoice":"53 913","answerValue":53913,"sourcePage":4,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih besar menentukan nombor paling besar."},{"id":"Y4-L1-D-06","section":"D","number":6,"operation":"year4-l1-d","instruction":"Bulatkan nombor paling besar.","skill":"Nombor paling besar","prompt":"Pilih nombor paling besar.","choices":["65 165","65 256","65 655","65 753","65 050"],"correctChoice":"65 753","answerValue":65753,"sourcePage":4,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih besar menentukan nombor paling besar."},{"id":"Y4-L1-D-07","section":"D","number":7,"operation":"year4-l1-d","instruction":"Bulatkan nombor paling besar.","skill":"Nombor paling besar","prompt":"Pilih nombor paling besar.","choices":["74 132","74 144","75 175","74 140","76 200"],"correctChoice":"76 200","answerValue":76200,"sourcePage":4,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih besar menentukan nombor paling besar."},{"id":"Y4-L1-D-08","section":"D","number":8,"operation":"year4-l1-d","instruction":"Bulatkan nombor paling besar.","skill":"Nombor paling besar","prompt":"Pilih nombor paling besar.","choices":["84 192","84 179","84 256","84 265","84 333"],"correctChoice":"84 333","answerValue":84333,"sourcePage":4,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih besar menentukan nombor paling besar."},{"id":"Y4-L1-D-09","section":"D","number":9,"operation":"year4-l1-d","instruction":"Bulatkan nombor paling besar.","skill":"Nombor paling besar","prompt":"Pilih nombor paling besar.","choices":["96 275","95 387","95 432","98 065","95 478"],"correctChoice":"98 065","answerValue":98065,"sourcePage":4,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih besar menentukan nombor paling besar."},{"id":"Y4-L1-D-10","section":"D","number":10,"operation":"year4-l1-d","instruction":"Bulatkan nombor paling besar.","skill":"Nombor paling besar","prompt":"Pilih nombor paling besar.","choices":["11 498","11 748","11 317","11 451","11 557"],"correctChoice":"11 748","answerValue":11748,"sourcePage":4,"explanation":"Bandingkan digit dari kiri. Pada tempat pertama yang berbeza, digit lebih besar menentukan nombor paling besar."}];
+  const MISTAKE_KEY = "mathMasterYear4Mistakes:v79:AISYAH";
+  const LAST_SOURCE_KEY = "mathMasterYear4LastSource:v79:AISYAH";
+  const $ = id => document.getElementById(id);
+
+  let state = {
+    mode:"original",questions:[],index:0,records:[],wrongChoices:[],
+    quizStart:0,questionStart:0,timerId:null,attemptId:"",
+    attemptHash:"",attemptExpiresAt:"",questionSelection:"all",
+    sessionId:"",sourceAssessmentKey:"",practiceMode:false,starting:false
+  };
+
+  function escapeHtml(value) {
+    return String(value ?? "").replaceAll("&","&amp;")
+      .replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+
+  function shuffle(items) {
+    const result = [...items];
+    for (let index=result.length-1;index>0;index--) {
+      const target = Math.floor(Math.random()*(index+1));
+      [result[index],result[target]]=[result[target],result[index]];
+    }
+    return result;
+  }
+
+  function formatNumber(value) {
+    return Number(value||0).toLocaleString("en-MY");
+  }
+
+  function formatTime(seconds) {
+    const minutes=Math.floor(seconds/60);
+    const remaining=Math.floor(seconds%60);
+    return `${String(minutes).padStart(2,"0")}:${String(remaining).padStart(2,"0")}`;
+  }
+
+  function jsonpRequest(parameters,timeoutMs=20000) {
+    return new Promise((resolve,reject)=>{
+      const callback=`year4Jsonp_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+      const script=document.createElement("script");
+      let completed=false;
+      const cleanup=()=>{delete window[callback];script.remove();};
+      const timer=setTimeout(()=>{
+        if(completed)return;completed=true;cleanup();
+        reject(new Error("Request timed out."));
+      },timeoutMs);
+      window[callback]=response=>{
+        if(completed)return;completed=true;clearTimeout(timer);cleanup();resolve(response);
+      };
+      const query=new URLSearchParams({...parameters,callback});
+      script.onerror=()=>{
+        if(completed)return;completed=true;clearTimeout(timer);cleanup();
+        reject(new Error("Could not connect to Math Master cloud."));
+      };
+      script.src=`${APPS_SCRIPT_URL}?${query.toString()}`;
+      document.body.appendChild(script);
+    });
+  }
+
+  async function sha256Hex(text) {
+    const bytes=new TextEncoder().encode(String(text||""));
+    const digest=await crypto.subtle.digest("SHA-256",bytes);
+    return Array.from(new Uint8Array(digest))
+      .map(value=>value.toString(16).padStart(2,"0")).join("");
+  }
+
+  function canonicalQuestionKey(question) {
+    return [question.operation,Number(question.number),0,
+      Number(question.answerValue)].join("|");
+  }
+
+  function questionSetKeys(items) {
+    return [...new Set(items.map(canonicalQuestionKey))].sort();
+  }
+
+  async function requestAssessmentAttempt(items,selection) {
+    const keys=questionSetKeys(items);
+    const hash=await sha256Hex(keys.join("||"));
+    const response=await jsonpRequest({
+      action:"startAssessmentAttempt",studentId:STUDENT.studentId,
+      studentName:STUDENT.studentName,questionCount:items.length,
+      questionSetHash:hash,questionSetKeys:selection==="all"?"":keys.join("||"),
+      mode:"year4-latihan1",selection,
+      clientNonce:crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random()}`
+    },25000);
+    return {...response,questionSetHash:hash};
+  }
+
+  function readMistakes() {
+    try {
+      const parsed=JSON.parse(localStorage.getItem(MISTAKE_KEY)||"[]");
+      return Array.isArray(parsed)?parsed:[];
+    } catch(_) {return [];}
+  }
+
+  function updateMistakeCount() {
+    const mistakes=readMistakes();
+    $("mistakeCount").textContent=mistakes.length;
+    $("mistakeModeCard").disabled=mistakes.length===0;
+    $("fixBtn").disabled=mistakes.length===0;
+  }
+
+  function updateModeUi() {
+    document.querySelectorAll("[data-mode]").forEach(button=>{
+      button.classList.toggle("selected",button.dataset.mode===state.mode);
+    });
+    $("sectionField").classList.toggle("hidden",state.mode!=="section");
+    $("countField").classList.toggle("hidden",state.mode!=="random");
+    const labels={
+      original:"🚀 Mulakan Original Worksheet — 39 soalan",
+      section:"🚀 Mulakan bahagian dipilih",
+      random:"🎲 Mulakan Random Practice",
+      mistakes:"🔁 Mulakan Fix My Mistakes"
+    };
+    $("startBtn").textContent=labels[state.mode];
+    if(state.mode==="mistakes"&&!readMistakes().length) {
+      $("startBtn").disabled=true;
+      $("startBtn").textContent="Belum ada kesalahan untuk diperbaiki";
+    } else {
+      $("startBtn").disabled=false;
+    }
+  }
+
+  function chooseAssessmentQuestions() {
+    if(state.mode==="original") {
+      state.questionSelection="all";
+      return QUESTIONS.map(question=>({...question,choices:[...question.choices]}));
+    }
+    if(state.mode==="section") {
+      const section=$("sectionSelect").value;
+      state.questionSelection=`section-${section.toLowerCase()}`;
+      return QUESTIONS.filter(question=>question.section===section)
+        .map(question=>({...question,choices:shuffle(question.choices)}));
+    }
+    const requested=$("questionCount").value;
+    const count=requested==="all"?QUESTIONS.length:Number(requested);
+    state.questionSelection=requested==="all"?"all":`random-${count}`;
+    return shuffle(QUESTIONS).slice(0,count)
+      .map(question=>({...question,choices:shuffle(question.choices)}));
+  }
+
+  function chooseMistakePractice() {
+    const stored=readMistakes();
+    const storedIds=stored.map(item=>item.questionId);
+    const storedQuestions=storedIds.map(id=>QUESTIONS.find(q=>q.id===id)).filter(Boolean);
+    const sections=new Set(storedQuestions.map(q=>q.section));
+    const related=shuffle(QUESTIONS.filter(q=>
+      sections.has(q.section)&&!storedIds.includes(q.id)
+    ));
+    const selected=[...storedQuestions,...related]
+      .slice(0,Math.max(5,storedQuestions.length));
+    state.sourceAssessmentKey=String(stored[0]?.sourceSessionId||"");
+    state.questionSelection="practice";
+    return selected.map(q=>({...q,choices:shuffle(q.choices)}));
+  }
+
+  async function prepareAssessment() {
+    const maximumCandidates=state.mode==="random"&&
+      $("questionCount").value!=="all"?8:1;
+    let lastError="";
+    for(let candidateNumber=1;candidateNumber<=maximumCandidates;candidateNumber++) {
+      const candidate=chooseAssessmentQuestions();
+      const response=await requestAssessmentAttempt(candidate,state.questionSelection);
+      if(response?.ok===true&&response.attemptId) {
+        return {questions:candidate,attempt:response};
+      }
+      lastError=response?.detail||response?.error||"The question set could not be issued.";
+      if(!response?.retrySuggested)throw new Error(lastError);
+      $("startBtn").textContent=
+        `🔄 Mencari set lebih fresh (${candidateNumber}/${maximumCandidates})…`;
+    }
+    throw new Error(lastError||"No fresh question set is available.");
+  }
+
+  async function startSelectedMode() {
+    if(state.starting)return;
+    state.starting=true;
+    const originalText=$("startBtn").textContent;
+    $("startBtn").disabled=true;
+    $("startBtn").textContent="🔐 Menyediakan sesi selamat…";
+    try {
+      state.practiceMode=state.mode==="mistakes";
+      state.sourceAssessmentKey="";
+      let items;
+      if(state.practiceMode) {
+        items=chooseMistakePractice();
+        if(!items.length)throw new Error("Belum ada kesalahan yang boleh dijadikan latihan.");
+        state.attemptId="";state.attemptHash="";
+      } else {
+        const prepared=await prepareAssessment();
+        items=prepared.questions;
+        state.attemptId=prepared.attempt.attemptId;
+        state.attemptHash=prepared.attempt.questionSetHash;
+        state.attemptExpiresAt=prepared.attempt.expiresAt;
+      }
+      state.questions=items;state.index=0;state.records=[];state.wrongChoices=[];
+      state.sessionId=`AISYAH-Y4-${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+      state.quizStart=performance.now();
+      $("setup").classList.add("hidden");
+      $("report").classList.add("hidden");
+      $("quiz").classList.remove("hidden");
+      $("quizModeLabel").textContent=state.practiceMode
+        ?"🎯 Targeted Practice Tahun 4":"🔐 Assessment Tahun 4";
+      clearInterval(state.timerId);
+      state.timerId=setInterval(()=>{
+        $("timer").textContent=formatTime((performance.now()-state.quizStart)/1000);
+      },250);
+      renderQuestion();
+    } catch(error) {
+      console.error(error);
+      alert("Latihan tidak dapat dimulakan.\n\n"+(error?.message||"Unknown error"));
+    } finally {
+      state.starting=false;$("startBtn").disabled=false;
+      $("startBtn").textContent=originalText;updateModeUi();
+    }
+  }
+
+  function renderQuestion() {
+    if(state.index>=state.questions.length){finishQuiz();return;}
+    const question=state.questions[state.index];
+    state.wrongChoices=[];state.questionStart=performance.now();
+    $("counter").textContent=`${state.index+1} / ${state.questions.length}`;
+    $("progressBar").style.width=`${(state.index/state.questions.length)*100}%`;
+    $("sectionLabel").textContent=`Latihan ${question.section} · Soalan ${question.number}`;
+    $("instruction").textContent=question.instruction;
+    $("prompt").textContent=question.prompt;
+    $("feedback").textContent="";$("feedback").className="feedback";
+    const choices=state.mode==="original"?[...question.choices]:shuffle(question.choices);
+    const container=$("choices");
+    container.classList.toggle("many",choices.length>5);
+    container.innerHTML=choices.map(choice=>`
+      <button class="choice" type="button" data-choice="${escapeHtml(choice)}">
+        ${escapeHtml(choice)}
+      </button>`).join("");
+  }
+
+  function handleChoice(button) {
+    const question=state.questions[state.index];
+    const selected=button.dataset.choice||"";
+    if(selected!==question.correctChoice) {
+      if(!state.wrongChoices.includes(selected))state.wrongChoices.push(selected);
+      button.classList.add("wrong");button.disabled=true;
+      $("feedback").className="feedback error";
+      $("feedback").innerHTML="Belum tepat. Cuba bandingkan nilai tempat sekali lagi.";
+      return;
+    }
+    const elapsed=(performance.now()-state.questionStart)/1000;
+    button.classList.add("correct");
+    document.querySelectorAll(".choice").forEach(choice=>choice.disabled=true);
+    state.records.push({...question,time:elapsed,wrongs:[...state.wrongChoices]});
+    $("feedback").className="feedback ok";
+    $("feedback").innerHTML=
+      `✅ Betul: <strong>${escapeHtml(question.correctChoice)}</strong><br>`+
+      escapeHtml(question.explanation);
+    state.index+=1;
+    $("progressBar").style.width=`${(state.index/state.questions.length)*100}%`;
+    setTimeout(renderQuestion,700);
+  }
+
+  function buildPayload(totalTime) {
+    const modeNames={
+      original:"Original Worksheet",
+      section:`Latihan ${$("sectionSelect").value}`,
+      random:"Random Practice",
+      mistakes:"Fix My Mistakes"
+    };
+    const times=state.records.map(record=>record.time).sort((a,b)=>a-b);
+    const median=times.length?times[Math.floor(times.length/2)]:0;
+    return {
+      schemaVersion:5,sessionId:state.sessionId,
+      attemptId:state.practiceMode?"":state.attemptId,
+      questionSetHash:state.practiceMode?"":state.attemptHash,
+      studentId:STUDENT.studentId,studentName:STUDENT.studentName,
+      completedAt:new Date().toISOString(),
+      quizType:state.practiceMode
+        ?"Targeted Practice Year 4 — Latihan 1"
+        :`Year 4 — Latihan 1 — ${modeNames[state.mode]}`,
+      sessionType:state.practiceMode?"Targeted Practice":"Assessment",
+      selectedMode:"year4-latihan1",
+      questionSelection:state.practiceMode?"practice":state.questionSelection,
+      practiceMode:state.practiceMode,practiceRound:state.practiceMode?1:0,
+      parentSessionLabel:state.practiceMode?state.sourceAssessmentKey:state.sessionId,
+      sourceAssessmentKey:state.practiceMode?state.sourceAssessmentKey:state.sessionId,
+      questionCount:state.records.length,totalTimeSeconds:Number(totalTime.toFixed(3)),
+      medianTimeSeconds:Number(median.toFixed(3)),
+      wrongAttempts:state.records.reduce((sum,record)=>sum+record.wrongs.length,0),
+      recommendations:[],
+      responses:state.records.map((record,index)=>({
+        questionNumber:index+1,operation:record.operation,
+        operandA:Number(record.number),operandB:0,
+        question:`Latihan ${record.section} #${record.number}: ${record.prompt}`,
+        correctAnswer:Number(record.answerValue),
+        responseTimeSeconds:Number(record.time.toFixed(3)),
+        firstTryCorrect:record.wrongs.length===0,
+        attempts:record.wrongs.length+1,wrongCount:record.wrongs.length,
+        wrongAnswers:record.wrongs
+      }))
+    };
+  }
+
+  async function submitPayload(payload) {
+    await fetch(APPS_SCRIPT_URL,{
+      method:"POST",mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(payload)
+    });
+  }
+
+  function saveAssessmentMistakes() {
+    if(state.practiceMode)return;
+    const mistakes=state.records.filter(record=>record.wrongs.length>0)
+      .map(record=>({
+        questionId:record.id,sourceSessionId:state.sessionId,
+        savedAt:new Date().toISOString()
+      }));
+    localStorage.setItem(MISTAKE_KEY,JSON.stringify(mistakes));
+    localStorage.setItem(LAST_SOURCE_KEY,state.sessionId);
+    updateMistakeCount();
+  }
+
+  function reportSectionData() {
+    const groups={};
+    state.records.forEach(record=>{
+      if(!groups[record.section]) {
+        groups[record.section]={
+          questions:0,firstTryCorrect:0,wrongAttempts:0,skill:record.skill
+        };
+      }
+      const group=groups[record.section];
+      group.questions+=1;group.wrongAttempts+=record.wrongs.length;
+      if(!record.wrongs.length)group.firstTryCorrect+=1;
+    });
+    return groups;
+  }
+
+  async function finishQuiz() {
+    clearInterval(state.timerId);
+    const totalTime=(performance.now()-state.quizStart)/1000;
+    const firstTryCorrect=state.records.filter(r=>r.wrongs.length===0).length;
+    const wrongAttempts=state.records.reduce((sum,r)=>sum+r.wrongs.length,0);
+    const accuracy=state.records.length?firstTryCorrect/state.records.length:0;
+    $("quiz").classList.add("hidden");$("report").classList.remove("hidden");
+    const cards=[
+      ["First-try score",`${firstTryCorrect} / ${state.records.length}`],
+      ["Accuracy",`${Math.round(accuracy*100)}%`],
+      ["Wrong attempts",wrongAttempts],["Total time",formatTime(totalTime)]
+    ];
+    $("reportSummary").innerHTML=cards.map(card=>`
+      <div class="report-stat">${escapeHtml(card[0])}
+        <strong>${escapeHtml(card[1])}</strong></div>`).join("");
+    const groups=reportSectionData();
+    $("sectionResults").innerHTML=Object.keys(groups).sort().map(section=>{
+      const group=groups[section];
+      const sectionAccuracy=group.questions?group.firstTryCorrect/group.questions:0;
+      return `<div class="section-result"><div>
+        <strong>Latihan ${section} · ${escapeHtml(group.skill)}</strong>
+        <div class="note">${group.questions} questions ·
+          ${group.wrongAttempts} wrong attempts</div></div>
+        <strong>${Math.round(sectionAccuracy*100)}%</strong></div>`;
+    }).join("");
+    const mistakes=state.records.filter(record=>record.wrongs.length>0);
+    $("mistakeResults").innerHTML=mistakes.length
+      ?mistakes.map(record=>`<div class="mistake-row">
+        <strong>Latihan ${record.section} #${record.number}</strong>
+        <div>${escapeHtml(record.prompt)}</div>
+        <div class="note">Jawapan betul:
+          <strong>${escapeHtml(record.correctChoice)}</strong></div>
+        <div class="note">${escapeHtml(record.explanation)}</div></div>`).join("")
+      :`<div class="fair-box">🎉 Tiada jawapan salah dalam sesi ini.</div>`;
+    saveAssessmentMistakes();
+    $("cloudStatus").textContent="📊 Menghantar keputusan ke Math Master cloud…";
+    try {
+      await submitPayload(buildPayload(totalTime));
+      $("cloudStatus").textContent=
+        "✅ Keputusan dihantar. XP, assessment credits, mission progress dan "+
+        "Family Big Mission akan dikemas kini selepas cloud memproses sesi.";
+    } catch(error) {
+      console.error(error);
+      $("cloudStatus").textContent=
+        "❌ Keputusan tidak dapat dihantar: "+(error?.message||"Unknown error");
+    }
+    updateMistakeCount();
+  }
+
+  async function loadProfile() {
+    try {
+      const response=await jsonpRequest({
+        action:"getProfile",studentId:STUDENT.studentId
+      });
+      const profile=response?.profile;
+      $("profileXp").textContent=profile?formatNumber(profile.totalXp||0):"0";
+      $("profileLevel").textContent=profile?.level||1;
+    } catch(_) {
+      $("profileXp").textContent="—";$("profileLevel").textContent="—";
+    }
+  }
+
+  async function loadBigMission() {
+    try {
+      const response=await jsonpRequest({
+        action:"getFamilyBigMission",studentId:STUDENT.studentId
+      });
+      const mission=response?.mission;
+      if(!mission||mission.status!=="Active")return;
+      const current=Number(mission.earnedXp||0);
+      const target=Number(mission.targetXp||0);
+      const percent=target?Math.min(100,current/target*100):0;
+      $("bigMissionMini").classList.remove("hidden");
+      $("bigMissionMini").innerHTML=
+        `<strong>🎮 ${escapeHtml(mission.name)}</strong><br>`+
+        `Team progress: ${formatNumber(current)} / ${formatNumber(target)} XP `+
+        `(${percent.toFixed(1)}%) · `+
+        `${formatNumber(Math.max(0,target-current))} XP remaining`;
+    } catch(_) {}
+  }
+
+  document.querySelectorAll("[data-mode]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      if(button.disabled)return;state.mode=button.dataset.mode;updateModeUi();
+    });
+  });
+  $("startBtn").addEventListener("click",startSelectedMode);
+  $("choices").addEventListener("click",event=>{
+    const button=event.target.closest(".choice");
+    if(button&&!button.disabled)handleChoice(button);
+  });
+  $("againBtn").addEventListener("click",()=>{
+    $("report").classList.add("hidden");$("setup").classList.remove("hidden");
+    updateModeUi();loadProfile();loadBigMission();
+  });
+  $("fixBtn").addEventListener("click",()=>{
+    if(!readMistakes().length)return;
+    state.mode="mistakes";$("report").classList.add("hidden");
+    $("setup").classList.remove("hidden");updateModeUi();
+    window.scrollTo({top:0,behavior:"smooth"});
+  });
+
+  updateMistakeCount();updateModeUi();loadProfile();loadBigMission();
+</script>
+</body>
+</html>

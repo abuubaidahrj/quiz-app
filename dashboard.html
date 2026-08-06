@@ -319,6 +319,77 @@
       font-size:27px;
     }
 
+
+    .year4-analytics-panel{
+      border-color:#a78bfa;
+      background:linear-gradient(135deg,#ffffff,#faf5ff);
+    }
+    .year4-summary-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:9px;
+      margin-bottom:13px;
+    }
+    .year4-summary-card{
+      padding:11px;
+      border:1px solid #c4b5fd;
+      border-radius:12px;
+      background:#fff;
+      color:#6d28d9;
+      font-size:11px;
+      line-height:1.35;
+    }
+    .year4-summary-card strong{
+      display:block;
+      margin-top:4px;
+      color:#312e81;
+      font-size:20px;
+    }
+    .year4-skill-list{
+      display:grid;
+      gap:9px;
+    }
+    .year4-skill-row{
+      padding:10px;
+      border:1px solid #ddd6fe;
+      border-radius:12px;
+      background:#fff;
+    }
+    .year4-skill-head{
+      display:flex;
+      justify-content:space-between;
+      gap:9px;
+      color:#312e81;
+      font-weight:900;
+    }
+    .year4-skill-track{
+      height:9px;
+      margin-top:7px;
+      overflow:hidden;
+      border-radius:999px;
+      background:#ede9fe;
+    }
+    .year4-skill-track div{
+      height:100%;
+      border-radius:inherit;
+      background:#8b5cf6;
+    }
+    .year4-skill-meta{
+      margin-top:6px;
+      color:#64748b;
+      font-size:11px;
+    }
+    .year4-attention{
+      margin-top:12px;
+      padding:10px;
+      border:1px solid #f59e0b;
+      border-radius:11px;
+      background:#fffbeb;
+      color:#92400e;
+      font-size:12px;
+      line-height:1.45;
+    }
+
     .auto-planner-card {
       margin:14px 0;
       padding:15px;
@@ -1870,6 +1941,9 @@
         padding:14px;
         border-radius:17px;
       }
+      .year4-summary-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
       .weekly-planner-head,
       .big-mission-head,
       .weekly-review-head{flex-direction:column;}
@@ -2140,7 +2214,7 @@
         <div class="brand-icon">∑</div>
         <div>
           <h1>Parent Control Center</h1>
-          <p>Math Master v7.8 · Family Big Mission & Weekly Review</p>
+          <p>Math Master v7.9 · Mathematics Year 4 Track</p>
         </div>
       </div>
       <div class="top-actions">
@@ -2751,6 +2825,28 @@
             </div>
           </section>
 
+
+          <section id="year4AnalyticsPanel"
+            class="panel year4-analytics-panel hidden">
+            <div class="panel-head">
+              <div>
+                <h3>📘 Matematik Tahun 4 — Aisyah</h3>
+                <div class="panel-note">
+                  Analytics Latihan 1 diasingkan daripada operasi asas.
+                  Hanya sesi yang lulus fair-play dikira.
+                </div>
+              </div>
+              <a href="year4.html?student=AISYAH"
+                class="control-btn"
+                style="width:auto;text-decoration:none;">
+                Open Year 4 Track
+              </a>
+            </div>
+            <div id="year4AnalyticsContent">
+              <div class="empty">No Year 4 assessment data yet.</div>
+            </div>
+          </section>
+
           <section class="panel">
             <div class="panel-head">
               <div>
@@ -3209,6 +3305,9 @@
         '<div class="empty">☁️ Loading 14-day analytics…</div>';
       $("operationStats").innerHTML =
         '<div class="empty">☁️ Loading operation performance…</div>';
+      $("year4AnalyticsPanel").classList.add("hidden");
+      $("year4AnalyticsContent").innerHTML =
+        '<div class="empty">☁️ Loading Mathematics Year 4 analytics…</div>';
       $("weakQuestions").innerHTML =
         '<div class="empty">☁️ Loading weak-question analysis…</div>';
       $("recentSessions").innerHTML =
@@ -3233,6 +3332,10 @@
       );
       renderWeakQuestions(
         currentDashboardData.weakQuestions || []
+      );
+      renderYear4Analytics(
+        currentDashboardData.year4Analytics || null,
+        currentDashboardData.student?.studentId || ""
       );
       renderRecentSessions(
         currentDashboardData.recentSessions || []
@@ -3533,6 +3636,10 @@
       renderTrend(data.trend);
       renderOperations(data.operationStats);
       renderWeakQuestions(data.weakQuestions);
+      renderYear4Analytics(
+        data.year4Analytics || null,
+        data.student?.studentId || ""
+      );
       renderRecentSessions(data.recentSessions);
       renderAchievements(data.achievements);
       renderRewardBank(data.rewardBank);
@@ -3637,6 +3744,86 @@
           </div>
         </div>
       `).join("");
+    }
+
+
+    function renderYear4Analytics(data, studentId) {
+      const panel = $("year4AnalyticsPanel");
+      const container = $("year4AnalyticsContent");
+      const isAisyah =
+        String(studentId || "").toUpperCase() === "AISYAH";
+
+      panel.classList.toggle("hidden", !isAisyah);
+
+      if (!isAisyah) return;
+
+      if (!data || data.available !== true) {
+        container.innerHTML = `
+          <div class="empty">
+            Belum ada assessment Matematik Tahun 4 yang layak.
+            Buka Latihan 1 pada Student Page untuk memulakan.
+          </div>`;
+        return;
+      }
+
+      const latest = data.latestSession;
+      const cards = [
+        ["Eligible sessions", data.sessions || 0],
+        ["Verified questions", data.questions || 0],
+        ["Overall accuracy", formatPercent(data.accuracy || 0)],
+        ["Latest score", latest
+          ? `${latest.firstTryCorrect}/${latest.questions}`
+          : "—"]
+      ];
+
+      const skillRows = (data.skills || []).map(skill => `
+        <div class="year4-skill-row">
+          <div class="year4-skill-head">
+            <span>${escapeHtml(skill.label)}</span>
+            <span>${formatPercent(skill.accuracy)}</span>
+          </div>
+          <div class="year4-skill-track">
+            <div style="width:${Math.round(
+              Number(skill.accuracy || 0) * 100
+            )}%"></div>
+          </div>
+          <div class="year4-skill-meta">
+            ${Number(skill.questions || 0)} questions ·
+            ${Number(skill.wrongAttempts || 0)} wrong attempts ·
+            ${formatSeconds(skill.averageTime)} average
+          </div>
+        </div>
+      `).join("");
+
+      const attention = (data.needsAttention || []).length
+        ? `
+          <div class="year4-attention">
+            <strong>Needs attention:</strong>
+            ${(data.needsAttention || [])
+              .map(item =>
+                `${escapeHtml(item.label)} ` +
+                `(${formatPercent(item.accuracy)})`
+              )
+              .join(" · ")}
+          </div>`
+        : `
+          <div class="year4-attention"
+            style="border-color:#22c55e;background:#f0fdf4;color:#166534;">
+            ✅ No Year 4 skill is currently below the attention threshold.
+          </div>`;
+
+      container.innerHTML = `
+        <div class="year4-summary-grid">
+          ${cards.map(card => `
+            <div class="year4-summary-card">
+              ${escapeHtml(String(card[0]))}
+              <strong>${escapeHtml(String(card[1]))}</strong>
+            </div>
+          `).join("")}
+        </div>
+        <div class="year4-skill-list">${skillRows}</div>
+        ${attention}
+      `;
     }
 
     function renderWeakQuestions(items) {

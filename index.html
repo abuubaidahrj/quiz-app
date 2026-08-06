@@ -110,6 +110,56 @@
       justify-self:end;
       filter:drop-shadow(0 9px 0 rgba(30,58,138,.55));
     }
+
+    .year4-track-card{
+      display:none;
+      margin:16px 0;
+      padding:16px;
+      border:2px solid #8b5cf6;
+      border-radius:18px;
+      background:linear-gradient(135deg,#faf5ff,#eef2ff);
+      box-shadow:0 6px 0 #c4b5fd;
+    }
+    .year4-track-card.visible{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:14px;
+      align-items:center;
+    }
+    .year4-track-card h3{
+      margin:0 0 5px;
+      color:#4c1d95;
+      font-size:21px;
+    }
+    .year4-track-card p{
+      margin:0;
+      color:#64748b;
+      line-height:1.45;
+      font-size:13px;
+    }
+    .year4-track-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:50px;
+      padding:11px 16px;
+      border-radius:13px;
+      background:#7c3aed;
+      color:#fff;
+      text-decoration:none;
+      font-weight:1000;
+      box-shadow:0 5px 0 #4c1d95;
+      white-space:nowrap;
+    }
+    .basic-track-label{
+      margin:17px 0 8px;
+      color:#1e3a8a;
+      font-size:14px;
+      font-weight:1000;
+      letter-spacing:.03em;
+      text-transform:uppercase;
+    }
+
     .operation-ribbon {
       display:grid;
       grid-template-columns:repeat(4,minmax(0,1fr));
@@ -627,6 +677,12 @@
       }
       .family-activity-head{align-items:stretch}
       .family-activity-refresh{flex:0 0 auto}
+      .year4-track-card.visible{
+        grid-template-columns:1fr;
+      }
+      .year4-track-link{
+        width:100%;
+      }
       .question{font-size:clamp(44px,16vw,70px);padding:20px 8px}
     }
   </style>
@@ -641,7 +697,7 @@
         <p class="subtitle" style="color:#e0f2fe;">
           Solve equations, earn fair XP, complete missions and unlock achievements.
         </p>
-        <span class="hero-version">Version v7.8 — Family Big Mission & Weekly Review</span>
+        <span class="hero-version">Version v7.9 — Mathematics Year 4 Track</span>
       </div>
 
       <svg class="hero-art" viewBox="0 0 300 230" role="img"
@@ -711,6 +767,28 @@
       </p>
     </div>
 
+
+    <section id="year4TrackCard"
+      class="year4-track-card"
+      aria-label="Mathematics Year 4 learning track">
+      <div>
+        <h3>📘 Matematik Tahun 4 — Aisyah</h3>
+        <p>
+          Laluan berasingan untuk Latihan 1: nombor dalam perkataan,
+          padanan angka, nombor paling kecil dan nombor paling besar.
+          Aktiviti Tahun 4 tidak dicampurkan dengan kuiz operasi asas.
+        </p>
+      </div>
+      <a id="year4TrackLink"
+        class="year4-track-link"
+        href="year4.html?student=AISYAH">
+        Buka Matematik Tahun 4 →
+      </a>
+    </section>
+
+    <div class="basic-track-label">
+      ⚡ Basic Math — Addition, Subtraction, Multiplication & Division
+    </div>
 
     <div class="grid">
       <div>
@@ -1083,12 +1161,28 @@
     );
   }
 
+
+  function updateYear4TrackAccess(studentId) {
+    const card = $("year4TrackCard");
+    const link = $("year4TrackLink");
+    const allowed =
+      String(studentId || "").trim().toUpperCase() === "AISYAH";
+
+    card.classList.toggle("visible", allowed);
+    card.setAttribute("aria-hidden", allowed ? "false" : "true");
+
+    if (allowed) {
+      link.href = "year4.html?student=AISYAH";
+    }
+  }
+
   function handleStudentSelection(options={}) {
     const selected = selectedStudentDetails();
     const startButton = $("startBtn");
     const quiet = options.quiet === true;
 
     startButton.disabled = !selected.studentId;
+    updateYear4TrackAccess(selected.studentId);
 
     if (!selected.studentId) {
       renderStudentProfile("", "");
